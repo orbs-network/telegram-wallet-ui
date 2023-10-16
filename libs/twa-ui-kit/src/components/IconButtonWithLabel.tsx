@@ -1,10 +1,15 @@
-import { VStack, Text, Icon as IconWrapper, Button } from '@chakra-ui/react';
+import {
+  VStack,
+  Text,
+  Icon as IconWrapper,
+  Button,
+  ButtonProps,
+} from '@chakra-ui/react';
 import { IconType } from 'react-icons';
 
-type IconButtonWithLabelProps = {
+type IconButtonWithLabelProps = ButtonProps & {
   Icon: IconType;
   label: string;
-  onClick?: () => void;
 };
 
 export function IconButtonWithLabel({
