@@ -1,6 +1,7 @@
 import {
   StyleFunctionProps,
   ThemeConfig,
+  defineStyle,
   defineStyleConfig,
   extendTheme,
 } from '@chakra-ui/react';
@@ -47,31 +48,6 @@ export const colors = {
     Twa.themeParams.secondary_bg_color || tgColors.light.secondary_bg_color,
   text_color: Twa.themeParams.text_color || tgColors.light.text_color,
 };
-
-console.log('color mode', Twa.colorScheme);
-
-const filled = definePartsStyle({
-  field: {
-    backgroundColor: Twa.themeParams.bg_color || tgColors.light.bg_color,
-    borderRadius: '0.875rem',
-    _hover: {
-      backgroundColor: adjustBrightness(
-        Twa.themeParams.bg_color || tgColors.light.bg_color,
-        -0.07
-      ),
-    },
-    _dark: {
-      backgroundColor: Twa.themeParams.bg_color || tgColors.light.bg_color,
-    },
-  },
-});
-
-export const inputTheme = defineMultiStyleConfig({
-  defaultProps: {
-    variant: 'filled',
-  },
-  variants: { filled },
-});
 
 const config: ThemeConfig = {
   initialColorMode: Twa.colorScheme,
@@ -208,6 +184,41 @@ export const theme = extendTheme({
         }),
       },
     }),
-    Input: inputTheme,
+    Input: defineMultiStyleConfig({
+      defaultProps: {
+        variant: 'filled',
+      },
+      variants: {
+        filled: definePartsStyle({
+          field: {
+            backgroundColor:
+              Twa.themeParams.bg_color || tgColors.light.bg_color,
+            borderRadius: '0.875rem',
+            _hover: {
+              backgroundColor: adjustBrightness(
+                Twa.themeParams.bg_color || tgColors.light.bg_color,
+                -0.07
+              ),
+            },
+            _dark: {
+              backgroundColor:
+                Twa.themeParams.bg_color || tgColors.light.bg_color,
+            },
+          },
+        }),
+      },
+    }),
+    Divider: defineStyleConfig({
+      variants: {
+        thick: defineStyle({
+          borderWidth: '3px',
+          borderStyle: 'solid',
+          borderColor: (props) =>
+            Twa.themeParams.bg_color ||
+            mode(tgColors.light.bg_color, tgColors.dark.bg_color)(props),
+          borderRadius: 6,
+        }),
+      },
+    }),
   },
 });
