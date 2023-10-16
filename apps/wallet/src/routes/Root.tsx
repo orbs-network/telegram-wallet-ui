@@ -18,7 +18,7 @@ import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
 import { MdSwapHorizontalCircle } from 'react-icons/md';
 import { FaEthereum } from 'react-icons/fa';
 
-export function App() {
+export function Root() {
   return (
     <Container size="sm">
       <VStack spacing={4}>
@@ -55,5 +55,3 @@ export function App() {
     </Container>
   );
 }
-
-export default App;
