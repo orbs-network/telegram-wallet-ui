@@ -1,5 +1,4 @@
 import { VStack, Text, Icon as IconWrapper, Button } from '@chakra-ui/react';
-import { colors } from '../theme';
 import { IconType } from 'react-icons';
 
 type IconButtonWithLabelProps = {
@@ -13,8 +12,6 @@ export function IconButtonWithLabel({
   label,
   onClick,
 }: IconButtonWithLabelProps) {
-  console.log(colors);
-
   return (
     <Button variant="icon" onClick={onClick}>
       <VStack>
