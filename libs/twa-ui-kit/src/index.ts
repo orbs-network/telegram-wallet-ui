@@ -1,1 +1,2 @@
-export * from './lib/twa-ui-kit';
+export * from './components';
+export * from './theme';

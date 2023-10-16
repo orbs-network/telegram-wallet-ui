@@ -4,6 +4,7 @@ import { css } from '@emotion/react';
 const styles = css`
   border-radius: 1rem;
   min-height: 72px;
+  width: 100%;
 `;
 
 type CardProps = {
