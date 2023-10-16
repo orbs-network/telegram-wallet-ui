@@ -1,7 +1,7 @@
 import { ChakraProvider } from '@chakra-ui/react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ErrorPage } from './ErrorPage';
-import { Root } from './routes';
+import { Root, Asset } from './routes';
 import { theme } from '@telegram-wallet-ui/twa-ui-kit';
 
 const router = createBrowserRouter([
@@ -9,6 +9,10 @@ const router = createBrowserRouter([
     path: '/',
     element: <Root />,
     errorElement: <ErrorPage />,
+  },
+  {
+    path: 'asset/:assetId',
+    element: <Asset />,
   },
 ]);
 
