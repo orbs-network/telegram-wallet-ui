@@ -2,7 +2,9 @@
   "name": "@telegram-wallet-ui/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "build:wallet": "npm i && nx run wallet:build:production"
+  },
   "private": true,
   "dependencies": {
     "@chakra-ui/react": "^2.8.1",
