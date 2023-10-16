@@ -20,8 +20,11 @@ import { FaEthereum } from 'react-icons/fa';
 
 export function Root() {
   return (
-    <Container size="sm">
+    <Container size="sm" pt={4}>
       <VStack spacing={4}>
+        <Heading as="h1" size="lg">
+          Wallet
+        </Heading>
         <HStack justifyContent="center" alignItems="center" spacing={2}>
           <IconButtonWithLabel Icon={BiSolidDownArrowCircle} label="Deposit" />
           <IconButtonWithLabel Icon={BiSolidUpArrowCircle} label="Withdraw" />
