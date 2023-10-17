@@ -2,12 +2,19 @@ import { Container, HStack, VStack } from '@chakra-ui/react';
 import { Balance, IconButtonWithLabel } from '@telegram-wallet-ui/twa-ui-kit';
 import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
 import { MdSwapHorizontalCircle } from 'react-icons/md';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { BackButton } from '@twa-dev/sdk/react';
-import { AssetIcon } from '../components';
+import { CryptoAssetIcon, Transactions } from '../components';
+import { mockTransactions } from '../mocks/transactions';
+import { CryptoAsset } from '../config';
 
 export function Asset() {
   const navigate = useNavigate();
+  const { assetId } = useParams<{ assetId: CryptoAsset }>();
+  const cryptoAsset = assetId
+    ? (assetId.toUpperCase() as CryptoAsset)
+    : 'MATIC';
+
   return (
     <Container size="sm" pt={4}>
       <BackButton
@@ -16,7 +23,7 @@ export function Asset() {
         }}
       />
       <VStack spacing={4}>
-        <AssetIcon asset="MATIC" />
+        {assetId && <CryptoAssetIcon asset={cryptoAsset} />}
         <Balance
           primaryCurrencySymbol="$"
           primaryAmount={4.63}
@@ -38,6 +45,10 @@ export function Asset() {
             <IconButtonWithLabel Icon={MdSwapHorizontalCircle} label="Trade" />
           </Link>
         </HStack>
+        <Transactions
+          transactions={mockTransactions}
+          cryptoAsset={cryptoAsset}
+        />
       </VStack>
     </Container>
   );

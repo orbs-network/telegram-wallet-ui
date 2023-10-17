@@ -21,8 +21,8 @@ import {
   BiSolidUpArrowCircle,
 } from 'react-icons/bi';
 import { MdSwapHorizontalCircle } from 'react-icons/md';
-import { PiPolygon } from 'react-icons/pi';
 import { Link } from 'react-router-dom';
+import { CryptoAssetIcon } from '../components';
 
 export function Root() {
   return (
@@ -52,10 +52,7 @@ export function Root() {
             <DataDisplayItem
               StartIconSlot={
                 // TODO: replace with real asset icon - create asset icons in ui kit
-                <Avatar
-                  icon={<Icon as={PiPolygon} fontSize={28} />}
-                  bgColor="#8347E6"
-                />
+                <CryptoAssetIcon asset="MATIC" />
               }
               StartTextSlot={
                 <Box>

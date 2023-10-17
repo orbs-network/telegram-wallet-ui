@@ -1,7 +1,7 @@
 import { Icon, IconProps } from '@chakra-ui/react';
 import { FaEthereum } from 'react-icons/fa';
 import { AiOutlineDollarCircle } from 'react-icons/ai';
-import { Assets } from '../../config';
+import { CryptoAsset } from '../../config';
 
 export const Polygon = (props: IconProps) => (
   <Icon viewBox="0 0 38.4 33.5" {...props}>
@@ -20,12 +20,12 @@ export const USDC = (props: IconProps) => (
   <Icon {...props} as={AiOutlineDollarCircle} />
 );
 
-type CryptoAsset = {
+type CryptoAssetConfig = {
   Icon: React.ReactElement;
   color: string;
 };
 
-export const cryptoAssets: Record<Assets, CryptoAsset> = {
+export const cryptoAssets: Record<CryptoAsset, CryptoAssetConfig> = {
   MATIC: {
     Icon: <Polygon />,
     color: '#8347E6',
