@@ -3,11 +3,18 @@ import { Balance, IconButtonWithLabel } from '@telegram-wallet-ui/twa-ui-kit';
 import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
 import { MdSwapHorizontalCircle } from 'react-icons/md';
 import { PiPolygon } from 'react-icons/pi';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { BackButton } from '@twa-dev/sdk/react';
 
 export function Asset() {
+  const navigate = useNavigate();
   return (
     <Container size="sm" pt={4}>
+      <BackButton
+        onClick={() => {
+          navigate(-1);
+        }}
+      />
       <VStack spacing={4}>
         <Avatar
           icon={<Icon as={PiPolygon} fontSize={28} />}
