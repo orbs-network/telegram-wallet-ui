@@ -19,7 +19,7 @@ export function Balance({
     <Stat textAlign="center">
       <StatLabel as="label">{label}</StatLabel>
       <StatNumber fontSize="4xl">
-        <Text as="span" color="gray.500">
+        <Text as="span" color="gray.500" fontWeight="normal">
           {primaryCurrencySymbol}
         </Text>
         {primaryAmount}

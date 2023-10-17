@@ -64,7 +64,10 @@ export function Root() {
               }
               EndTextSlot={
                 <Heading as="h3" variant="bodyTitle">
-                  $4.63
+                  <Text as="span" fontWeight="normal" color="gray.500">
+                    $
+                  </Text>
+                  4.63
                 </Heading>
               }
             />
