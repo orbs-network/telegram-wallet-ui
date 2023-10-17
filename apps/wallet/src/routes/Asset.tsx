@@ -17,7 +17,13 @@ export function Asset() {
       />
       <VStack spacing={4}>
         <AssetIcon asset="MATIC" />
-        <Balance currencySymbol="$" amount={4.63} label="MATIC" />
+        <Balance
+          primaryCurrencySymbol="$"
+          primaryAmount={4.63}
+          label="MATIC balance"
+          secondaryAmount={8.86888}
+          secondaryCurrencyCode="MATIC"
+        />
         <HStack justifyContent="center" alignItems="center" spacing={2}>
           <Link to="/deposit">
             <IconButtonWithLabel

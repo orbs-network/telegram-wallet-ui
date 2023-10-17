@@ -28,7 +28,11 @@ export function Root() {
   return (
     <Container size="sm" pt={4}>
       <VStack spacing={4}>
-        <Balance currencySymbol="$" amount={4.63} label="Total balance" />
+        <Balance
+          primaryCurrencySymbol="$"
+          primaryAmount={4.63}
+          label="Total balance"
+        />
         <HStack justifyContent="center" alignItems="center" spacing={2}>
           <Link to="/deposit">
             <IconButtonWithLabel
