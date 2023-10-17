@@ -1,5 +1,5 @@
 import { Avatar } from '@chakra-ui/react';
-import { Assets } from '../config';
+import { Assets } from '../../config';
 import { cryptoAssets } from './assets';
 
 type AssetIconProps = {

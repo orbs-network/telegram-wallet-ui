@@ -1,7 +1,7 @@
 import { Icon, IconProps } from '@chakra-ui/react';
 import { FaEthereum } from 'react-icons/fa';
 import { AiOutlineDollarCircle } from 'react-icons/ai';
-import { Assets } from '../config';
+import { Assets } from '../../config';
 
 export const Polygon = (props: IconProps) => (
   <Icon viewBox="0 0 38.4 33.5" {...props}>
