@@ -1,10 +1,10 @@
-import { Avatar, Container, HStack, Icon, VStack } from '@chakra-ui/react';
+import { Container, HStack, VStack } from '@chakra-ui/react';
 import { Balance, IconButtonWithLabel } from '@telegram-wallet-ui/twa-ui-kit';
 import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
 import { MdSwapHorizontalCircle } from 'react-icons/md';
-import { PiPolygon } from 'react-icons/pi';
 import { Link, useNavigate } from 'react-router-dom';
 import { BackButton } from '@twa-dev/sdk/react';
+import { AssetIcon } from '../components';
 
 export function Asset() {
   const navigate = useNavigate();
@@ -16,10 +16,7 @@ export function Asset() {
         }}
       />
       <VStack spacing={4}>
-        <Avatar
-          icon={<Icon as={PiPolygon} fontSize={28} />}
-          bgColor="#8347E6"
-        />
+        <AssetIcon asset="MATIC" />
         <Balance currencySymbol="$" amount={4.63} label="MATIC" />
         <HStack justifyContent="center" alignItems="center" spacing={2}>
           <Link to="/deposit">
