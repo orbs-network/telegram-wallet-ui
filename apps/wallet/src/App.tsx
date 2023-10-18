@@ -20,7 +20,7 @@ const router = createBrowserRouter([
     element: <Asset />,
   },
   {
-    path: 'buy',
+    path: 'deposit',
     element: <TransakDeposit walletAddress={account.address} />,
   },
 ]);
