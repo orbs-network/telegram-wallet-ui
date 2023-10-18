@@ -26,9 +26,9 @@ export function Asset() {
         {assetId && <CryptoAssetIcon asset={cryptoAsset} />}
         <Balance
           primaryCurrencySymbol="$"
-          primaryAmount={4.63}
+          primaryAmount="4.63"
           label="MATIC balance"
-          secondaryAmount={8.86888}
+          secondaryAmount="8.86888"
           secondaryCurrencyCode="MATIC"
         />
         <HStack justifyContent="center" alignItems="center" spacing={2}>

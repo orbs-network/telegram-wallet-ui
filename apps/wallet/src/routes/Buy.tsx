@@ -25,7 +25,10 @@ export const TransakDeposit = ({ walletAddress }: Props) => {
   const iframeRef = useRef<any>(null);
 
   useEffect(() => {
-    const handleMessage = (message) => {
+    const handleMessage = (message: {
+      source: any;
+      data: { event_id: string; data: any };
+    }) => {
       const transakIframe = iframeRef.current?.contentWindow;
 
       if (message.source !== transakIframe) return;

@@ -6,7 +6,7 @@ type BalanceProps = {
   primaryAmount: string;
   secondaryCurrencyCode?: string;
   secondaryAmount?: string;
-  isPrimaryCrypto: boolean;
+  isPrimaryCrypto?: boolean;
 };
 
 export function Balance({
