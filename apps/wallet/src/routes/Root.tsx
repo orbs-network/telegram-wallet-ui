@@ -27,13 +27,36 @@ import { useUserData } from '../hooks';
 import { networks } from '@defi.org/web3-candies';
 import { amountUi } from '../utils/conversion';
 import BN from 'bignumber.js';
+import { useFaucet } from '../hooks/useFaucet';
+import { erc20sDataProvider, web3Provider } from '../config';
+import { useEffect } from 'react';
+import { Permit2Provider } from '../lib/Permit2Provider';
+
+const TODO_TEMP_ERC20_REPLACE = '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23';
+
+const permit2Provider = new Permit2Provider(web3Provider, erc20sDataProvider);
+
+erc20sDataProvider.addErc20sData(TODO_TEMP_ERC20_REPLACE);
 
 export function Root() {
   const userData = useUserData();
+  const { mutate } = useFaucet();
+
+  useEffect(() => {
+    permit2Provider.pollPermit2Approvals();
+  }, []);
 
   return (
     <Container size="sm" pt={4}>
       <VStack spacing={4}>
+        <IconButtonWithLabel
+          onClick={() => {
+            mutate(TODO_TEMP_ERC20_REPLACE);
+          }}
+          Icon={BiSolidDownArrowCircle}
+          label="Faucet"
+        />
+        <Text>{web3Provider.account.address}</Text>
         <Balance
           primaryCurrencySymbol={networks.poly.native.symbol}
           primaryAmount={Number(
