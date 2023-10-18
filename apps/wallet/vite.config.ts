@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 export default defineConfig({
   cacheDir: '../../node_modules/.vite/wallet',
@@ -15,7 +16,12 @@ export default defineConfig({
     host: 'localhost',
   },
 
-  plugins: [react(), nxViteTsPaths()],
+  plugins: [
+    react(),
+    nxViteTsPaths(),
+    // Needed for signTypedData
+    nodePolyfills({ include: ['cluster'], globals: { global: true } }),
+  ],
 
   // Uncomment this if you are using workers.
   // worker: {

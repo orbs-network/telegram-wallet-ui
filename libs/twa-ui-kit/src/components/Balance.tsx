@@ -3,9 +3,10 @@ import { Stat, StatLabel, StatNumber, Text } from '@chakra-ui/react';
 type BalanceProps = {
   label: string;
   primaryCurrencySymbol: string;
-  primaryAmount: number;
+  primaryAmount: string;
   secondaryCurrencyCode?: string;
-  secondaryAmount?: number;
+  secondaryAmount?: string;
+  isPrimaryCrypto: boolean;
 };
 
 export function Balance({
@@ -14,16 +15,31 @@ export function Balance({
   primaryAmount,
   secondaryAmount,
   secondaryCurrencyCode,
+  isPrimaryCrypto,
 }: BalanceProps) {
-  return (
-    <Stat textAlign="center">
-      <StatLabel as="label">{label}</StatLabel>
-      <StatNumber fontSize="4xl">
+  let PrimaryAmount = (
+    <>
+      <Text as="span" color="gray.500" fontWeight="normal">
+        {primaryCurrencySymbol}
+      </Text>
+      {primaryAmount}
+    </>
+  );
+
+  if (isPrimaryCrypto) {
+    PrimaryAmount = (
+      <>
+        {primaryAmount}{' '}
         <Text as="span" color="gray.500" fontWeight="normal">
           {primaryCurrencySymbol}
         </Text>
-        {primaryAmount}
-      </StatNumber>
+      </>
+    );
+  }
+  return (
+    <Stat textAlign="center">
+      <StatLabel as="label">{label}</StatLabel>
+      <StatNumber fontSize="4xl">{PrimaryAmount}</StatNumber>
       <Text as="label" variant="hint">
         {secondaryAmount} {secondaryCurrencyCode}
       </Text>

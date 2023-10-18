@@ -23,15 +23,24 @@ import {
 import { MdSwapHorizontalCircle } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import { CryptoAssetIcon } from '../components';
+import { useUserData } from '../hooks';
+import { networks } from '@defi.org/web3-candies';
+import { amountUi } from '../utils/conversion';
+import BN from 'bignumber.js';
 
 export function Root() {
+  const userData = useUserData();
+
   return (
     <Container size="sm" pt={4}>
       <VStack spacing={4}>
         <Balance
-          primaryCurrencySymbol="$"
-          primaryAmount={4.63}
+          primaryCurrencySymbol={networks.poly.native.symbol}
+          primaryAmount={Number(
+            amountUi(networks.poly.native, BN(userData?.balance || '0'))
+          ).toFixed(3)}
           label="Total balance"
+          isPrimaryCrypto
         />
         <HStack justifyContent="center" alignItems="center" spacing={2}>
           <Link to="/deposit">
