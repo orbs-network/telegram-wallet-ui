@@ -21,7 +21,7 @@ const constructSrcUrl = (walletAddress: string) => {
   return `https://global-stg.transak.com/?apiKey=${apiKey}&${params.toString()}`;
 };
 
-export const TransakDeposit = ({ walletAddress }: Props) => {
+export const Buy = ({ walletAddress }: Props) => {
   const iframeRef = useRef<any>(null);
 
   useEffect(() => {

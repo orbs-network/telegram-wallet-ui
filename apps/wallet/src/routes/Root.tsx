@@ -34,6 +34,7 @@ export function Root() {
   return (
     <Container size="sm" pt={4}>
       <VStack spacing={4}>
+        {/* TODO: convert total assets amounts to USD and display */}
         <Balance
           primaryCurrencySymbol={networks.poly.native.symbol}
           primaryAmount={Number(

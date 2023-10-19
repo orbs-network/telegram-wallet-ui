@@ -1,10 +1,9 @@
 import { ChakraProvider } from '@chakra-ui/react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ErrorPage } from './ErrorPage';
-import { Root, Asset } from './routes';
+import { Root, Asset, Buy, SelectMethod } from './routes';
 import { theme } from '@telegram-wallet-ui/twa-ui-kit';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { TransakDeposit } from './routes/Buy';
 import { account } from './config';
 
 const queryClient = new QueryClient();
@@ -16,12 +15,16 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: 'asset/:assetId',
+    path: '/asset/:assetId',
     element: <Asset />,
   },
   {
-    path: 'deposit',
-    element: <TransakDeposit walletAddress={account.address} />,
+    path: '/deposit',
+    element: <SelectMethod />,
+  },
+  {
+    path: '/deposit/buy',
+    element: <Buy walletAddress={account.address} />,
   },
 ]);
 
