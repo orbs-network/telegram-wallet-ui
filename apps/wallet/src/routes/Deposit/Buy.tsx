@@ -1,8 +1,9 @@
 import { Container } from '@chakra-ui/react';
 import { useEffect, useRef } from 'react';
+import { ErrorPage } from '../../ErrorPage';
 
 type Props = {
-  walletAddress: string;
+  walletAddress: string | undefined | null;
 };
 
 const apiKey = '4b701a53-ac2f-425f-966d-f6483fe1fe77';
@@ -48,6 +49,8 @@ export const Buy = ({ walletAddress }: Props) => {
       window.removeEventListener('message', handleMessage);
     };
   }, []);
+
+  if (!walletAddress) return <ErrorPage message="Wallet not created." />;
 
   const src = constructSrcUrl(walletAddress);
   console.log('src :', src);

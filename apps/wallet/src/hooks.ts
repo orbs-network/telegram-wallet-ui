@@ -80,41 +80,48 @@ export const useUserData = () => {
   const { data: coins = [] } = useCoinsList();
 
   const updateBalances = useCallback(async () => {
-    console.log('Refreshing balances...');
-    const _userData: UserData = {
-      account,
-      balance: await web3Provider.balance(),
-      tokens: {},
-    };
+    try {
+      if (!account) throw new Error('updateBalances: No account');
 
-    if (coins.length === 0) return;
+      console.log('Refreshing balances...');
 
-    const balancePromises = coins
-      .filter((token) => token.symbol !== networks.poly.native.symbol)
-      .map(async (token) => {
-        const balance = await web3Provider.balanceOf(token.address);
-        const permit2Approval = await web3Provider.getAllowanceFor(
-          token.address
-        );
-        return {
+      const _userData: UserData = {
+        account,
+        balance: await web3Provider.balance(),
+        tokens: {},
+      };
+
+      if (coins.length === 0) return;
+
+      const balancePromises = coins
+        .filter((token) => token.symbol !== networks.poly.native.symbol)
+        .map(async (token) => {
+          const balance = await web3Provider.balanceOf(token.address);
+          const permit2Approval = await web3Provider.getAllowanceFor(
+            token.address
+          );
+          return {
+            ...token,
+            symbol: token.symbol.toLowerCase(),
+            balance,
+            permit2Approval,
+          };
+        });
+
+      const tokens = await Promise.all(balancePromises);
+
+      tokens.forEach((token) => {
+        _userData.tokens[token.symbol] = {
           ...token,
-          symbol: token.symbol.toLowerCase(),
-          balance,
-          permit2Approval,
+          balance: token.balance,
+          permit2Approval: token.permit2Approval,
         };
       });
 
-    const tokens = await Promise.all(balancePromises);
-
-    tokens.forEach((token) => {
-      _userData.tokens[token.symbol] = {
-        ...token,
-        balance: token.balance,
-        permit2Approval: token.permit2Approval,
-      };
-    });
-
-    setUserData(_userData);
+      setUserData(_userData);
+    } catch (e) {
+      console.error(e);
+    }
   }, [coins]);
 
   useInterval(updateBalances, 30000);

@@ -8,7 +8,7 @@ export const w3 = new web3(networks.poly.publicRpcUrl);
 
 const accountHolder = new AccountProvider(w3);
 
-export const account = accountHolder.account!;
+export const account = accountHolder.account;
 
 export const web3Provider = new Web3Provider(w3, account);
 

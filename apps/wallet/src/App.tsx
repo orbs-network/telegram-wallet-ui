@@ -24,7 +24,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/deposit/buy',
-    element: <Buy walletAddress={account.address} />,
+    element: <Buy walletAddress={account?.address} />,
   },
 ]);
 
