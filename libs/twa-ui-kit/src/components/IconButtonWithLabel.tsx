@@ -20,7 +20,7 @@ export function IconButtonWithLabel({
   return (
     <Button variant="icon" onClick={onClick}>
       <VStack>
-        <IconWrapper as={Icon} fontSize="2xl" color="inherit" />
+        <IconWrapper as={Icon} color="inherit" />
         <Text fontWeight="bold">{label}</Text>
       </VStack>
     </Button>

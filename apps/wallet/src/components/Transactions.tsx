@@ -42,11 +42,7 @@ export function Transactions({ transactions, cryptoAsset }: TransactionsProps) {
             break;
           }
           case 'deposit': {
-            StartIcon = (
-              <Avatar
-                icon={<Icon as={BiSolidDownArrowCircle} fontSize="2xl" />}
-              />
-            );
+            StartIcon = <Avatar icon={<Icon as={BiSolidDownArrowCircle} />} />;
             CardTitle = (
               <Heading as="h3" variant="bodyTitle">
                 Deposit
@@ -55,11 +51,7 @@ export function Transactions({ transactions, cryptoAsset }: TransactionsProps) {
             break;
           }
           case 'withdrawal': {
-            StartIcon = (
-              <Avatar
-                icon={<Icon as={BiSolidUpArrowCircle} fontSize="2xl" />}
-              />
-            );
+            StartIcon = <Avatar icon={<Icon as={BiSolidUpArrowCircle} />} />;
             CardTitle = (
               <Heading as="h3" variant="bodyTitle">
                 Withdrawal
@@ -68,11 +60,7 @@ export function Transactions({ transactions, cryptoAsset }: TransactionsProps) {
             break;
           }
           case 'trade': {
-            StartIcon = (
-              <Avatar
-                icon={<Icon as={MdSwapHorizontalCircle} fontSize="2xl" />}
-              />
-            );
+            StartIcon = <Avatar icon={<Icon as={MdSwapHorizontalCircle} />} />;
             CardTitle = (
               <Heading as="h3" variant="bodyTitle">
                 Trade

@@ -235,5 +235,10 @@ export const theme = extendTheme({
         }),
       },
     }),
+    Icon: defineStyleConfig({
+      baseStyle: {
+        fontSize: '2xl',
+      },
+    }),
   },
 });

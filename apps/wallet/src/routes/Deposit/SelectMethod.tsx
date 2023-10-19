@@ -35,7 +35,7 @@ export function SelectMethod() {
               <DataDisplayItem
                 StartIconSlot={
                   <Avatar
-                    icon={<Icon as={AiOutlineCreditCard} fontSize="2xl" />}
+                    icon={<Icon as={AiOutlineCreditCard} />}
                     bgColor={colors.button_color}
                   />
                 }
@@ -56,7 +56,7 @@ export function SelectMethod() {
               <DataDisplayItem
                 StartIconSlot={
                   <Avatar
-                    icon={<Icon as={RiApps2Line} fontSize="2xl" />}
+                    icon={<Icon as={RiApps2Line} />}
                     bgColor={colors.button_color}
                   />
                 }

@@ -111,7 +111,7 @@ export function DepositAddress() {
             colorScheme={isCopied ? 'green' : 'none'}
             leftIcon={isCopied ? <Icon as={BiCheck} /> : undefined}
           >
-            Copy
+            {isCopied ? 'Copied!' : 'Copy'}
           </Button>
           {isShareSupported && (
             <Button

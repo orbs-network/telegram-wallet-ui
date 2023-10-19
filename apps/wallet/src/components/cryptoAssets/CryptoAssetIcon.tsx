@@ -8,5 +8,5 @@ type CryptoAssetIconProps = {
 
 export function CryptoAssetIcon({ asset }: CryptoAssetIconProps) {
   const { Icon, color } = cryptoAssets[asset];
-  return <Avatar bgColor={color} icon={Icon} fontSize="2xl" />;
+  return <Avatar bgColor={color} icon={Icon} />;
 }

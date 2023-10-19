@@ -21,5 +21,5 @@ const styles = css`
 `;
 
 export function WalletSpinner() {
-  return <Icon css={styles} as={BiWallet} fontSize={120} />;
+  return <Icon css={styles} as={BiWallet} fontSize="9xl" />;
 }
