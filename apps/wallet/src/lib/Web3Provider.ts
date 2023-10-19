@@ -35,7 +35,7 @@ export class Web3Provider {
     return erc20('token', token);
   }
 
-  private async signAndSend<T = any>(
+  private async signAndSend<T = unknown>(
     txn: NonPayableTransactionObject<T>,
     to: string
   ) {
@@ -62,10 +62,7 @@ export class Web3Provider {
       data: txn.encodeABI(),
     });
 
-    debug('signed txn');
-
     await this.web3.eth.sendSignedTransaction(signed.rawTransaction!);
-    debug('signed txn2');
   }
 
   async transfer(token: string, to: string, amount: BNComparable) {
@@ -82,6 +79,8 @@ export class Web3Provider {
   }
 
   async getAllowanceFor(token: string) {
+    if (!this.account) throw new Error('getAllowanceFor: No account');
+
     const allowance = await this.wrapToken(token)
       .methods.allowance(this.account.address, permit2Address)
       .call();
@@ -89,6 +88,8 @@ export class Web3Provider {
   }
 
   async sign(data: PermitData) {
+    if (!this.account) throw new Error('sign: No account');
+
     const typedMessage: TypedMessage<MessageTypes> =
       _TypedDataEncoder.getPayload(data.domain, data.types, data.values);
 

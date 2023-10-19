@@ -1,11 +1,8 @@
 import {
-  Avatar,
   Box,
   Container,
-  Divider,
   HStack,
   Heading,
-  Icon,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -15,11 +12,7 @@ import {
   DataDisplayItem,
   IconButtonWithLabel,
 } from '@telegram-wallet-ui/twa-ui-kit';
-import {
-  BiPlus,
-  BiSolidDownArrowCircle,
-  BiSolidUpArrowCircle,
-} from 'react-icons/bi';
+import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
 import { MdSwapHorizontalCircle } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import { CryptoAssetIcon } from '../components';
@@ -51,14 +44,7 @@ export function Root() {
   return (
     <Container size="sm" pt={4}>
       <VStack spacing={4}>
-        {/* <IconButtonWithLabel
-          onClick={() => {
-            mutate(TODO_TEMP_ERC20_REPLACE);
-          }}
-          Icon={BiSolidDownArrowCircle}
-          label="Faucet"
-        /> */}
-        <Text>{web3Provider.account.address}</Text>
+        {/* TODO: convert total assets amounts to USD and display */}
         <Balance
           primaryCurrencySymbol={networks.poly.native.symbol}
           primaryAmount={Number(
@@ -102,22 +88,6 @@ export function Root() {
                     $
                   </Text>
                   4.63
-                </Heading>
-              }
-            />
-          </Card>
-        </Link>
-        <Divider variant="thick" width="80%" />
-        {/* TODO: wrap Link component with custom styling */}
-        <Link to="/assets" style={{ width: '100%' }}>
-          <Card>
-            <DataDisplayItem
-              StartIconSlot={
-                <Avatar icon={<Icon as={BiPlus} fontSize="3xl" />} />
-              }
-              StartTextSlot={
-                <Heading as="h3" variant="bodyTitle">
-                  Add more assets
                 </Heading>
               }
             />
