@@ -20,6 +20,14 @@ export function Transactions({ transactions, cryptoAsset }: TransactionsProps) {
     (a, b) => b.date.getTime() - a.date.getTime()
   );
 
+  if (sortedTxs.length === 0) {
+    return (
+      <Card>
+        <Text>No transactions</Text>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <Text variant="hint">TRANSACTION HISTORY</Text>
