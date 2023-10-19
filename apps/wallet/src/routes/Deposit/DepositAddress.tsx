@@ -4,7 +4,6 @@ import {
   Container,
   HStack,
   Icon,
-  Spinner,
   VStack,
   useToast,
 } from '@chakra-ui/react';
@@ -17,6 +16,7 @@ import { css } from '@emotion/react';
 import { useState } from 'react';
 import { MdIosShare } from 'react-icons/md';
 import { BiCheck } from 'react-icons/bi';
+import { WalletSpinner } from '../../components';
 
 const styles = {
   qr: css`
@@ -42,9 +42,11 @@ export function DepositAddress() {
 
   if (!userData?.account.address) {
     return (
-      <AbsoluteCenter>
-        <Spinner />
-      </AbsoluteCenter>
+      <Container size="sm" height="100vh" position="relative">
+        <AbsoluteCenter>
+          <WalletSpinner />
+        </AbsoluteCenter>
+      </Container>
     );
   }
 
