@@ -113,6 +113,7 @@ export const theme = extendTheme({
       baseStyle: {
         width: '100%',
         borderRadius: '0.875rem',
+        fontSize: '1rem',
       },
       variants: {
         primary: (props) => ({
@@ -138,6 +139,7 @@ export const theme = extendTheme({
               -0.07
             ),
           },
+          // This is ignored for some reason
           fontSize: '1rem',
         }),
         secondary: (props) => ({
