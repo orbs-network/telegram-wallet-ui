@@ -22,9 +22,12 @@ import type { NonPayableTransactionObject } from '@defi.org/web3-candies/dist/ab
 import Web3 from 'web3';
 import { estimateGasPrice } from '../utils/estimate';
 import { BNComparable } from '../types';
+import { getDebug } from './utils/debug';
+
+const debug = getDebug('Web3Provider');
 
 export class Web3Provider {
-  constructor(private web3: Web3, public account: Account | null) {
+  constructor(private web3: Web3, public account: Account) {
     setWeb3Instance(this.web3);
   }
 
@@ -36,28 +39,30 @@ export class Web3Provider {
     txn: NonPayableTransactionObject<T>,
     to: string
   ) {
-    if (!this.account) throw new Error('signAndSend: No account');
-
     const [nonce, price] = await Promise.all([
       this.web3.eth.getTransactionCount(this.account.address),
       estimateGasPrice(this.web3),
     ]);
 
+    const gas = (
+      (await txn.estimateGas({ from: this.account.address })) * 1.2
+    ).toFixed(0);
+
+    debug('nonce: %d, gas: %d', nonce, gas);
+
+    const gasMode = 'fast'; // TODO change to med
+
     const signed = await this.account.signTransaction({
-      // gas: (await txn.estimateGas()) * 1.2,
-      gas: 100_000,
-      maxFeePerGas: price['med'].max.toString(),
-      maxPriorityFeePerGas: price['med'].tip.toString(),
+      gas,
+      maxFeePerGas: price[gasMode].max.toString(),
+      maxPriorityFeePerGas: price[gasMode].tip.toString(),
       nonce: nonce,
       from: this.account.address,
       to,
       data: txn.encodeABI(),
     });
 
-    if (!signed.rawTransaction)
-      throw new Error('signAndSend: No raw transaction');
-
-    await this.web3.eth.sendSignedTransaction(signed.rawTransaction);
+    await this.web3.eth.sendSignedTransaction(signed.rawTransaction!);
   }
 
   async transfer(token: string, to: string, amount: BNComparable) {
@@ -97,14 +102,12 @@ export class Web3Provider {
   }
 
   async balanceOf(token: string) {
-    if (!this.account) throw new Error('balanceOf: No account');
-
-    return this.wrapToken(token).methods.balanceOf(this.account.address).call();
+    return BN(
+      await this.wrapToken(token).methods.balanceOf(this.account.address).call()
+    );
   }
 
   async balance() {
-    if (!this.account) throw new Error('balance: No account');
-
-    return this.web3.eth.getBalance(this.account.address);
+    return BN(await this.web3.eth.getBalance(this.account.address));
   }
 }

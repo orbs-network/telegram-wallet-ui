@@ -20,7 +20,9 @@ export const useCoinsList = () => {
     queryKey: ['useCoinsList'],
     queryFn: async () => {
       const data = await Fetcher.get<TokenListResponse>(
-        'https://raw.githubusercontent.com/viaprotocol/tokenlists/main/tokenlists/polygon.json'
+        import.meta.env.VITE_IS_MUMBAI === '1'
+          ? 'https://raw.githubusercontent.com/viaprotocol/tokenlists/main/tokenlists/mumbai.json'
+          : 'https://raw.githubusercontent.com/viaprotocol/tokenlists/main/tokenlists/polygon.json'
       );
 
       const parsed = data.map((coin): Token => {
@@ -113,7 +115,7 @@ export const useUserData = () => {
       tokens.forEach((token) => {
         _userData.tokens[token.symbol] = {
           ...token,
-          balance: token.balance,
+          balance: token.balance.toString(),
           permit2Approval: token.permit2Approval,
         };
       });

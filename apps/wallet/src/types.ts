@@ -20,7 +20,7 @@ export type TokenData = {
 
 export type UserData = {
   account: Account;
-  balance: string;
+  balance: BN;
   tokens: Record<string, TokenData>;
 };
 
