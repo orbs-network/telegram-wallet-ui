@@ -34,7 +34,6 @@ export function SelectMethod() {
             <Card>
               <DataDisplayItem
                 StartIconSlot={
-                  // TODO: replace with real asset icon - create asset icons in ui kit
                   <Avatar
                     icon={<Icon as={AiOutlineCreditCard} fontSize="2xl" />}
                     bgColor={colors.button_color}
@@ -55,7 +54,6 @@ export function SelectMethod() {
           <Card>
             <DataDisplayItem
               StartIconSlot={
-                // TODO: replace with real asset icon - create asset icons in ui kit
                 <Avatar
                   icon={<Icon as={RiApps2Line} fontSize="2xl" />}
                   bgColor={colors.button_color}

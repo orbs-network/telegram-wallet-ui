@@ -22,12 +22,12 @@ const constructSrcUrl = (walletAddress: string) => {
 };
 
 export const Buy = ({ walletAddress }: Props) => {
-  const iframeRef = useRef<any>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
     const handleMessage = (message: {
-      source: any;
-      data: { event_id: string; data: any };
+      source: unknown;
+      data: { event_id: string; data: unknown };
     }) => {
       const transakIframe = iframeRef.current?.contentWindow;
 
@@ -57,6 +57,7 @@ export const Buy = ({ walletAddress }: Props) => {
       <iframe
         ref={iframeRef}
         id="transakIframe"
+        title="Transak"
         src={src}
         allow="camera;microphone;payment"
         style={{ height: '100%', width: '100%', border: 'none' }}
