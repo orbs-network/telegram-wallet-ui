@@ -1,4 +1,4 @@
-import { Icon } from '@chakra-ui/react';
+import { AbsoluteCenter, Icon } from '@chakra-ui/react';
 import { css, keyframes } from '@emotion/react';
 import { BiWallet } from 'react-icons/bi';
 
@@ -21,5 +21,9 @@ const styles = css`
 `;
 
 export function WalletSpinner() {
-  return <Icon css={styles} as={BiWallet} fontSize="9xl" />;
+  return (
+    <AbsoluteCenter>
+      <Icon css={styles} as={BiWallet} fontSize="9xl" />
+    </AbsoluteCenter>
+  );
 }

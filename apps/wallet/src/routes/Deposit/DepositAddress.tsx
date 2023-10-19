@@ -1,5 +1,4 @@
 import {
-  AbsoluteCenter,
   Code,
   Container,
   HStack,
@@ -43,9 +42,7 @@ export function DepositAddress() {
   if (!userData?.account.address) {
     return (
       <Container size="sm" height="100vh" position="relative">
-        <AbsoluteCenter>
-          <WalletSpinner />
-        </AbsoluteCenter>
+        <WalletSpinner />
       </Container>
     );
   }
