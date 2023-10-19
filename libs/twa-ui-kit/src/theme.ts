@@ -160,6 +160,19 @@ export const theme = extendTheme({
             ),
           },
         }),
+        tertiary: (props) => ({
+          backgroundColor: '#DEE4EE',
+          color:
+            Twa.themeParams.button_color ||
+            mode(
+              tgColors.light.button_color,
+              tgColors.dark.button_color
+            )(props),
+          _hover: {
+            backgroundColor: adjustBrightness('#DEE4EE', -0.07),
+          },
+          fontSize: '1rem',
+        }),
         icon: (props) => ({
           padding: '0.5rem',
           width: 'auto',
