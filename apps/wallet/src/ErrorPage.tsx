@@ -1,7 +1,11 @@
 import { Container, Heading, VStack, Text } from '@chakra-ui/react';
 import { useRouteError } from 'react-router-dom';
 
-export function ErrorPage() {
+type ErrorPageProps = {
+  message?: string;
+};
+
+export function ErrorPage({ message }: ErrorPageProps) {
   const error = useRouteError();
   console.error(error);
 
@@ -13,7 +17,9 @@ export function ErrorPage() {
         </Heading>
         <Text as="p">Sorry, an unexpected error has occurred.</Text>
         <Text as="i">
-          {(error as { statusText: string }).statusText || (error as Error).message}
+          {(error as { statusText: string }).statusText ||
+            (error as Error).message ||
+            message}
         </Text>
       </VStack>
     </Container>

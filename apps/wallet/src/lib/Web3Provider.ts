@@ -1,27 +1,30 @@
-import { Account } from "web3-core";
-import BN from "bignumber.js";
+import { Account } from 'web3-core';
+import BN from 'bignumber.js';
 import {
   permit2Address,
   erc20,
   maxUint256,
   setWeb3Instance,
-} from "@defi.org/web3-candies";
+} from '@defi.org/web3-candies';
 
-import { _TypedDataEncoder } from "@ethersproject/hash";
+import { _TypedDataEncoder } from '@ethersproject/hash';
 
 import {
   signTypedData,
   SignTypedDataVersion,
   TypedMessage,
   MessageTypes,
-} from "@metamask/eth-sig-util";
+} from '@metamask/eth-sig-util';
 
-import { PermitData } from "@uniswap/permit2-sdk/dist/domain";
+import { PermitData } from '@uniswap/permit2-sdk/dist/domain';
 
-import type { NonPayableTransactionObject } from "@defi.org/web3-candies/dist/abi/types";
-import Web3 from "web3";
-import { estimateGasPrice } from "../utils/estimate";
-import { BNComparable } from "../types";
+import type { NonPayableTransactionObject } from '@defi.org/web3-candies/dist/abi/types';
+import Web3 from 'web3';
+import { estimateGasPrice } from '../utils/estimate';
+import { BNComparable } from '../types';
+import { getDebug } from './utils/debug';
+
+const debug = getDebug('Web3Provider');
 
 export class Web3Provider {
   constructor(private web3: Web3, public account: Account) {
@@ -29,10 +32,10 @@ export class Web3Provider {
   }
 
   private wrapToken(token: string) {
-    return erc20("token", token);
+    return erc20('token', token);
   }
 
-  private async signAndSend<T = any>(
+  private async signAndSend<T = unknown>(
     txn: NonPayableTransactionObject<T>,
     to: string
   ) {
@@ -41,11 +44,18 @@ export class Web3Provider {
       estimateGasPrice(this.web3),
     ]);
 
+    const gas = (
+      (await txn.estimateGas({ from: this.account.address })) * 1.2
+    ).toFixed(0);
+
+    debug('nonce: %d, gas: %d', nonce, gas);
+
+    const gasMode = 'fast'; // TODO change to med
+
     const signed = await this.account.signTransaction({
-      // gas: (await txn.estimateGas()) * 1.2,
-      gas: 100_000,
-      maxFeePerGas: price["med"].max.toString(),
-      maxPriorityFeePerGas: price["med"].tip.toString(),
+      gas,
+      maxFeePerGas: price[gasMode].max.toString(),
+      maxPriorityFeePerGas: price[gasMode].tip.toString(),
       nonce: nonce,
       from: this.account.address,
       to,
@@ -69,6 +79,8 @@ export class Web3Provider {
   }
 
   async getAllowanceFor(token: string) {
+    if (!this.account) throw new Error('getAllowanceFor: No account');
+
     const allowance = await this.wrapToken(token)
       .methods.allowance(this.account.address, permit2Address)
       .call();
@@ -76,22 +88,26 @@ export class Web3Provider {
   }
 
   async sign(data: PermitData) {
+    if (!this.account) throw new Error('sign: No account');
+
     const typedMessage: TypedMessage<MessageTypes> =
       _TypedDataEncoder.getPayload(data.domain, data.types, data.values);
 
     return signTypedData<SignTypedDataVersion.V4, MessageTypes>({
       // Remove the 0x prefix
-      privateKey: Buffer.from(this.account.privateKey.slice(2), "hex"),
+      privateKey: Buffer.from(this.account.privateKey.slice(2), 'hex'),
       data: typedMessage,
       version: SignTypedDataVersion.V4,
     });
   }
 
   async balanceOf(token: string) {
-    return this.wrapToken(token).methods.balanceOf(this.account.address).call();
+    return BN(
+      await this.wrapToken(token).methods.balanceOf(this.account.address).call()
+    );
   }
 
   async balance() {
-    return this.web3.eth.getBalance(this.account.address);
+    return BN(await this.web3.eth.getBalance(this.account.address));
   }
 }

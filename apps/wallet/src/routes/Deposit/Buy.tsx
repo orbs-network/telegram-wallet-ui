@@ -1,11 +1,11 @@
 import { Container } from '@chakra-ui/react';
 import { useEffect, useRef } from 'react';
+import { ErrorPage } from '../../ErrorPage';
+import { TRANSAK_STAGING_API_KEY } from '../../config';
 
 type Props = {
-  walletAddress: string;
+  walletAddress: string | undefined | null;
 };
-
-const apiKey = '4b701a53-ac2f-425f-966d-f6483fe1fe77';
 
 const constructSrcUrl = (walletAddress: string) => {
   const params = new URLSearchParams({
@@ -18,16 +18,16 @@ const constructSrcUrl = (walletAddress: string) => {
     walletAddress,
   });
 
-  return `https://global-stg.transak.com/?apiKey=${apiKey}&${params.toString()}`;
+  return `https://global-stg.transak.com/?apiKey=${TRANSAK_STAGING_API_KEY}&${params.toString()}`;
 };
 
-export const TransakDeposit = ({ walletAddress }: Props) => {
-  const iframeRef = useRef<any>(null);
+export const Buy = ({ walletAddress }: Props) => {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
     const handleMessage = (message: {
-      source: any;
-      data: { event_id: string; data: any };
+      source: unknown;
+      data: { event_id: string; data: unknown };
     }) => {
       const transakIframe = iframeRef.current?.contentWindow;
 
@@ -49,6 +49,8 @@ export const TransakDeposit = ({ walletAddress }: Props) => {
     };
   }, []);
 
+  if (!walletAddress) return <ErrorPage message="Wallet not created." />;
+
   const src = constructSrcUrl(walletAddress);
   console.log('src :', src);
 
@@ -57,6 +59,7 @@ export const TransakDeposit = ({ walletAddress }: Props) => {
       <iframe
         ref={iframeRef}
         id="transakIframe"
+        title="Transak"
         src={src}
         allow="camera;microphone;payment"
         style={{ height: '100%', width: '100%', border: 'none' }}
