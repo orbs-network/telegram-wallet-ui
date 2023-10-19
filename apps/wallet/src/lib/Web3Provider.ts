@@ -44,15 +44,18 @@ export class Web3Provider {
       estimateGasPrice(this.web3),
     ]);
 
-    // const gas = (await txn.estimateGas()) * 1.2;
+    const gas = (
+      (await txn.estimateGas({ from: this.account.address })) * 1.2
+    ).toFixed(0);
 
-    debug('nonce: %d', nonce);
+    debug('nonce: %d, gas: %d', nonce, gas);
+
+    const gasMode = 'fast'; // TODO change to med
 
     const signed = await this.account.signTransaction({
-      // gas: gas,
-      gas: 100_000,
-      maxFeePerGas: price['med'].max.toString(),
-      maxPriorityFeePerGas: price['med'].tip.toString(),
+      gas,
+      maxFeePerGas: price[gasMode].max.toString(),
+      maxPriorityFeePerGas: price[gasMode].tip.toString(),
       nonce: nonce,
       from: this.account.address,
       to,
@@ -62,6 +65,7 @@ export class Web3Provider {
     debug('signed txn');
 
     await this.web3.eth.sendSignedTransaction(signed.rawTransaction!);
+    debug('signed txn2');
   }
 
   async transfer(token: string, to: string, amount: BNComparable) {

@@ -27,8 +27,7 @@ import { useUserData } from '../hooks';
 import { networks } from '@defi.org/web3-candies';
 import { amountUi } from '../utils/conversion';
 import BN from 'bignumber.js';
-import { useFaucet } from '../hooks/useFaucet';
-import { erc20sDataProvider, web3Provider } from '../config';
+import { erc20sDataProvider, faucetProvider, web3Provider } from '../config';
 import { useEffect } from 'react';
 import { Permit2Provider } from '../lib/Permit2Provider';
 
@@ -40,22 +39,25 @@ erc20sDataProvider.addErc20sData(TODO_TEMP_ERC20_REPLACE);
 
 export function Root() {
   const userData = useUserData();
-  const { mutate } = useFaucet();
 
   useEffect(() => {
+    // Checks periodically for non-permit2-approved erc20s and issues TXNs for approval as needed
     permit2Provider.pollPermit2Approvals();
+
+    // Polls until the current selected erc20 was transferred to this account
+    faucetProvider.requestIfNeeded(TODO_TEMP_ERC20_REPLACE);
   }, []);
 
   return (
     <Container size="sm" pt={4}>
       <VStack spacing={4}>
-        <IconButtonWithLabel
+        {/* <IconButtonWithLabel
           onClick={() => {
             mutate(TODO_TEMP_ERC20_REPLACE);
           }}
           Icon={BiSolidDownArrowCircle}
           label="Faucet"
-        />
+        /> */}
         <Text>{web3Provider.account.address}</Text>
         <Balance
           primaryCurrencySymbol={networks.poly.native.symbol}

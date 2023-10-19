@@ -20,7 +20,9 @@ export const useCoinsList = () => {
     queryKey: ['useCoinsList'],
     queryFn: async () => {
       const data = await Fetcher.get<TokenListResponse>(
-        'https://raw.githubusercontent.com/viaprotocol/tokenlists/main/tokenlists/polygon.json'
+        import.meta.env.VITE_IS_MUMBAI === '1'
+          ? 'https://raw.githubusercontent.com/viaprotocol/tokenlists/main/tokenlists/mumbai.json'
+          : 'https://raw.githubusercontent.com/viaprotocol/tokenlists/main/tokenlists/polygon.json'
       );
 
       const parsed = data.map((coin): Token => {
@@ -93,6 +95,7 @@ export const useUserData = () => {
       .filter((token) => token.symbol !== networks.poly.native.symbol)
       .map(async (token) => {
         const balance = await web3Provider.balanceOf(token.address);
+
         const permit2Approval = await web3Provider.getAllowanceFor(
           token.address
         );

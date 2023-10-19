@@ -6,6 +6,7 @@ const debug = getDebug('Permit2Provider');
 
 export class Permit2Provider {
   private POLL_INTERVAL = 3000;
+  private isPolling = false;
 
   constructor(
     private web3Provider: Web3Provider,
@@ -13,10 +14,14 @@ export class Permit2Provider {
   ) {}
 
   async pollPermit2Approvals() {
+    if (this.isPolling) return;
+    this.isPolling = true;
+
     // eslint-disable-next-line no-constant-condition
     while (true) {
       if (!(await this.web3Provider.balance()).isZero()) {
         const erc20sData = this.erc20sDataProvider.readErc20sData();
+
         for (const erc20 of Object.keys(erc20sData).filter(
           (e) => !erc20sData[e].isApproved
         )) {
@@ -36,6 +41,7 @@ export class Permit2Provider {
       } else {
         debug('Native balance is zero, skipping');
       }
+
       debug('Sleeping');
       await sleep(this.POLL_INTERVAL);
     }

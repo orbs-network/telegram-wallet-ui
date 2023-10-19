@@ -4,6 +4,7 @@ import { networks } from '@defi.org/web3-candies';
 
 import { AccountProvider, LiquihubProvider, Web3Provider } from './lib';
 import { ERC20sDataProvider } from './lib/ERC20sDataProvider';
+import { FaucetProvider } from './lib/FaucetProvider';
 
 // export const w3 = new web3(networks.poly.publicRpcUrl);
 export const w3 = new web3(
@@ -23,3 +24,8 @@ export const liqHubProvider = new LiquihubProvider(web3Provider);
 export type CryptoAsset = 'MATIC' | 'ETH' | 'USDC';
 
 export const erc20sDataProvider = new ERC20sDataProvider();
+
+export const faucetProvider = new FaucetProvider(
+  import.meta.env.VITE_FAUCET_BACKEND_URL,
+  web3Provider
+);

@@ -37,6 +37,7 @@ export class FaucetProvider {
       'Checking erc20 balance for address %s',
       web3Provider.account.address
     );
+
     while ((await web3Provider.balanceOf(erc20Token)).isZero()) {
       if (this.currentErc20TokenPolled !== erc20Token) {
         debug('erc20 token changed, skipping');
