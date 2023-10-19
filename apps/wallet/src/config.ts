@@ -1,8 +1,9 @@
 import web3 from 'web3';
-
 import { networks } from '@defi.org/web3-candies';
-
 import { AccountProvider, LiquihubProvider, Web3Provider } from './lib';
+
+export const TRANSAK_STAGING_API_KEY = import.meta.env
+  .VITE_TRANSAK_STAGING_API_KEY;
 
 export const w3 = new web3(networks.poly.publicRpcUrl);
 

@@ -1,12 +1,11 @@
 import { Container } from '@chakra-ui/react';
 import { useEffect, useRef } from 'react';
 import { ErrorPage } from '../../ErrorPage';
+import { TRANSAK_STAGING_API_KEY } from '../../config';
 
 type Props = {
   walletAddress: string | undefined | null;
 };
-
-const apiKey = '4b701a53-ac2f-425f-966d-f6483fe1fe77';
 
 const constructSrcUrl = (walletAddress: string) => {
   const params = new URLSearchParams({
@@ -19,7 +18,7 @@ const constructSrcUrl = (walletAddress: string) => {
     walletAddress,
   });
 
-  return `https://global-stg.transak.com/?apiKey=${apiKey}&${params.toString()}`;
+  return `https://global-stg.transak.com/?apiKey=${TRANSAK_STAGING_API_KEY}&${params.toString()}`;
 };
 
 export const Buy = ({ walletAddress }: Props) => {
