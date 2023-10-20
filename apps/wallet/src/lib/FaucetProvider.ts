@@ -14,6 +14,8 @@ export class FaucetProvider {
   }
 
   private async requestFromFaucet(erc20Token: string) {
+    if (!web3Provider.account) throw new Error('No account');
+
     debug('Requesting from faucet');
     await AuthenticatedTelegramFetcher.post(`${this.faucetUrl}/topUp`, {
       toAddress: web3Provider.account.address,
@@ -22,6 +24,8 @@ export class FaucetProvider {
   }
 
   async requestIfNeeded(erc20Token: string) {
+    if (!web3Provider.account) throw new Error('No account');
+
     this.currentErc20TokenPolled = erc20Token;
 
     debug(

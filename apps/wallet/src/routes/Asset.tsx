@@ -1,19 +1,37 @@
-import { Container, HStack, VStack } from '@chakra-ui/react';
+import { Avatar, Container, HStack, VStack } from '@chakra-ui/react';
 import { Balance, IconButtonWithLabel } from '@telegram-wallet-ui/twa-ui-kit';
 import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
 import { MdSwapHorizontalCircle } from 'react-icons/md';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { BackButton } from '@twa-dev/sdk/react';
-import { CryptoAssetIcon, Transactions } from '../components';
+import { Transactions, WalletSpinner } from '../components';
 import { mockTransactions } from '../mocks/transactions';
 import { CryptoAsset } from '../config';
+import { useUserData } from '../hooks';
+
+function Loader() {
+  return (
+    <Container size="sm" height="100vh" position="relative">
+      <WalletSpinner />
+    </Container>
+  );
+}
 
 export function Asset() {
   const navigate = useNavigate();
   const { assetId } = useParams<{ assetId: CryptoAsset }>();
-  const cryptoAsset = assetId
-    ? (assetId.toUpperCase() as CryptoAsset)
-    : 'MATIC';
+
+  const userData = useUserData();
+
+  if (!assetId) {
+    return <Loader />;
+  }
+
+  const tokenData = userData?.tokens[assetId];
+
+  if (!tokenData) {
+    return <Loader />;
+  }
 
   return (
     <Container size="sm" pt={4}>
@@ -23,13 +41,12 @@ export function Asset() {
         }}
       />
       <VStack spacing={4}>
-        {assetId && <CryptoAssetIcon asset={cryptoAsset} />}
+        {assetId && <Avatar name={assetId} />}
         <Balance
-          primaryCurrencySymbol="$"
-          primaryAmount="4.63"
-          label="MATIC balance"
-          secondaryAmount="8.86888"
-          secondaryCurrencyCode="MATIC"
+          primaryCurrencySymbol={tokenData?.symbol.toUpperCase()}
+          primaryAmount={tokenData.balance}
+          label={`${tokenData.name} balance`}
+          isPrimaryCrypto
         />
         <HStack justifyContent="center" alignItems="center" spacing={2}>
           <Link to="/deposit">
@@ -45,10 +62,7 @@ export function Asset() {
             <IconButtonWithLabel Icon={MdSwapHorizontalCircle} label="Trade" />
           </Link>
         </HStack>
-        <Transactions
-          transactions={mockTransactions}
-          cryptoAsset={cryptoAsset}
-        />
+        <Transactions transactions={mockTransactions} cryptoAsset={assetId} />
       </VStack>
     </Container>
   );

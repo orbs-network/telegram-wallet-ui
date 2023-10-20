@@ -35,7 +35,7 @@ export function SelectMethod() {
               <DataDisplayItem
                 StartIconSlot={
                   <Avatar
-                    icon={<Icon as={AiOutlineCreditCard} fontSize="2xl" />}
+                    icon={<Icon as={AiOutlineCreditCard} />}
                     bgColor={colors.button_color}
                   />
                 }
@@ -51,25 +51,27 @@ export function SelectMethod() {
               />
             </Card>
           </Link>
-          <Card>
-            <DataDisplayItem
-              StartIconSlot={
-                <Avatar
-                  icon={<Icon as={RiApps2Line} fontSize="2xl" />}
-                  bgColor={colors.button_color}
-                />
-              }
-              StartTextSlot={
-                <Box>
-                  <Heading as="h3" variant="bodyTitle">
-                    External Wallet
-                  </Heading>
-                  <Text variant="hint">Receive from external wallet</Text>
-                </Box>
-              }
-              EndIconSlot={<Icon as={BiChevronRight} fontSize="4xl" />}
-            />
-          </Card>
+          <Link to="/deposit/crypto">
+            <Card>
+              <DataDisplayItem
+                StartIconSlot={
+                  <Avatar
+                    icon={<Icon as={RiApps2Line} />}
+                    bgColor={colors.button_color}
+                  />
+                }
+                StartTextSlot={
+                  <Box>
+                    <Heading as="h3" variant="bodyTitle">
+                      External Wallet
+                    </Heading>
+                    <Text variant="hint">Receive from external wallet</Text>
+                  </Box>
+                }
+                EndIconSlot={<Icon as={BiChevronRight} fontSize="4xl" />}
+              />
+            </Card>
+          </Link>
         </VStack>
       </VStack>
     </Container>

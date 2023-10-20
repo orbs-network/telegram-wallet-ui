@@ -4,7 +4,7 @@ import { ErrorPage } from './ErrorPage';
 import { Root, Asset, Buy, SelectMethod } from './routes';
 import { theme } from '@telegram-wallet-ui/twa-ui-kit';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { account } from './config';
+import { DepositAddress } from './routes/Deposit/DepositAddress';
 
 const queryClient = new QueryClient();
 
@@ -24,7 +24,11 @@ const router = createBrowserRouter([
   },
   {
     path: '/deposit/buy',
-    element: <Buy walletAddress={account?.address} />,
+    element: <Buy />,
+  },
+  {
+    path: '/deposit/crypto',
+    element: <DepositAddress />,
   },
 ]);
 

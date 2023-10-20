@@ -4,17 +4,13 @@ import {
 } from '@chakra-ui/react';
 
 type ButtonProps = ChakraButtonProps & {
-  variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary' | 'tertiary';
   children: React.ReactNode;
 };
 
-export function Button({
-  children,
-  variant = 'primary',
-  ...rest
-}: ButtonProps) {
+export function Button({ children, ...rest }: ButtonProps) {
   return (
-    <ChakraButton {...rest} variant={variant}>
+    <ChakraButton fontSize="1rem" {...rest}>
       {children}
     </ChakraButton>
   );

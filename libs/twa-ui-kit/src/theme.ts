@@ -113,6 +113,7 @@ export const theme = extendTheme({
       baseStyle: {
         width: '100%',
         borderRadius: '0.875rem',
+        fontSize: '1rem',
       },
       variants: {
         primary: (props) => ({
@@ -138,6 +139,7 @@ export const theme = extendTheme({
               -0.07
             ),
           },
+          // This is ignored for some reason
           fontSize: '1rem',
         }),
         secondary: (props) => ({
@@ -159,6 +161,19 @@ export const theme = extendTheme({
               -0.1
             ),
           },
+        }),
+        tertiary: (props) => ({
+          backgroundColor: '#DEE4EE',
+          color:
+            Twa.themeParams.button_color ||
+            mode(
+              tgColors.light.button_color,
+              tgColors.dark.button_color
+            )(props),
+          _hover: {
+            backgroundColor: adjustBrightness('#DEE4EE', -0.07),
+          },
+          fontSize: '1rem',
         }),
         icon: (props) => ({
           padding: '0.5rem',
@@ -218,6 +233,11 @@ export const theme = extendTheme({
             mode(tgColors.light.bg_color, tgColors.dark.bg_color)(props),
           borderRadius: 6,
         }),
+      },
+    }),
+    Icon: defineStyleConfig({
+      baseStyle: {
+        fontSize: '2xl',
       },
     }),
   },

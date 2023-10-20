@@ -27,7 +27,7 @@ import { getDebug } from './utils/debug';
 const debug = getDebug('Web3Provider');
 
 export class Web3Provider {
-  constructor(private web3: Web3, public account: Account) {
+  constructor(private web3: Web3, public account: Account | null) {
     setWeb3Instance(this.web3);
   }
 
@@ -39,6 +39,8 @@ export class Web3Provider {
     txn: NonPayableTransactionObject<T>,
     to: string
   ) {
+    if (!this.account) throw new Error('signAndSend: No account');
+
     const [nonce, price] = await Promise.all([
       this.web3.eth.getTransactionCount(this.account.address),
       estimateGasPrice(this.web3),
@@ -102,12 +104,16 @@ export class Web3Provider {
   }
 
   async balanceOf(token: string) {
+    if (!this.account) throw new Error('balanceOf: No account');
+
     return BN(
       await this.wrapToken(token).methods.balanceOf(this.account.address).call()
     );
   }
 
   async balance() {
+    if (!this.account) throw new Error('balance: No account');
+
     return BN(await this.web3.eth.getBalance(this.account.address));
   }
 }

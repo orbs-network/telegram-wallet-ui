@@ -1,33 +1,36 @@
 import { Container } from '@chakra-ui/react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ErrorPage } from '../../ErrorPage';
-import { TRANSAK_STAGING_API_KEY } from '../../config';
+import { TRANSAK_STAGING_API_KEY, account } from '../../config';
+import { Transak } from './transak/constants';
+import { MainButton } from '@twa-dev/sdk/react';
+import { useNavigate } from 'react-router-dom';
 
-type Props = {
-  walletAddress: string | undefined | null;
-};
+const walletAddress = account?.address;
 
 const constructSrcUrl = (walletAddress: string) => {
   const params = new URLSearchParams({
     network: 'polygon',
-    cryptoCurrencyCode: 'usdc',
     fiatCurrency: 'USD',
-    // defaultFiatAmount: "100",
+    defaultFiatAmount: '30',
     hideMenu: 'true',
     disableWalletAddressForm: 'true',
     walletAddress,
+    defaultCryptoCurrency: 'USDC',
   });
 
   return `https://global-stg.transak.com/?apiKey=${TRANSAK_STAGING_API_KEY}&${params.toString()}`;
 };
 
-export const Buy = ({ walletAddress }: Props) => {
+export const Buy = () => {
+  const [showDoneButton, setShowDoneButton] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleMessage = (message: {
       source: unknown;
-      data: { event_id: string; data: unknown };
+      data: { event_id: string; data: { id?: string; status?: string } };
     }) => {
       const transakIframe = iframeRef.current?.contentWindow;
 
@@ -36,8 +39,24 @@ export const Buy = ({ walletAddress }: Props) => {
       console.log('Event ID: ', message?.data?.event_id);
       console.log('Data: ', message?.data?.data);
 
-      if (message?.data?.event_id === 'TRANSAK_ORDER_SUCCESSFUL') {
-        console.log('Order Data: ', message?.data?.data);
+      if (
+        message?.data?.event_id === Transak.Events.TRANSAK_ORDER_CREATED &&
+        message.data.data.id
+      ) {
+        localStorage.setItem('transakOrderId', message.data.data.id);
+      }
+
+      switch (message?.data?.data.status) {
+        case Transak.OrderStatus.onRamp.COMPLETED:
+        case Transak.OrderStatus.onRamp.CANCELLED:
+        case Transak.OrderStatus.onRamp.FAILED:
+        case Transak.OrderStatus.onRamp.REFUNDED:
+        case Transak.OrderStatus.onRamp.EXPIRED:
+          localStorage.removeItem('transakOrderId');
+          setShowDoneButton(true);
+          break;
+        default:
+          return;
       }
     };
 
@@ -52,7 +71,6 @@ export const Buy = ({ walletAddress }: Props) => {
   if (!walletAddress) return <ErrorPage message="Wallet not created." />;
 
   const src = constructSrcUrl(walletAddress);
-  console.log('src :', src);
 
   return (
     <Container size="sm" height="100vh">
@@ -64,6 +82,9 @@ export const Buy = ({ walletAddress }: Props) => {
         allow="camera;microphone;payment"
         style={{ height: '100%', width: '100%', border: 'none' }}
       ></iframe>
+      {showDoneButton && (
+        <MainButton text="Done" onClick={() => navigate('/')} />
+      )}
     </Container>
   );
 };
