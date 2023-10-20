@@ -1,11 +1,12 @@
-import { convertDecimals, parsebn, TokenData } from "@defi.org/web3-candies";
-import BN from "bignumber.js";
+import { convertDecimals, parsebn, TokenData } from '@defi.org/web3-candies';
+import BN from 'bignumber.js';
+import { BNComparable } from '../types';
 
-export const amountBN = (token: TokenData | undefined, amount: string) =>
+export const amountBN = (token: TokenData | undefined, amount: BNComparable) =>
   parsebn(amount).times(BN(10).pow(token?.decimals || 0));
 
 export const amountUi = (token: TokenData | undefined, amount: BN) => {
-  if (!token) return "";
+  if (!token) return '';
   const percision = BN(10).pow(token?.decimals || 0);
   return amount.times(percision).idiv(percision).div(percision).toFormat();
 };
