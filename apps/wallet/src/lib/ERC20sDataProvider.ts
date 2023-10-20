@@ -24,4 +24,8 @@ export class ERC20sDataProvider {
 
     localStorage.setItem('erc20s', JSON.stringify(erc20sData));
   }
+
+  isApproved(erc20: string) {
+    return !!this.readErc20sData()[erc20]?.isApproved;
+  }
 }
