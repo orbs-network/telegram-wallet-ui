@@ -1,7 +1,15 @@
 export class Fetcher {
+  static _handleResponse<T>(res: Response) {
+    if (res.ok) {
+      return res.json() as Promise<T>;
+    }
+
+    throw new Error(res.statusText);
+  }
+
   static async get<T = unknown>(url: string): Promise<T> {
     const res = await fetch(url);
-    return res.json() as Promise<T>;
+    return this._handleResponse<T>(res);
   }
 
   static async post<T = unknown>(url: string, body: any): Promise<T> {
@@ -13,7 +21,7 @@ export class Fetcher {
       body: JSON.stringify(body),
     });
 
-    return res.json() as Promise<T>;
+    return this._handleResponse<T>(res);
   }
 }
 
