@@ -1,4 +1,5 @@
 import { useUserData } from '../hooks';
+import BN from 'bignumber.js';
 import { Link } from 'react-router-dom';
 import { Heading, Box, Text, Avatar, Spinner } from '@chakra-ui/react';
 import { DataDisplayItem, Card } from '@telegram-wallet-ui/twa-ui-kit';
@@ -10,15 +11,13 @@ export function TokenBalances() {
     return <Spinner />;
   }
 
-  // TODO: filter out 0 balance tokens
-  const tokenBalances = Object.values(userData.tokens);
+  // filter out zero balances and at least show usdt
+  const tokenBalances = Object.values(userData.tokens).filter(
+    (token) => token.symbol === 'usdt' || !BN(token.balance).eq(0)
+  );
 
   return tokenBalances.map((token) => (
-    <Link
-      key={token.symbol}
-      to={`/asset/${token.symbol}`}
-      style={{ width: '100%' }}
-    >
+    <Link key={token.symbol} to={`/asset/${token.symbol}`}>
       <Card>
         <DataDisplayItem
           StartIconSlot={

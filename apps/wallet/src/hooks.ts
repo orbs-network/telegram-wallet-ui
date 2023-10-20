@@ -81,6 +81,8 @@ export const useUserData = () => {
 
   const { data: coins = [] } = useCoinsList();
 
+  // TODO: this probably should be thrown into a react-query so results are
+  // cached and we don't have to wait for the balances to load on every page
   const updateBalances = useCallback(async () => {
     try {
       if (!account) throw new Error('updateBalances: No account');
