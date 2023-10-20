@@ -27,7 +27,7 @@ import { getDebug } from './utils/debug';
 const debug = getDebug('Web3Provider');
 
 export class Web3Provider {
-  constructor(private web3: Web3, public account: Account | null) {
+  constructor(private web3: Web3, public account: Account) {
     setWeb3Instance(this.web3);
   }
 
