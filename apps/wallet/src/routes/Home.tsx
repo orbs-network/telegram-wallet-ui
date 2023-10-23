@@ -1,7 +1,6 @@
 import { Container, HStack, VStack } from '@chakra-ui/react';
 import { Balance, IconButtonWithLabel } from '@telegram-wallet-ui/twa-ui-kit';
 import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
-import { MdSwapHorizontalCircle } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import { TokenBalances } from '../components';
 import { useUserData } from '../hooks';
@@ -11,6 +10,7 @@ import BN from 'bignumber.js';
 import { erc20sDataProvider, faucetProvider, web3Provider } from '../config';
 import { useEffect } from 'react';
 import { Permit2Provider } from '../lib/Permit2Provider';
+import { MdSwapVerticalCircle } from 'react-icons/md';
 
 const TODO_TEMP_ERC20_REPLACE = '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23';
 
@@ -52,7 +52,7 @@ export function Home() {
             <IconButtonWithLabel Icon={BiSolidUpArrowCircle} label="Withdraw" />
           </Link>
           <Link to="/trade">
-            <IconButtonWithLabel Icon={MdSwapHorizontalCircle} label="Trade" />
+            <IconButtonWithLabel Icon={MdSwapVerticalCircle} label="Trade" />
           </Link>
         </HStack>
         <TokenBalances />

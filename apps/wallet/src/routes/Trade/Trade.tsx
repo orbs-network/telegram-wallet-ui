@@ -10,7 +10,7 @@ import { BackButton } from '@twa-dev/sdk/react';
 import { useNavigate } from 'react-router-dom';
 import { useUserData } from '../../hooks';
 import { useState } from 'react';
-import { MdSwapHorizontalCircle } from 'react-icons/md';
+import { MdSwapVerticalCircle } from 'react-icons/md';
 
 export function Trade() {
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ export function Trade() {
         </HStack>
         <IconButton
           aria-label="Switch"
-          icon={<Icon as={MdSwapHorizontalCircle} />}
+          icon={<Icon as={MdSwapVerticalCircle} />}
           onClick={() => {
             const temp = primaryToken;
             setPrimaryToken(secondaryToken);
