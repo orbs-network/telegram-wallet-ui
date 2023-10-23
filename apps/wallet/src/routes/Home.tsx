@@ -18,7 +18,7 @@ const permit2Provider = new Permit2Provider(web3Provider, erc20sDataProvider);
 
 erc20sDataProvider.addErc20sData(TODO_TEMP_ERC20_REPLACE);
 
-export function Root() {
+export function Home() {
   const userData = useUserData();
 
   useEffect(() => {

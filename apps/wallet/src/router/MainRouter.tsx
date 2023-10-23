@@ -1,15 +1,19 @@
 import { RouteObject } from 'react-router-dom';
 import { AnimatedRouter } from './AnimatedRouter';
-import { Asset } from '../routes/Asset';
-import { Buy, SelectMethod } from '../routes/Deposit';
-import { DepositAddress } from '../routes/Deposit/DepositAddress';
-import { TempUtils } from '../routes/Deposit/TempUtils';
-import { Root } from '../routes/Root';
+import {
+  Asset,
+  Buy,
+  SelectMethod,
+  DepositAddress,
+  TempUtils,
+  Home,
+  Trade,
+} from '../routes';
 
 const routes: RouteObject[] = [
   {
     path: '/',
-    element: <Root />,
+    element: <Home />,
   },
   {
     path: '/deposit',
@@ -30,6 +34,10 @@ const routes: RouteObject[] = [
   {
     path: '/asset/:assetId',
     element: <Asset />,
+  },
+  {
+    path: '/trade',
+    element: <Trade />,
   },
 ];
 
