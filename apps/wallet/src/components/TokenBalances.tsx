@@ -16,26 +16,30 @@ export function TokenBalances() {
     (token) => token.symbol === 'usdt' || !BN(token.balance).eq(0)
   );
 
-  return tokenBalances.map((token) => (
-    <Link key={token.symbol} to={`/asset/${token.symbol}`}>
-      <Card>
-        <DataDisplayItem
-          StartIconSlot={
-            // TODO: replace with real asset icon
-            <Avatar name={token.symbol} />
-          }
-          StartTextSlot={
-            <Box>
-              <Heading as="h3" variant="bodyTitle">
-                {token.name}
-              </Heading>
-              <Text variant="hint">
-                {token.balance} {token.symbol.toUpperCase()}
-              </Text>
-            </Box>
-          }
-        />
-      </Card>
-    </Link>
-  ));
+  return (
+    <>
+      {tokenBalances.map((token) => (
+        <Link key={token.symbol} to={`/asset/${token.symbol}`}>
+          <Card>
+            <DataDisplayItem
+              StartIconSlot={
+                // TODO: replace with real asset icon
+                <Avatar name={token.symbol} />
+              }
+              StartTextSlot={
+                <Box>
+                  <Heading as="h3" variant="bodyTitle">
+                    {token.name}
+                  </Heading>
+                  <Text variant="hint">
+                    {token.balance} {token.symbol.toUpperCase()}
+                  </Text>
+                </Box>
+              }
+            />
+          </Card>
+        </Link>
+      ))}
+    </>
+  );
 }
