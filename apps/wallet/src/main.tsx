@@ -1,5 +1,6 @@
 import { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
+import {BrowserRouter as Router} from 'react-router-dom';
 
 import { App } from './App';
 
@@ -8,6 +9,9 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   // <StrictMode>
+  <Router>
     <App />
+  </Router>
+
   // </StrictMode>
 );
