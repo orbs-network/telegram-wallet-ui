@@ -146,6 +146,8 @@ export const AnimatedRoute = (props: { children: ReactNode }) => {
 
 const AnimatedRouteContainer = styled('div')({
   backgroundColor: colors.secondary_bg_color,
+  paddingBottom: 50,
+  overflowY:'auto'
 });
 
 export { AnimatedRouter, useAnimatedRouterContext };

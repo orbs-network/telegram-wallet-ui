@@ -5,31 +5,45 @@ import { Buy, SelectMethod } from '../routes/Deposit';
 import { DepositAddress } from '../routes/Deposit/DepositAddress';
 import { TempUtils } from '../routes/Deposit/TempUtils';
 import { Root } from '../routes/Root';
+import { Withdraw, WithdrawAddress, WithdrawAmount } from '../routes';
+import { ROUTES } from './routes';
 
 const routes: RouteObject[] = [
   {
-    path: '/',
+    path: ROUTES.root,
     element: <Root />,
   },
   {
-    path: '/deposit',
+    path: ROUTES.deposit,
     element: <SelectMethod />,
   },
   {
-    path: '/deposit/buy',
+    path: ROUTES.depositBuy,
     element: <Buy />,
   },
   {
-    path: '/deposit/crypto',
+    path: ROUTES.depositCrypto,
     element: <DepositAddress />,
   },
   {
-    path: '/tempUtils',
+    path: ROUTES.tempUtils,
     element: <TempUtils />,
   },
   {
-    path: '/asset/:assetId',
+    path: ROUTES.asset,
     element: <Asset />,
+  },
+  {
+    path: ROUTES.withdraw,
+    element: <Withdraw />,
+  },
+  {
+    path: ROUTES.withdrawAddress,
+    element: <WithdrawAddress />,
+  },
+  {
+    path: ROUTES.withdrawAmount,
+    element: <WithdrawAmount />,
   },
 ];
 

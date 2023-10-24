@@ -5,6 +5,8 @@ type DataDisplayItemProps = {
   EndTextSlot?: React.ReactNode;
   StartIconSlot?: React.ReactNode;
   EndIconSlot?: React.ReactNode;
+  onClick?: () => void;
+  className?: string;
 };
 
 export function DataDisplayItem({
@@ -12,9 +14,17 @@ export function DataDisplayItem({
   StartTextSlot,
   EndTextSlot,
   EndIconSlot,
+  onClick,
+  className = '',
 }: DataDisplayItemProps) {
   return (
-    <HStack justifyContent="space-between" alignItems="center" width="100%">
+    <HStack
+      className={className}
+      justifyContent="space-between"
+      alignItems="center"
+      width="100%"
+      onClick={onClick}
+    >
       <HStack spacing={4} alignItems="center">
         {StartIconSlot}
         {StartTextSlot}

@@ -96,3 +96,6 @@ export type Transaction = {
   type: TransactionType;
   asset: CryptoAsset;
 };
+
+
+export type URLParams = { assetId: string, recipient: string, amount: string };

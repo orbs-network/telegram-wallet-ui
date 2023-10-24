@@ -1,18 +1,29 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { erc20s, zeroAddress, networks } from '@defi.org/web3-candies';
 import { useQuery } from '@tanstack/react-query';
 import { Token, TokenListResponse, UserData } from './types';
 import { fetchLatestPrice } from './utils/fetchLatestPrice';
 
 import { account, web3Provider } from './config';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Fetcher } from './utils/fetcher';
 
 export const useFetchLatestPrice = (coin?: string) => {
   return useQuery({
-    queryKey: [coin],
+    queryKey: ['useFetchLatestPrice', coin],
     queryFn: () => fetchLatestPrice(coin ?? ''),
     enabled: !!coin,
   });
+};
+
+export const useMultiplyPriceByAmount = (coin?: string, amount?: number) => {
+  const { data: price } = useFetchLatestPrice(coin);
+
+  return useMemo(() => {
+    if (!amount || !price) return '0';
+
+    return amount * price;
+  }, [amount, price]);
 };
 
 export const useCoinsList = () => {
@@ -56,6 +67,28 @@ export const useCoinsList = () => {
         .slice(0, 10);
     },
   });
+};
+
+export const useTokenBalanceQuery = (tokenAddress: string) => {
+  return useQuery({
+    queryKey: ['useTokenBalanceQuery', tokenAddress],
+    queryFn: async () => {
+      const result = await web3Provider.balanceOf(tokenAddress);
+
+      return result.toString() || '0';
+    },
+    enabled: !!tokenAddress,
+    refetchInterval: 20_000,
+  });
+};
+
+export const useGetTokenFromList = (tokenAddress?: string) => {
+  const { data: tokens, dataUpdatedAt } = useCoinsList();
+
+  return useMemo(
+    () => tokens?.find((it) => it.address === tokenAddress),
+    [dataUpdatedAt, tokenAddress]
+  );
 };
 
 export const useInterval = (callback: VoidFunction, delay: number | null) => {
