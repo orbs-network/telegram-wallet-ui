@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Token, TokenListResponse, UserData } from './types';
 import { fetchLatestPrice } from './utils/fetchLatestPrice';
 
-import { account, web3Provider } from './config';
+import { account, isMumbai, web3Provider } from './config';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Fetcher } from './utils/fetcher';
 
@@ -20,7 +20,7 @@ export const useCoinsList = () => {
     queryKey: ['useCoinsList'],
     queryFn: async () => {
       const data = await Fetcher.get<TokenListResponse>(
-        import.meta.env.VITE_IS_MUMBAI === '1'
+        isMumbai
           ? 'https://raw.githubusercontent.com/viaprotocol/tokenlists/main/tokenlists/mumbai.json'
           : 'https://raw.githubusercontent.com/viaprotocol/tokenlists/main/tokenlists/polygon.json'
       );
@@ -77,63 +77,115 @@ export const useInterval = (callback: VoidFunction, delay: number | null) => {
 };
 
 export const useUserData = () => {
-  const [userData, setUserData] = useState<UserData | null>(null);
-
   const { data: coins = [] } = useCoinsList();
 
-  // TODO: this probably should be thrown into a react-query so results are
-  // cached and we don't have to wait for the balances to load on every page
-  const updateBalances = useCallback(async () => {
-    try {
-      if (!account) throw new Error('updateBalances: No account');
+  return useQuery({
+    queryKey: ['useUserData'],
+    queryFn: async () => {
+      try {
+        if (!account) throw new Error('updateBalances: No account');
 
-      console.log('Refreshing balances...');
+        console.log('Refreshing balances...');
 
-      const _userData: UserData = {
-        account,
-        balance: await web3Provider.balance(),
-        tokens: {},
-      };
+        const _userData: UserData = {
+          account,
+          balance: await web3Provider.balance(),
+          tokens: {},
+        };
 
-      if (coins.length === 0) return;
+        if (coins.length === 0) return;
 
-      const balancePromises = coins
-        .filter((token) => token.symbol !== networks.poly.native.symbol)
-        .map(async (token) => {
-          const balance = await web3Provider.balanceOf(token.address);
-          const permit2Approval = await web3Provider.getAllowanceFor(
-            token.address
-          );
-          return {
+        const balancePromises = coins
+          .filter((token) => token.symbol !== networks.poly.native.symbol)
+          .map(async (token) => {
+            const balance = await web3Provider.balanceOf(token.address);
+            const permit2Approval = await web3Provider.getAllowanceFor(
+              token.address
+            );
+            return {
+              ...token,
+              symbol: token.symbol.toLowerCase(),
+              balance,
+              permit2Approval,
+            };
+          });
+
+        const tokens = await Promise.all(balancePromises);
+
+        tokens.forEach((token) => {
+          _userData.tokens[token.symbol] = {
             ...token,
-            symbol: token.symbol.toLowerCase(),
-            balance,
-            permit2Approval,
+            balance: token.balance.toString(),
+            permit2Approval: token.permit2Approval,
           };
         });
 
-      const tokens = await Promise.all(balancePromises);
-
-      tokens.forEach((token) => {
-        _userData.tokens[token.symbol] = {
-          ...token,
-          balance: token.balance.toString(),
-          permit2Approval: token.permit2Approval,
-        };
-      });
-
-      setUserData(_userData);
-    } catch (e) {
-      console.error(e);
-    }
-  }, [coins]);
-
-  useInterval(updateBalances, 30000);
-
-  useEffect(() => {
-    // Initial fetch
-    updateBalances();
-  }, [updateBalances]);
-
-  return userData;
+        return _userData;
+      } catch (e) {
+        console.error(e);
+      }
+    },
+  });
 };
+
+// export const useUserData = () => {
+//   const [userData, setUserData] = useState<UserData | null>(null);
+
+//   const { data: coins = [] } = useCoinsList();
+
+//   // TODO: this probably should be thrown into a react-query so results are
+//   // cached and we don't have to wait for the balances to load on every page
+//   const updateBalances = useCallback(async () => {
+//     try {
+//       if (!account) throw new Error('updateBalances: No account');
+
+//       console.log('Refreshing balances...');
+
+//       const _userData: UserData = {
+//         account,
+//         balance: await web3Provider.balance(),
+//         tokens: {},
+//       };
+
+//       if (coins.length === 0) return;
+
+//       const balancePromises = coins
+//         .filter((token) => token.symbol !== networks.poly.native.symbol)
+//         .map(async (token) => {
+//           const balance = await web3Provider.balanceOf(token.address);
+//           const permit2Approval = await web3Provider.getAllowanceFor(
+//             token.address
+//           );
+//           return {
+//             ...token,
+//             symbol: token.symbol.toLowerCase(),
+//             balance,
+//             permit2Approval,
+//           };
+//         });
+
+//       const tokens = await Promise.all(balancePromises);
+
+//       tokens.forEach((token) => {
+//         _userData.tokens[token.symbol] = {
+//           ...token,
+//           balance: token.balance.toString(),
+//           permit2Approval: token.permit2Approval,
+//         };
+//       });
+
+//       setUserData(_userData);
+//     } catch (e) {
+//       console.error(e);
+//     }
+//   }, [coins]);
+
+//   useInterval(updateBalances, 30000);
+
+//   useEffect(() => {
+//     // Initial fetch
+//     updateBalances();
+//   }, [updateBalances]);
+
+//   return userData;
+// };
