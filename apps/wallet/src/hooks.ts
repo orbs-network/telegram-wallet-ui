@@ -10,11 +10,12 @@ import { getDebug } from './lib/utils/debug';
 
 const debug = getDebug('hooks');
 
-export const useFetchLatestPrice = (coin?: string) => {
+export const useFetchLatestPrice = (coin?: string, vsCurrencies?: string) => {
   return useQuery({
     queryKey: [coin],
-    queryFn: () => fetchLatestPrice(coin ?? ''),
+    queryFn: () => fetchLatestPrice(coin ?? '', vsCurrencies),
     enabled: !!coin,
+    staleTime: 10000,
   });
 };
 

@@ -1,45 +1,50 @@
-import {
-  Container,
-  HStack,
-  Icon,
-  IconButton,
-  Input,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Container } from '@chakra-ui/react';
 import { BackButton } from '@twa-dev/sdk/react';
 import { useNavigate } from 'react-router-dom';
 import { useUserData } from '../../hooks';
-import { MdSwapVerticalCircle } from 'react-icons/md';
-import { useForm, SubmitHandler } from 'react-hook-form';
-
-type Inputs = {
-  primaryAmount: string;
-  secondaryAmount: string;
-  primaryToken: string;
-  secondaryToken: string;
-};
+import BN from 'bignumber.js';
+import { useMemo } from 'react';
+import { TradeForm } from './TradeForm';
 
 export function Trade() {
   const navigate = useNavigate();
   const userData = useUserData();
 
-  const form = useForm<Inputs>({
-    defaultValues: {
-      primaryAmount: '0',
-      secondaryAmount: '0',
-      primaryToken: 'usdt',
-      secondaryToken: 'eth',
-    },
-  });
+  const defaultValues = useMemo(() => {
+    if (!userData?.data?.tokens) {
+      return {
+        primaryAmount: '',
+        secondaryAmount: '',
+        primaryToken: '',
+        secondaryToken: '',
+      };
+    }
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+    const tokens = Object.values(userData?.data?.tokens)
+      .filter((token) => BN(token.balance).gt(0))
+      .sort((a, b) => {
+        if (BN(a.balance).gt(b.balance)) {
+          return -1;
+        }
+        if (BN(b.balance).gt(a.balance)) {
+          return 1;
+        }
+        return 0;
+      })
+      .slice(0, 2);
 
-  const { register, handleSubmit, watch } = form;
-  const primaryToken = watch('primaryToken');
-  const primaryAmount = watch('primaryAmount');
-  const secondaryToken = watch('secondaryToken');
-  const secondaryAmount = watch('secondaryAmount');
+    if (tokens.length < 2) {
+      tokens.push(userData?.data?.tokens.usdc);
+      tokens.push(userData?.data?.tokens.weth);
+    }
+
+    return {
+      primaryAmount: '',
+      secondaryAmount: '',
+      primaryToken: tokens[0].symbol,
+      secondaryToken: tokens[1].symbol,
+    };
+  }, [userData?.data?.tokens]);
 
   return (
     <Container size="sm" pt={4}>
@@ -48,36 +53,10 @@ export function Trade() {
           navigate(-1);
         }}
       />
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <VStack alignItems="stretch">
-          <HStack justifyContent="space-between">
-            <div>You pay {primaryToken}</div>
-            <Text size="sm">
-              Max: {userData?.tokens[primaryToken].balance}{' '}
-              <Text as="span" variant="hint">
-                {primaryToken}
-              </Text>
-            </Text>
-          </HStack>
-          <Input {...register('primaryAmount')} />
-          <IconButton
-            aria-label="Switch"
-            icon={<Icon as={MdSwapVerticalCircle} />}
-            onClick={() => {
-              const tempToken = primaryToken;
-              const tempAmount = primaryAmount;
-              form.setValue('primaryToken', secondaryToken);
-              form.setValue('primaryAmount', secondaryAmount);
-              form.setValue('secondaryToken', tempToken);
-              form.setValue('secondaryAmount', tempAmount);
-            }}
-          />
-          <HStack>
-            <Text size="2xl">You receive {secondaryToken}</Text>
-          </HStack>
-          <Input {...register('secondaryAmount')} />
-        </VStack>
-      </form>
+      <TradeForm
+        defaultValues={defaultValues}
+        tokens={userData?.data?.tokens}
+      />
     </Container>
   );
 }
