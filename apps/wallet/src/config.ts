@@ -16,7 +16,7 @@ export const TRANSAK_STAGING_API_KEY = import.meta.env
 
 const accountHolder = new AccountProvider(w3);
 
-export const account = accountHolder.account;
+export const account = accountHolder.account!;
 
 export const web3Provider = new Web3Provider(w3, account);
 

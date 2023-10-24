@@ -5,7 +5,7 @@ import { Heading, Box, Text, Avatar, Spinner } from '@chakra-ui/react';
 import { DataDisplayItem, Card } from '@telegram-wallet-ui/twa-ui-kit';
 
 export function TokenBalances() {
-  const userData = useUserData();
+  const {data: userData} = useUserData();
 
   if (!userData?.tokens) {
     return <Spinner />;

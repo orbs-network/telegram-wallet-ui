@@ -4,8 +4,11 @@ import { Token, TokenListResponse, UserData } from './types';
 import { fetchLatestPrice } from './utils/fetchLatestPrice';
 
 import { account, isMumbai, web3Provider } from './config';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Fetcher } from './utils/fetcher';
+import { getDebug } from './lib/utils/debug';
+
+const debug = getDebug('hooks');
 
 export const useFetchLatestPrice = (coin?: string) => {
   return useQuery({
@@ -81,6 +84,7 @@ export const useUserData = () => {
 
   return useQuery({
     queryKey: ['useUserData'],
+    enabled: coins.length > 0,
     queryFn: async () => {
       try {
         if (!account) throw new Error('updateBalances: No account');
@@ -93,7 +97,7 @@ export const useUserData = () => {
           tokens: {},
         };
 
-        if (coins.length === 0) return;
+        if (coins.length === 0) return _userData;
 
         const balancePromises = coins
           .filter((token) => token.symbol !== networks.poly.native.symbol)
@@ -120,9 +124,12 @@ export const useUserData = () => {
           };
         });
 
+        debug(_userData);
+
         return _userData;
       } catch (e) {
-        console.error(e);
+        debug(e);
+        // console.error(e);
       }
     },
   });
