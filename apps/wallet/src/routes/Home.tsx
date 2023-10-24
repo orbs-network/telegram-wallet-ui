@@ -44,7 +44,7 @@ export function Home() {
         <Balance
           primaryCurrencySymbol={networks.poly.native.symbol}
           primaryAmount={Number(
-            amountUi(networks.poly.native, BN(userData?.balance || '0'))
+            amountUi(networks.poly.native, BN(userData?.data?.balance || '0'))
           ).toFixed(3)}
           label="Total balance"
           isPrimaryCrypto
