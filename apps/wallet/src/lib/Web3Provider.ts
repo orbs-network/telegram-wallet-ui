@@ -64,7 +64,20 @@ export class Web3Provider {
       data: txn.encodeABI(),
     });
 
-    await this.web3.eth.sendSignedTransaction(signed.rawTransaction!);
+    debug(`Sending signed tx`);
+    this.web3.eth
+      .sendSignedTransaction(signed.rawTransaction!)
+      .on('transactionHash', function (hash) {
+        debug(`Transaction hash: ${hash}`);
+      })
+      .on('receipt', function (receipt: any) {
+        debug(`Transaction receipt: ${receipt}`);
+      })
+      .on('confirmation', function (confirmationNumber: any, receipt: any) {
+        debug(`Transaction confirmation: ${confirmationNumber}, ${receipt}`);
+      })
+      .on('error', console.error);
+    // debug(`Transaction sent: ${tx.transactionHash}`);
   }
 
   async transfer(token: string, to: string, amount: BNComparable) {

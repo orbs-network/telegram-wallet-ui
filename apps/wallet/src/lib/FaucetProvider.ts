@@ -3,6 +3,8 @@ import { web3Provider } from '../config';
 import { AuthenticatedTelegramFetcher } from '../utils/fetcher';
 import { getDebug } from './utils/debug';
 import { sleep } from '@defi.org/web3-candies';
+import promiseRetry from 'promise-retry';
+
 const debug = getDebug('FaucetProvider');
 
 export class FaucetProvider {
@@ -23,7 +25,7 @@ export class FaucetProvider {
     });
   }
 
-  async requestIfNeeded(erc20Token: string) {
+  private async _requestIfNeeded(erc20Token: string) {
     if (!web3Provider.account) throw new Error('No account');
 
     this.currentErc20TokenPolled = erc20Token;
@@ -53,5 +55,15 @@ export class FaucetProvider {
 
     await this.requestFromFaucet(erc20Token);
     return true;
+  }
+
+  async requestIfNeeded(erc20Token: string) {
+    return promiseRetry((retry, number) => {
+      if (number > 0) debug('Attempt number %d', number);
+      return this._requestIfNeeded(erc20Token).catch((e) => {
+        debug('Error: %s', e.message);
+        retry(e);
+      });
+    });
   }
 }

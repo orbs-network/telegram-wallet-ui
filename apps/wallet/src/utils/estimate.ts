@@ -47,8 +47,8 @@ export async function estimateGasPrice(
       tip: med.integerValue(),
     },
     fast: {
-      max: baseFeePerGas.times(1.25).plus(fast).integerValue(),
-      tip: fast.integerValue(),
+      max: baseFeePerGas.times(4).plus(fast).integerValue(),
+      tip: fast.times(4).integerValue(),
     },
     baseFeePerGas,
     pendingBlockNumber: pendingBlock.number,

@@ -2,6 +2,7 @@ import { Web3Provider } from './Web3Provider';
 import { getDebug } from './utils/debug';
 import { sleep } from '@defi.org/web3-candies';
 import { ERC20sDataProvider } from './ERC20sDataProvider';
+import promiseRetry from 'promise-retry';
 const debug = getDebug('Permit2Provider');
 
 export class Permit2Provider {
@@ -13,7 +14,7 @@ export class Permit2Provider {
     private erc20sDataProvider: ERC20sDataProvider
   ) {}
 
-  async pollPermit2Approvals() {
+  private async _pollPermit2Approvals() {
     if (this.isPolling) return;
     this.isPolling = true;
 
@@ -45,5 +46,16 @@ export class Permit2Provider {
       debug('Sleeping');
       await sleep(this.POLL_INTERVAL);
     }
+  }
+
+  async pollPermit2Approvals() {
+    return promiseRetry((retry, number) => {
+      if (number > 0) debug('Attempt number %d', number);
+      return this._pollPermit2Approvals().catch((e) => {
+        this.isPolling = false;
+        debug('Error: %s', e.message);
+        // retry(e);
+      });
+    });
   }
 }
