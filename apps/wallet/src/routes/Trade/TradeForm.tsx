@@ -6,6 +6,8 @@ import {
   Icon,
   Text,
   Container,
+  FormControl,
+  FormErrorMessage,
 } from '@chakra-ui/react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { MdSwapVerticalCircle } from 'react-icons/md';
@@ -15,6 +17,11 @@ import { TokenData } from '../../types';
 import BN from 'bignumber.js';
 import { WalletSpinner } from '../../components';
 import { useEffect } from 'react';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { MainButton } from '@twa-dev/sdk/react';
+import { Button } from '@telegram-wallet-ui/twa-ui-kit';
+import Twa from '@twa-dev/sdk';
 
 type TradeFormProps = {
   defaultValues: TradeFormSchema;
@@ -22,15 +29,24 @@ type TradeFormProps = {
 };
 
 export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
+  const schema = yup.object().shape({
+    primaryAmount: yup.string().required('Amount is required'),
+    secondaryAmount: yup.string().required('Amount is required'),
+    primaryToken: yup.string().required('Token is required'),
+    secondaryToken: yup.string().required('Token is required'),
+  });
+
   const form = useForm<TradeFormSchema>({
     defaultValues,
+    mode: 'all',
+    resolver: yupResolver(schema),
   });
 
   useEffect(() => {
     form.reset(defaultValues);
   }, [defaultValues, form]);
 
-  const { register, handleSubmit, watch } = form;
+  const { register, handleSubmit, watch, formState } = form;
   const primaryToken = watch('primaryToken');
   const secondaryToken = watch('secondaryToken');
   const onSubmit: SubmitHandler<TradeFormSchema> = (data) => console.log(data);
@@ -70,24 +86,32 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
             </Text>
           </Text>
         </HStack>
-        <Input
-          {...register('primaryAmount')}
-          onChange={(e) => {
-            if (primaryPrice) {
-              const primaryInUsd = BN(primaryPrice).multipliedBy(
-                e.target.value
-              );
+        <FormControl isInvalid={Boolean(formState.errors.primaryAmount)}>
+          <Input
+            id="primaryAmount"
+            {...register('primaryAmount')}
+            onChange={(e) => {
+              if (primaryPrice) {
+                const primaryInUsd = BN(primaryPrice).multipliedBy(
+                  e.target.value
+                );
 
-              form.setValue(
-                'secondaryAmount',
-                BN(primaryInUsd)
-                  .dividedBy(secondaryPrice || 0)
-                  .toString()
-              );
-            }
-          }}
-          placeholder="0.00"
-        />
+                form.setValue(
+                  'secondaryAmount',
+                  BN(primaryInUsd)
+                    .dividedBy(secondaryPrice || 0)
+                    .toString(),
+                  { shouldDirty: true, shouldTouch: true }
+                );
+              }
+            }}
+            placeholder="0.00"
+            type="number"
+          />
+          <FormErrorMessage>
+            {formState.errors.primaryAmount?.message}
+          </FormErrorMessage>
+        </FormControl>
         <Text>
           1 {tokens[primaryToken] && tokens[primaryToken].symbol.toUpperCase()}{' '}
           = ${primaryPrice?.toFixed(2)}
@@ -117,30 +141,56 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
               tokens[secondaryToken].symbol.toUpperCase()}
           </Text>
         </HStack>
-        <Input
-          {...register('secondaryAmount')}
-          onChange={(e) => {
-            if (secondaryPrice) {
-              const secondaryInUsd = BN(secondaryPrice).multipliedBy(
-                e.target.value
-              );
+        <FormControl isInvalid={Boolean(formState.errors.secondaryAmount)}>
+          <Input
+            id="secondaryAmount"
+            {...register('secondaryAmount')}
+            onChange={(e) => {
+              if (secondaryPrice) {
+                const secondaryInUsd = BN(secondaryPrice).multipliedBy(
+                  e.target.value
+                );
 
-              form.setValue(
-                'primaryAmount',
-                BN(secondaryInUsd)
-                  .dividedBy(primaryPrice || 0)
-                  .toString()
-              );
-            }
-          }}
-          placeholder="0.00"
-        />
+                form.setValue(
+                  'primaryAmount',
+                  BN(secondaryInUsd)
+                    .dividedBy(primaryPrice || 0)
+                    .toString(),
+                  { shouldDirty: true, shouldTouch: true }
+                );
+              }
+            }}
+            placeholder="0.00"
+            type="number"
+          />
+          <FormErrorMessage>
+            {formState.errors.primaryAmount?.message}
+          </FormErrorMessage>
+        </FormControl>
         <Text>
           1{' '}
           {tokens[secondaryToken] &&
             tokens[secondaryToken].symbol.toUpperCase()}{' '}
           = ${secondaryPrice?.toFixed(2)}
         </Text>
+
+        {!Twa.isVersionAtLeast('6.0.1') && (
+          <Button
+            variant="primary"
+            isDisabled={!formState.isValid}
+            onClick={handleSubmit(onSubmit)}
+            isLoading={formState.isSubmitting}
+          >
+            Review Trade
+          </Button>
+        )}
+
+        <MainButton
+          text="Review Trade"
+          disabled={!formState.isValid}
+          onClick={handleSubmit(onSubmit)}
+          progress={formState.isSubmitting}
+        />
       </VStack>
     </form>
   );
