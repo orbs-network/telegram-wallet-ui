@@ -3,9 +3,11 @@ import { AccountProvider, LiquihubProvider, Web3Provider } from './lib';
 import { ERC20sDataProvider } from './lib/ERC20sDataProvider';
 import { FaucetProvider } from './lib/FaucetProvider';
 
+export const isMumbai = import.meta.env.VITE_IS_MUMBAI === '1';
+
 // export const w3 = new web3(networks.poly.publicRpcUrl);
 export const w3 = new web3(
-  `https://polygon-mumbai.g.alchemy.com/v2/${
+  `https://polygon-${isMumbai ? 'mumbai' : 'mainnet'}.g.alchemy.com/v2/${
     import.meta.env.VITE_ALCHEMY_API_KEY
   }`
 );
@@ -18,11 +20,11 @@ export const account = accountHolder.account;
 
 export const web3Provider = new Web3Provider(w3, account);
 
+export const erc20sDataProvider = new ERC20sDataProvider();
+
 export const liqHubProvider = new LiquihubProvider(web3Provider);
 
 export type CryptoAsset = 'MATIC' | 'ETH' | 'USDC';
-
-export const erc20sDataProvider = new ERC20sDataProvider();
 
 export const faucetProvider = new FaucetProvider(
   import.meta.env.VITE_FAUCET_BACKEND_URL,
