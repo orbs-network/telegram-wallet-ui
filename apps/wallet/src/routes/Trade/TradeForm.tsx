@@ -9,13 +9,13 @@ import {
   FormControl,
   FormErrorMessage,
 } from '@chakra-ui/react';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { MdSwapVerticalCircle } from 'react-icons/md';
 import { useFetchLatestPrice } from '../../hooks';
 import { TradeFormSchema } from './schema';
 import { TokenData } from '../../types';
 import BN from 'bignumber.js';
-import { WalletSpinner } from '../../components';
+import { TokenSelect, WalletSpinner } from '../../components';
 import { useEffect } from 'react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -129,32 +129,44 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
             </Text>
           </Text>
         </HStack>
-        <FormControl isInvalid={Boolean(formState.errors.primaryAmount)}>
-          <Input
-            id="primaryAmount"
-            {...register('primaryAmount')}
-            onChange={(e) => {
-              if (primaryPrice) {
-                const primaryInUsd = BN(primaryPrice).multipliedBy(
-                  e.target.value
-                );
+        <HStack>
+          <FormControl isInvalid={Boolean(formState.errors.primaryAmount)}>
+            <Input
+              id="primaryAmount"
+              {...register('primaryAmount')}
+              onChange={(e) => {
+                if (primaryPrice) {
+                  const primaryInUsd = BN(primaryPrice).multipliedBy(
+                    e.target.value
+                  );
 
-                form.setValue(
-                  'secondaryAmount',
-                  BN(primaryInUsd)
-                    .dividedBy(secondaryPrice || 0)
-                    .toString(),
-                  { shouldDirty: true, shouldTouch: true }
-                );
-              }
-            }}
-            placeholder="0.00"
-            type="number"
+                  form.setValue(
+                    'secondaryAmount',
+                    BN(primaryInUsd)
+                      .dividedBy(secondaryPrice || 0)
+                      .toString(),
+                    { shouldDirty: true, shouldTouch: true }
+                  );
+                }
+              }}
+              placeholder="0.00"
+              type="number"
+            />
+            <FormErrorMessage>
+              {formState.errors.primaryAmount?.message}
+            </FormErrorMessage>
+          </FormControl>
+          <Controller
+            control={form.control}
+            name="primaryToken"
+            render={({ field, fieldState }) => (
+              <FormControl isInvalid={Boolean(fieldState.error)}>
+                <TokenSelect {...field} />
+                <FormErrorMessage>{fieldState.error?.message}</FormErrorMessage>
+              </FormControl>
+            )}
           />
-          <FormErrorMessage>
-            {formState.errors.primaryAmount?.message}
-          </FormErrorMessage>
-        </FormControl>
+        </HStack>
         <Text>
           {primaryPrice && primaryAmount !== ''
             ? `≈ $${BN(primaryPrice).multipliedBy(primaryAmount).toFixed(2)}`
@@ -188,32 +200,45 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
               tokens[secondaryToken].symbol.toUpperCase()}
           </Text>
         </HStack>
-        <FormControl isInvalid={Boolean(formState.errors.secondaryAmount)}>
-          <Input
-            id="secondaryAmount"
-            {...register('secondaryAmount')}
-            onChange={(e) => {
-              if (secondaryPrice) {
-                const secondaryInUsd = BN(secondaryPrice).multipliedBy(
-                  e.target.value
-                );
+        <HStack>
+          <FormControl isInvalid={Boolean(formState.errors.secondaryAmount)}>
+            <Input
+              id="secondaryAmount"
+              {...register('secondaryAmount')}
+              onChange={(e) => {
+                if (secondaryPrice) {
+                  const secondaryInUsd = BN(secondaryPrice).multipliedBy(
+                    e.target.value
+                  );
 
-                form.setValue(
-                  'primaryAmount',
-                  BN(secondaryInUsd)
-                    .dividedBy(primaryPrice || 0)
-                    .toString(),
-                  { shouldDirty: true, shouldTouch: true }
-                );
-              }
-            }}
-            placeholder="0.00"
-            type="number"
+                  form.setValue(
+                    'primaryAmount',
+                    BN(secondaryInUsd)
+                      .dividedBy(primaryPrice || 0)
+                      .toString(),
+                    { shouldDirty: true, shouldTouch: true }
+                  );
+                }
+              }}
+              placeholder="0.00"
+              type="number"
+            />
+            <FormErrorMessage>
+              {formState.errors.primaryAmount?.message}
+            </FormErrorMessage>
+          </FormControl>
+          <Controller
+            control={form.control}
+            name="secondaryToken"
+            render={({ field, fieldState }) => (
+              <FormControl isInvalid={Boolean(fieldState.error)}>
+                <TokenSelect {...field} />
+                <FormErrorMessage>{fieldState.error?.message}</FormErrorMessage>
+              </FormControl>
+            )}
           />
-          <FormErrorMessage>
-            {formState.errors.primaryAmount?.message}
-          </FormErrorMessage>
-        </FormControl>
+        </HStack>
+
         <Text>
           {secondaryPrice && secondaryAmount !== ''
             ? `≈ $${BN(secondaryPrice)
@@ -229,7 +254,7 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
           <Button
             variant="primary"
             isDisabled={!formState.isValid}
-            onClick={handleSubmit(onSubmit)}
+            type="submit"
             isLoading={formState.isSubmitting}
           >
             Review Trade
