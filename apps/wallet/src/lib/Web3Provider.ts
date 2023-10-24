@@ -50,34 +50,24 @@ export class Web3Provider {
       (await txn.estimateGas({ from: this.account.address })) * 1.2
     ).toFixed(0);
 
-    debug('nonce: %d, gas: %d', nonce, gas);
-
     const gasMode = 'fast'; // TODO change to med
 
     const signed = await this.account.signTransaction({
       gas,
       maxFeePerGas: price[gasMode].max.toString(),
       maxPriorityFeePerGas: price[gasMode].tip.toString(),
-      nonce: nonce,
+      nonce: parseInt(nonce.toString()),
       from: this.account.address,
       to,
       data: txn.encodeABI(),
     });
 
     debug(`Sending signed tx`);
-    this.web3.eth
-      .sendSignedTransaction(signed.rawTransaction!)
-      .on('transactionHash', function (hash) {
-        debug(`Transaction hash: ${hash}`);
-      })
-      .on('receipt', function (receipt: any) {
-        debug(`Transaction receipt: ${receipt}`);
-      })
-      .on('confirmation', function (confirmationNumber: any, receipt: any) {
-        debug(`Transaction confirmation: ${confirmationNumber}, ${receipt}`);
-      })
-      .on('error', console.error);
-    // debug(`Transaction sent: ${tx.transactionHash}`);
+    const { transactionHash } = await this.web3.eth.sendSignedTransaction(
+      signed.rawTransaction!
+    );
+
+    return transactionHash;
   }
 
   async transfer(token: string, to: string, amount: BNComparable) {

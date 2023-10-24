@@ -13,7 +13,7 @@ export async function estimateGasPrice(
   const [pendingBlock, history] = await Promise.all([
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     w3!.eth.getBlock(pending),
-    typeof w3!.eth.getFeeHistory !== 'function'
+    typeof w3!.eth.getFeeHistory === 'function'
       ? w3!.eth.getFeeHistory(length, pending, percentiles)
       : Promise.resolve({ reward: [] }),
   ]);

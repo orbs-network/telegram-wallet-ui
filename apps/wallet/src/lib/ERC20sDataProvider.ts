@@ -1,5 +1,5 @@
 export type ERC20sData = {
-  isApproved: boolean;
+  isApproved: "true" | "false";
 };
 
 export class ERC20sDataProvider {
@@ -12,6 +12,8 @@ export class ERC20sDataProvider {
     erc20sData[erc20] = { isApproved: true };
     localStorage.setItem('erc20s', JSON.stringify(erc20sData));
   }
+
+  setApproving
 
   addErc20sData(erc20: string) {
     const erc20sData = this.readErc20sData();

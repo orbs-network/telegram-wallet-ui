@@ -23,7 +23,7 @@
     "react-qr-code": "^2.0.12",
     "react-router-dom": "^6.16.0",
     "vite-plugin-node-polyfills": "^0.15.0",
-    "web3": "1.10.2",
+    "web3": "^4.2.0",
     "zustand": "^4.4.4"
   },
   "devDependencies": {

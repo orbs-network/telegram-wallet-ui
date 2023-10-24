@@ -36,7 +36,8 @@ export class Permit2Provider {
             this.erc20sDataProvider.setApproved(erc20);
           } else {
             debug('Not approved, approving');
-            await this.web3Provider.approvePermit2(erc20);
+            const txnHash = await this.web3Provider.approvePermit2(erc20);
+            debug('Approved, txn hash: %s', txnHash);
           }
         }
       } else {
@@ -54,7 +55,7 @@ export class Permit2Provider {
       return this._pollPermit2Approvals().catch((e) => {
         this.isPolling = false;
         debug('Error: %s', e.message);
-        // retry(e);
+        retry(e);
       });
     });
   }
