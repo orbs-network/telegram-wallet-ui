@@ -3,6 +3,8 @@ import { LiquihubProvider } from './LiquihubProvider';
 import { CoinsProvider } from './CoinsProvider';
 import { getDebug } from './utils/debug';
 import BN from 'bignumber.js';
+import { ERC20sDataProvider } from './ERC20sDataProvider';
+import { sleep } from './utils/sleep';
 
 const debug = getDebug('SwapProvider');
 
@@ -13,9 +15,12 @@ type QuoteRequest = {
 };
 
 export class SwapProvider {
+  SLEEP_INTERVAL = 3000;
+
   constructor(
     private coinsProvider: CoinsProvider,
-    private liquidityHubProvider: LiquihubProvider
+    private liquidityHubProvider: LiquihubProvider,
+    private erc20sDataProvider: ERC20sDataProvider
   ) {}
 
   async quote(quoteRequest: QuoteRequest) {
@@ -50,6 +55,13 @@ export class SwapProvider {
   }
 
   async swap(quote: QuoteResponse) {
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      if (this.erc20sDataProvider.isApproved(quote.inToken)) break;
+      debug(`Token ${quote.inToken} is not approved, sleeping`);
+      await sleep(this.SLEEP_INTERVAL);
+    }
+
     await this.liquidityHubProvider.swap(quote);
   }
 }

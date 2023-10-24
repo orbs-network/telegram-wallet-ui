@@ -1,12 +1,29 @@
-// TODO cleanup
+import { sleep } from './utils/sleep';
+
 export class TTLCache {
-  cache = new Map<
+  private SLEEP_INTERVAL = 10000;
+
+  private cache = new Map<
     string,
     {
       result: any;
       expiresAt: number;
     }
   >();
+
+  constructor() {
+    (async () => {
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        this.cache.forEach((value, key) => {
+          if (value.expiresAt < Date.now()) {
+            this.cache.delete(key);
+          }
+        });
+        await sleep(this.SLEEP_INTERVAL);
+      }
+    })();
+  }
 
   execute = async (key: string, fn: () => Promise<any>, ttl: number) => {
     if (this.cache.has(key) && this.cache.get(key)!.expiresAt > Date.now()) {
