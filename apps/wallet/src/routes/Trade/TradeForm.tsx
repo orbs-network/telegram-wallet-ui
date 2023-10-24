@@ -30,8 +30,48 @@ type TradeFormProps = {
 
 export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
   const schema = yup.object().shape({
-    primaryAmount: yup.string().required('Amount is required'),
-    secondaryAmount: yup.string().required('Amount is required'),
+    primaryAmount: yup
+      .string()
+      .required('Amount is required')
+      .test((value, ctx) => {
+        if (!value || !tokens) {
+          return false;
+        }
+
+        const primaryAmount = BN(value);
+
+        if (primaryAmount.eq(0)) {
+          return ctx.createError({
+            message: 'Please enter a positive amount',
+          });
+        }
+
+        if (primaryAmount.gt(tokens[ctx.parent.primaryToken].balance)) {
+          return ctx.createError({
+            message: 'Insufficient balance',
+          });
+        }
+
+        return true;
+      }),
+    secondaryAmount: yup
+      .string()
+      .required('Amount is required')
+      .test((value, ctx) => {
+        if (!value || !tokens) {
+          return false;
+        }
+
+        const secondaryAmount = BN(value);
+
+        if (secondaryAmount.eq(0)) {
+          return ctx.createError({
+            message: 'Please enter a positive amount',
+          });
+        }
+
+        return true;
+      }),
     primaryToken: yup.string().required('Token is required'),
     secondaryToken: yup.string().required('Token is required'),
   });
@@ -49,6 +89,9 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
   const { register, handleSubmit, watch, formState } = form;
   const primaryToken = watch('primaryToken');
   const secondaryToken = watch('secondaryToken');
+  const primaryAmount = watch('primaryAmount');
+  const secondaryAmount = watch('secondaryAmount');
+
   const onSubmit: SubmitHandler<TradeFormSchema> = (data) => console.log(data);
 
   const { data: primaryPrice } = useFetchLatestPrice(
@@ -113,8 +156,12 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
           </FormErrorMessage>
         </FormControl>
         <Text>
-          1 {tokens[primaryToken] && tokens[primaryToken].symbol.toUpperCase()}{' '}
-          = ${primaryPrice?.toFixed(2)}
+          {primaryPrice && primaryAmount !== ''
+            ? `≈ $${BN(primaryPrice).multipliedBy(primaryAmount).toFixed(2)}`
+            : `1 ${
+                tokens[primaryToken] &&
+                tokens[primaryToken].symbol.toUpperCase()
+              } ≈ $${primaryPrice?.toFixed(2)}`}
         </Text>
 
         <IconButton
@@ -168,10 +215,14 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
           </FormErrorMessage>
         </FormControl>
         <Text>
-          1{' '}
-          {tokens[secondaryToken] &&
-            tokens[secondaryToken].symbol.toUpperCase()}{' '}
-          = ${secondaryPrice?.toFixed(2)}
+          {secondaryPrice && secondaryAmount !== ''
+            ? `≈ $${BN(secondaryPrice)
+                .multipliedBy(secondaryAmount)
+                .toFixed(2)}`
+            : `1 ${
+                tokens[secondaryToken] &&
+                tokens[secondaryToken].symbol.toUpperCase()
+              } ≈ $${secondaryPrice?.toFixed(2)}`}
         </Text>
 
         {!Twa.isVersionAtLeast('6.0.1') && (
