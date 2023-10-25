@@ -3,25 +3,33 @@ import { useUserData } from '../hooks';
 import BN from 'bignumber.js';
 import { Select, SelectProps } from '@chakra-ui/react';
 
-export const TokenSelect = forwardRef<HTMLSelectElement, SelectProps>(
-  (props, ref) => {
-    const userData = useUserData();
+type TokenSelectProps = SelectProps & {
+  filterTokens?: string[];
+};
+
+export const TokenSelect = forwardRef<HTMLSelectElement, TokenSelectProps>(
+  ({ filterTokens, ...props }, ref) => {
+    const { data: userData } = useUserData();
 
     const tokens = useMemo(() => {
-      if (!userData?.data?.tokens) {
+      if (!userData?.tokens) {
         return [];
       }
 
-      return Object.values(userData?.data?.tokens).sort((a, b) => {
-        if (BN(a.balance).gt(b.balance)) {
-          return -1;
-        }
-        if (BN(b.balance).gt(a.balance)) {
-          return 1;
-        }
-        return 0;
-      });
-    }, [userData?.data?.tokens]);
+      return Object.values(userData?.tokens)
+        .filter((token) =>
+          filterTokens ? !filterTokens?.includes(token.symbol) : true
+        )
+        .sort((a, b) => {
+          if (BN(a.balance).gt(b.balance)) {
+            return -1;
+          }
+          if (BN(b.balance).gt(a.balance)) {
+            return 1;
+          }
+          return 0;
+        });
+    }, [filterTokens, userData?.tokens]);
 
     return (
       <Select {...props} ref={ref}>

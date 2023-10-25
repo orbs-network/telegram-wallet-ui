@@ -27,7 +27,7 @@ import Twa from '@twa-dev/sdk';
 import { debounceAsync } from '../../lib/hooks/useDebounce';
 import { coinsProvider, swapProvider } from '../../config';
 import { bn6 } from '@defi.org/web3-candies';
-import { QUOTE_REFETCH_INTERVAL, useQuoteQuery } from './queries';
+import { QUOTE_REFETCH_INTERVAL } from './queries';
 
 const debouncedQuote = debounceAsync(
   async (inAmount: string, inToken: TokenData, outToken: TokenData) => {
@@ -178,15 +178,13 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
             .dividedBy(Math.pow(10, tokens[outToken].decimals))
             .toString()
         );
-
-        setShouldFetchQuoteInterval(true);
       } catch (err) {
         console.error(err);
       } finally {
         setFetchingQuote(false);
       }
     },
-    [form, inToken, outToken, setShouldFetchQuoteInterval, tokens]
+    [form, inToken, outToken, tokens]
   );
 
   if (!tokens) {
@@ -240,6 +238,7 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
 
                     // Then fetch LH quote
                     fetchLHQuote(e.target.value);
+                    setShouldFetchQuoteInterval(true);
                   } catch (err) {
                     console.error(err);
                   }
@@ -258,7 +257,15 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
             name="inToken"
             render={({ field, fieldState }) => (
               <FormControl isInvalid={Boolean(fieldState.error)}>
-                <TokenSelect {...field} />
+                <TokenSelect
+                  {...field}
+                  onChange={(e) => {
+                    form.resetField('inAmount');
+                    form.resetField('outAmount');
+                    form.setValue('inToken', e.target.value);
+                    setShouldFetchQuoteInterval(false);
+                  }}
+                />
                 <FormErrorMessage>{fieldState.error?.message}</FormErrorMessage>
               </FormControl>
             )}
@@ -338,7 +345,16 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
             name="outToken"
             render={({ field, fieldState }) => (
               <FormControl isInvalid={Boolean(fieldState.error)}>
-                <TokenSelect {...field} />
+                <TokenSelect
+                  {...field}
+                  filterTokens={[inToken]}
+                  onChange={(e) => {
+                    form.resetField('inAmount');
+                    form.resetField('outAmount');
+                    form.setValue('outToken', e.target.value);
+                    setShouldFetchQuoteInterval(false);
+                  }}
+                />
                 <FormErrorMessage>{fieldState.error?.message}</FormErrorMessage>
               </FormControl>
             )}
