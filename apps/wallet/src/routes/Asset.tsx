@@ -27,7 +27,7 @@ export function Asset() {
     return <Loader />;
   }
 
-  const tokenData = userData?.tokens[assetId];
+  const tokenData = userData?.data?.tokens[assetId];
 
   if (!tokenData) {
     return <Loader />;

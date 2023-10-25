@@ -2,6 +2,9 @@ import web3 from 'web3';
 import { AccountProvider, LiquihubProvider, Web3Provider } from './lib';
 import { ERC20sDataProvider } from './lib/ERC20sDataProvider';
 import { FaucetProvider } from './lib/FaucetProvider';
+import { TTLCache } from './lib/TTLCache';
+import { CoinsProvider } from './lib/CoinsProvider';
+import { SwapProvider } from './lib/SwapProvider';
 
 export const isMumbai = import.meta.env.VITE_IS_MUMBAI === '1';
 
@@ -24,6 +27,14 @@ export const erc20sDataProvider = new ERC20sDataProvider();
 
 export const liqHubProvider = new LiquihubProvider(web3Provider);
 
+export const coinsProvider = new CoinsProvider(false, new TTLCache());
+export const swapProvider = new SwapProvider(
+  coinsProvider,
+  liqHubProvider,
+  erc20sDataProvider
+);
+
+// TODO: remove this
 export type CryptoAsset = 'MATIC' | 'ETH' | 'USDC';
 
 export const faucetProvider = new FaucetProvider(

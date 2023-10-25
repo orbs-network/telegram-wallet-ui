@@ -1,4 +1,4 @@
-import { BNComparable, QuoteResponse } from '../types';
+import { BNComparable, QuoteResponse, Token } from '../types';
 import { LiquihubProvider } from './LiquihubProvider';
 import { CoinsProvider } from './CoinsProvider';
 import { getDebug } from './utils/debug';
@@ -28,8 +28,8 @@ export class SwapProvider {
     const fetchCoins = await this.coinsProvider.fetchCoins();
 
     const minOutAmount = await this.coinsProvider.getMinAmountOut(
-      fetchCoins.find((c) => c.address === quoteRequest.inToken)!,
-      fetchCoins.find((c) => c.address === quoteRequest.outToken)!,
+      fetchCoins.find((c: Token) => c.address === quoteRequest.inToken)!,
+      fetchCoins.find((c: Token) => c.address === quoteRequest.outToken)!,
       quoteRequest.inAmount
     );
 

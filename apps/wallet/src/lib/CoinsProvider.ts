@@ -25,7 +25,7 @@ export class CoinsProvider {
       60 * 60 * 1000
     );
 
-    const parsed = data.map((coin): Token => {
+    const parsed: Array<Token> = data.map((coin: any): Token => {
       return {
         symbol: coin.symbol,
         address: coin.address,
