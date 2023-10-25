@@ -18,6 +18,7 @@ const useTransferTx = () => {
       assetId: string;
       recipient: string;
       amount: string;
+      onSuccess?: () => void;
     }) => {
       return web3Provider.transfer(
         params.assetId,
@@ -25,6 +26,12 @@ const useTransferTx = () => {
         params.amount
       );
     },
+    onSuccess: (data, args) => {
+      args.onSuccess?.();
+    },
+    onError: (error) => {
+        console.log(error);
+        }
   });
 };
 
@@ -35,15 +42,18 @@ export function WithdrawSummary() {
   const { mutate, isPending } = useTransferTx();
   const { withdrawSuccess } = useNavigation();
   const symbol = token?.symbol || '';
-    
 
   useEffect(() => {
     onSetButton({
       text: 'CONFIRM AND SEND',
       progress: isPending,
-      //   onClick: () =>
-      //     mutate({ assetId: assetId!, recipient: recipient!, amount: amount! }),
-      onClick: () => withdrawSuccess(assetId!, recipient!, amount!),
+      onClick: () =>
+        mutate({
+          assetId: assetId!,
+          recipient: recipient!,
+          amount: amount!,
+          onSuccess: () => withdrawSuccess(assetId!, recipient!, amount!),
+        }),
     });
   }, [
     onSetButton,

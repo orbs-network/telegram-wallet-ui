@@ -11,6 +11,7 @@ import { useNumericFormat } from 'react-number-format';
 import { matchRoutes, useLocation } from 'react-router-dom';
 import { ROUTES } from './router/routes';
 import _ from 'lodash';
+import { amountUi } from './utils/conversion';
 
 export const useFetchLatestPrice = (coin?: string) => {
   return useQuery({
@@ -35,9 +36,7 @@ export const useCoinsList = () => {
     queryKey: ['useCoinsList'],
     queryFn: async () => {
       const data = await Fetcher.get<TokenListResponse>(
-        import.meta.env.VITE_IS_MUMBAI === '1'
-          ? 'https://raw.githubusercontent.com/viaprotocol/tokenlists/main/tokenlists/mumbai.json'
-          : 'https://raw.githubusercontent.com/viaprotocol/tokenlists/main/tokenlists/polygon.json'
+        'https://raw.githubusercontent.com/viaprotocol/tokenlists/main/tokenlists/polygon.json'
       );
 
       const parsed = data.map((coin): Token => {
@@ -74,17 +73,19 @@ export const useCoinsList = () => {
 };
 
 export const useTokenBalanceQuery = (tokenAddress?: string) => {
-  return useQuery({
+  const token = useGetTokenFromList(tokenAddress);
+  const query = useQuery({
     queryKey: ['useTokenBalanceQuery', tokenAddress],
     queryFn: async () => {
-      const result = await web3Provider.balanceOf(tokenAddress!);
-      // TODO remove this
-      return '10';
-      // return result.toString() || '0';
+       const result = await web3Provider.balanceOf(tokenAddress!);
+       return amountUi(token, result) || '0';
     },
-    enabled: !!tokenAddress,
-    refetchInterval: 20_000,
+
+    enabled: !!tokenAddress && !!token,
+    // refetchInterval: 20_000,
   });
+
+  return query;
 };
 
 export const useGetTokenFromList = (tokenAddress?: string) => {

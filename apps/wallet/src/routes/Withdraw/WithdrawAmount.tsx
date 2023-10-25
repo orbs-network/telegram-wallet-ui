@@ -2,7 +2,7 @@ import { VStack, Text, Flex, Avatar, Container } from '@chakra-ui/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { URLParams } from '../../types';
-import { getTextSizeInPixels } from '../../utils';
+import { getTextSizeInPixels } from '../../utils/utils';
 import { css } from '@emotion/react';
 import {
   useFormatNumber,
@@ -16,6 +16,7 @@ import { useMainButtonContext } from '../../context/MainButtonContext';
 import { NumericFormat } from 'react-number-format';
 import { Recipient } from './Components';
 import { useNavigation } from '../../router/hooks';
+import BN from 'bignumber.js';
 
 const styles = {
   mainContainer: css`
@@ -75,17 +76,20 @@ const styles = {
 export function WithdrawAmount() {
   const [amount, setAmount] = useState('');
   const { assetId, recipient } = useParams<URLParams>();
-  const { data: balance } = useTokenBalanceQuery(assetId);
+  const balance = useTokenBalanceQuery(assetId).data;
   const { onSetButton } = useMainButtonContext();
   const { withdrawSummary: navigateToWithdrawSummary } = useNavigation();
   const formattedAmount = useFormatNumber({ value: amount, decimalScale: 2 });
   const symbol = useGetTokenFromList(assetId)?.symbol;
 
+  const formattedBalance = useFormatNumber({ value: balance, decimalScale: 2 });
+
   const isValidAmount = useMemo(() => {
-    const amountNumber = Number(amount);
-    const balanceNumber = Number(balance);
-    return amountNumber > 0 && amountNumber <= balanceNumber;
-  }, [balance, amount]);
+    const amountBN = new BN(amount);
+    const balanceBN = new BN(balance || '0');
+
+    return balanceBN.gte(amountBN) && !amountBN.isZero();
+  }, [amount, balance]);
 
   useEffect(() => {
     onSetButton({
@@ -110,7 +114,7 @@ export function WithdrawAmount() {
         <VStack spacing={4} alignItems="stretch" style={{ flex: 1 }}>
           <Recipient />
           <AmountInput setAmount={setAmount} amount={amount} />
-          <Balance balance={balance} />
+          <Balance balance={formattedBalance} />
         </VStack>
       </Container>
     </StyledPage>
@@ -120,7 +124,6 @@ export function WithdrawAmount() {
 const Balance = ({ balance }: { balance?: string }) => {
   const { assetId } = useParams<URLParams>();
   const token = useGetTokenFromList(assetId);
-  const formattedBalance = useFormatNumber({ value: balance });
 
   return (
     <Flex gap="15px" alignItems="center" css={styles.balanceContainer}>
@@ -128,7 +131,7 @@ const Balance = ({ balance }: { balance?: string }) => {
       <VStack gap="0px" alignItems="flex-start">
         <Text css={styles.balanceTitle}>Balance</Text>
         <Text css={styles.balanceValue}>
-          {formattedBalance} {token?.symbol}
+          {balance} {token?.symbol}
         </Text>
       </VStack>
     </Flex>

@@ -10,9 +10,10 @@ import { useLocation } from 'react-router-dom';
 import { ROUTES } from './router/routes';
 import styled from '@emotion/styled';
 import { useState } from 'react';
+import { usePersistedStore } from './store/persisted-store';
 const queryClient = new QueryClient();
 
-export function App() {
+const App = () =>  {
   const [height] = useState(window.innerHeight);
 
   return (
@@ -38,8 +39,12 @@ const AppContainer = styled('div')({
 function ActionButton() {
   const { onClick, text, disabled, progress } = useMainButtonContext();
   const location = useLocation();
+    const { showOnboarding } = usePersistedStore();
 
-  if (location.pathname === ROUTES.root) return null;
+
+  if (!showOnboarding && location.pathname === ROUTES.root) return null;
+
+  if(!text) return null;
 
   return (
     <ButtonContainer>
@@ -58,3 +63,6 @@ const ButtonContainer = styled(Container)({
   zIndex: 10,
   bottom: 10,
 });
+
+
+export default App;

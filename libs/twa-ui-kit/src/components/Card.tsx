@@ -5,6 +5,7 @@ const styles = css`
   border-radius: 1rem;
   min-height: 72px;
   width: 100%;
+  box-shadow: unset;
 `;
 
 type CardProps = {

@@ -1,15 +1,28 @@
+import { Flex, Skeleton, VStack } from '@chakra-ui/react';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Card } from '@telegram-wallet-ui/twa-ui-kit';
+import _ from 'lodash';
 import { useCoinsList } from '../hooks';
 import { TokenListItem } from './TokenListItem';
+import { TokenListItemLoader } from './TokenListItemLoader';
 
 type Props = {
   onSelect: (token: string) => void;
   selected?: string;
 };
 
+
 export function TokensList({ onSelect, selected }: Props) {
   const { data: tokens, isLoading } = useCoinsList();
+
+  if (isLoading) {
+    return (
+      <StyledCard>
+        <TokenListItemLoader />
+      </StyledCard>
+    );
+  }
   return (
     <StyledCard>
       <List>

@@ -1,8 +1,19 @@
-import { StrictMode } from 'react';
+import { Container, Flex, Spinner } from '@chakra-ui/react';
+import { lazy, StrictMode, Suspense } from 'react';
 import * as ReactDOM from 'react-dom/client';
-import {BrowserRouter as Router} from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 
-import { App } from './App';
+const App = lazy(() => import('./App'));
+
+const Fallback = () => {
+  return (
+    <Container size="sm" pt={4}>
+      <Flex justifyContent="center" style={{ paddingTop: 100 }}>
+        <Spinner width={100} height={100} color="#417FC6" />
+      </Flex>
+    </Container>
+  );
+};
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -10,7 +21,9 @@ const root = ReactDOM.createRoot(
 root.render(
   // <StrictMode>
   <Router>
-    <App />
+    <Suspense fallback={<Fallback />}>
+      <App />
+    </Suspense>
   </Router>
 
   // </StrictMode>

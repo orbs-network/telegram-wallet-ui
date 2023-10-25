@@ -15,6 +15,7 @@ interface ButtonArgs {
 
 interface ContextType extends ButtonArgs {
   onSetButton: (args: ButtonArgs) => void;
+  resetButton: () => void;
 }
 
 const Context = createContext({} as ContextType);
@@ -29,8 +30,12 @@ const MainButtonContextProvider = ({ children }: { children: ReactNode }) => {
     [setArgs]
   );
 
+  const resetButton = useCallback(() => {
+    setArgs({} as ButtonArgs);
+  }, [setArgs]);
+
   return (
-    <Context.Provider value={{ ...args, onSetButton }}>
+    <Context.Provider value={{ ...args, onSetButton, resetButton }}>
       {children}
     </Context.Provider>
   );

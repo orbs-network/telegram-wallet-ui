@@ -24,7 +24,7 @@ export function Withdraw() {
   return (
     <Page>
       <Container size="sm" pt={4}>
-        <VStack spacing={4} alignItems="stretch">
+        <VStack spacing={6} alignItems="stretch">
           <Heading as="h1" size="md" textAlign="center">
             Choose asset to withdraw
           </Heading>

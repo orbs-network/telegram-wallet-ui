@@ -33,16 +33,17 @@ const styles = {
 };
 
 export function DepositAddress() {
-  const navigate = useNavigate();
   const [isCopied, setIsCopied] = useState(false);
   const userData = useUserData();
   const toast = useToast();
 
   if (!userData?.account.address) {
     return (
-      <Container size="sm" height="100vh" position="relative">
-        <WalletSpinner />
-      </Container>
+      <Page>
+        <Container size="sm" pt={4}>
+          <WalletSpinner />
+        </Container>
+      </Page>
     );
   }
 
@@ -82,39 +83,41 @@ export function DepositAddress() {
 
   return (
     <Page>
-      <VStack
-        justifyContent="center"
-        alignItems="center"
-        height="100%"
-        position="relative"
-        spacing={8}
-      >
-        <VStack css={styles.qr}>
-          <QRCode value={address} />
-          <Code textAlign="center" colorScheme="transparent">
-            {address}
-          </Code>
-        </VStack>
-        <HStack width="100%">
-          <Button
-            variant={isCopied ? undefined : 'primary'}
-            onClick={handleCopy}
-            colorScheme={isCopied ? 'green' : 'none'}
-            leftIcon={isCopied ? <Icon as={BiCheck} /> : undefined}
-          >
-            {isCopied ? 'Copied!' : 'Copy'}
-          </Button>
-          {isShareSupported && (
+      <Container size="sm" pt={4} position="relative">
+        <VStack
+          justifyContent="center"
+          alignItems="center"
+          height="100%"
+          position="relative"
+          spacing={8}
+        >
+          <VStack css={styles.qr}>
+            <QRCode value={address} />
+            <Code textAlign="center" colorScheme="transparent">
+              {address}
+            </Code>
+          </VStack>
+          <HStack width="100%">
             <Button
-              variant="tertiary"
-              leftIcon={<Icon as={MdIosShare} />}
-              onClick={handleShare}
+              variant={isCopied ? undefined : 'primary'}
+              onClick={handleCopy}
+              colorScheme={isCopied ? 'green' : 'none'}
+              leftIcon={isCopied ? <Icon as={BiCheck} /> : undefined}
             >
-              Share
+              {isCopied ? 'Copied!' : 'Copy'}
             </Button>
-          )}
-        </HStack>
-      </VStack>
+            {isShareSupported && (
+              <Button
+                variant="tertiary"
+                leftIcon={<Icon as={MdIosShare} />}
+                onClick={handleShare}
+              >
+                Share
+              </Button>
+            )}
+          </HStack>
+        </VStack>
+      </Container>
     </Page>
   );
 }

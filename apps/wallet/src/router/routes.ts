@@ -12,6 +12,6 @@ export const ROUTES = {
   withdrawAmount: '/withdraw/:assetId/:recipient/amount',
   withdrawSummary: '/withdraw/:assetId/:recipient/amount/:amount/summary',
   withdrawSuccess: '/withdraw/:assetId/:recipient/amount/:amount/success',
+  onboardingPage1: '/1',
+  onboardingPage2: '/2',
 };
-
-

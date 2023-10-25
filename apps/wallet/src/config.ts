@@ -5,7 +5,7 @@ import { FaucetProvider } from './lib/FaucetProvider';
 
 // export const w3 = new web3(networks.poly.publicRpcUrl);
 export const w3 = new web3(
-  `https://polygon-mumbai.g.alchemy.com/v2/${
+  `https://polygon-mainnet.g.alchemy.com/v2/${
     import.meta.env.VITE_ALCHEMY_API_KEY
   }`
 );

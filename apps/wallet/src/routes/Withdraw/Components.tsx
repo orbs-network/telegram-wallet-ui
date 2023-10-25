@@ -4,7 +4,7 @@ import React from 'react'
 import { ImArrowUp } from 'react-icons/im';
 import { useParams } from 'react-router-dom';
 import { URLParams } from '../../types';
-import { makeElipsisAddress } from '../../utils';
+import { makeElipsisAddress } from '../../utils/utils';
 
 export const Recipient = () => {
   const { recipient } = useParams<URLParams>();
