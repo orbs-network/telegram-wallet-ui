@@ -1,6 +1,8 @@
 import web3 from 'web3';
 import { AccountProvider, LiquihubProvider, Web3Provider } from './lib';
 import { FaucetProvider } from './lib/FaucetProvider';
+import { Permit2Provider } from './lib/Permit2Provider';
+import { LocalStorageProvider } from './lib/LocalStorageProvider';
 
 export const isMumbai = import.meta.env.VITE_IS_MUMBAI === '1';
 
@@ -26,4 +28,9 @@ export type CryptoAsset = 'MATIC' | 'ETH' | 'USDC';
 export const faucetProvider = new FaucetProvider(
   import.meta.env.VITE_FAUCET_BACKEND_URL,
   web3Provider
+);
+
+export const permit2Provider = new Permit2Provider(
+  web3Provider,
+  new LocalStorageProvider()
 );
