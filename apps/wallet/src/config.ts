@@ -1,10 +1,11 @@
 import web3 from 'web3';
 import { AccountProvider, LiquihubProvider, Web3Provider } from './lib';
-import { ERC20sDataProvider } from './lib/ERC20sDataProvider';
 import { FaucetProvider } from './lib/FaucetProvider';
 import { TTLCache } from './lib/TTLCache';
 import { CoinsProvider } from './lib/CoinsProvider';
 import { SwapProvider } from './lib/SwapProvider';
+import { Permit2Provider } from './lib/Permit2Provider';
+import { LocalStorageProvider } from './lib/LocalStorageProvider';
 
 export const isMumbai = import.meta.env.VITE_IS_MUMBAI === '1';
 
@@ -23,15 +24,18 @@ export const account = accountHolder.account!;
 
 export const web3Provider = new Web3Provider(w3, account);
 
-export const erc20sDataProvider = new ERC20sDataProvider();
-
 export const liqHubProvider = new LiquihubProvider(web3Provider);
 
 export const coinsProvider = new CoinsProvider(false, new TTLCache());
+
+export const localStorageProvider = new LocalStorageProvider();
+
+export const permit2Provider = new Permit2Provider(web3Provider, localStorageProvider)
+
 export const swapProvider = new SwapProvider(
   coinsProvider,
   liqHubProvider,
-  erc20sDataProvider
+  permit2Provider
 );
 
 // TODO: remove this
@@ -41,3 +45,5 @@ export const faucetProvider = new FaucetProvider(
   import.meta.env.VITE_FAUCET_BACKEND_URL,
   web3Provider
 );
+
+

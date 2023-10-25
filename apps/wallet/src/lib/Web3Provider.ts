@@ -50,21 +50,31 @@ export class Web3Provider {
       (await txn.estimateGas({ from: this.account.address })) * 1.2
     ).toFixed(0);
 
-    debug('nonce: %d, gas: %d', nonce, gas);
-
     const gasMode = 'fast'; // TODO change to med
+
+    const maxFeePerGas = price[gasMode].max.toString();
+    const maxPriorityFeePerGas = price[gasMode].tip.toString();
+
+    debug(
+      `maxFeePerGas ${maxFeePerGas}, maxPriorityFeePerGas ${maxPriorityFeePerGas}`
+    );
 
     const signed = await this.account.signTransaction({
       gas,
       maxFeePerGas: price[gasMode].max.toString(),
       maxPriorityFeePerGas: price[gasMode].tip.toString(),
-      nonce: nonce,
+      nonce: parseInt(nonce.toString()),
       from: this.account.address,
       to,
       data: txn.encodeABI(),
     });
 
-    await this.web3.eth.sendSignedTransaction(signed.rawTransaction!);
+    debug(`Sending signed tx`);
+    const { transactionHash } = await this.web3.eth.sendSignedTransaction(
+      signed.rawTransaction!
+    );
+
+    return transactionHash;
   }
 
   async transfer(token: string, to: string, amount: BNComparable) {
