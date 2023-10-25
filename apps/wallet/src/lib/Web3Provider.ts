@@ -39,15 +39,15 @@ export class Web3Provider {
     txn: NonPayableTransactionObject<T>,
     to: string
   ) {
-    if (!this.account) throw new Error('signAndSend: No account');
-
     const [nonce, price] = await Promise.all([
       this.web3.eth.getTransactionCount(this.account.address),
       estimateGasPrice(this.web3),
     ]);
 
+    debug(await txn.estimateGas({ from: this.account.address }));
+
     const gas = (
-      (await txn.estimateGas({ from: this.account.address })) * 1.2
+      Number(await txn.estimateGas({ from: this.account.address })) * 1.2
     ).toFixed(0);
 
     const gasMode = 'fast'; // TODO change to med
@@ -83,6 +83,7 @@ export class Web3Provider {
   }
 
   async approvePermit2(token: string) {
+    debug('approvePermit2: %s', token);
     const txn = this.wrapToken(token).methods.approve(
       permit2Address,
       maxUint256
