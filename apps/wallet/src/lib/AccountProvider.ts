@@ -1,8 +1,7 @@
-import { Account } from 'web3-core';
+import { Web3Account } from 'web3-eth-accounts';
 import Web3 from 'web3';
 import { getDebug } from './utils/debug';
 const debug = getDebug('AccountProvider');
-import { Web3Account } from 'web3-eth-accounts';
 
 export class AccountProvider {
   account: Web3Account | null = null;
