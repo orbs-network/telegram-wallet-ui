@@ -28,6 +28,7 @@ import { debounceAsync } from '../../lib/hooks/useDebounce';
 import { coinsProvider, swapProvider } from '../../config';
 import { bn6 } from '@defi.org/web3-candies';
 import { QUOTE_REFETCH_INTERVAL } from './queries';
+import { useCountdown } from '../../lib/hooks/useCountdown';
 
 const debouncedQuote = debounceAsync(
   async (inAmount: string, inToken: TokenData, outToken: TokenData) => {
@@ -156,7 +157,11 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
     async (inValue: string) => {
       try {
         if (!tokens) {
-          throw new Error('No tokens');
+          return;
+        }
+
+        if (inValue === '') {
+          return;
         }
 
         setFetchingQuote(true);
@@ -180,12 +185,20 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
         );
       } catch (err) {
         console.error(err);
+        setShouldFetchQuoteInterval(false);
       } finally {
         setFetchingQuote(false);
       }
     },
     [form, inToken, outToken, tokens]
   );
+
+  const { reset, start, stop, ...countdownProps } = useCountdown({
+    seconds: QUOTE_REFETCH_INTERVAL / 1000,
+    onAsyncComplete: async () => {
+      await fetchLHQuote(inAmount);
+    },
+  });
 
   if (!tokens) {
     return (
@@ -194,8 +207,6 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
       </Container>
     );
   }
-
-  console.log('disabled', !formState.isValid);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -230,6 +241,16 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
                         tokens[outToken],
                         bn6(e.target.value)
                       );
+
+                    if (estimatedOutAmount.eq(0)) {
+                      throw new Error('Estimated out amount is 0');
+                    }
+
+                    console.log(
+                      'estimatedOutAmount',
+                      estimatedOutAmount.toString()
+                    );
+
                     form.setValue(
                       'outAmount',
                       estimatedOutAmount
@@ -239,10 +260,14 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
                     );
 
                     // Then fetch LH quote
-                    fetchLHQuote(e.target.value);
+                    await fetchLHQuote(e.target.value);
                     setShouldFetchQuoteInterval(true);
+                    reset();
+                    start();
                   } catch (err) {
                     console.error(err);
+                    setShouldFetchQuoteInterval(false);
+                    // TODO: show toast
                   }
                 };
                 quote();
@@ -266,6 +291,7 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
                     form.resetField('outAmount');
                     form.setValue('inToken', e.target.value);
                     setShouldFetchQuoteInterval(false);
+                    stop();
                   }}
                 />
                 <FormErrorMessage>{fieldState.error?.message}</FormErrorMessage>
@@ -286,16 +312,18 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
           icon={<Icon as={MdSwapVerticalCircle} />}
           onClick={() => {
             const values = form.getValues();
+            stop();
 
             form.reset(
               {
                 inToken: values.outToken,
                 inAmount: values.outAmount,
                 outToken: values.inToken,
-                outAmount: values.inAmount,
+                outAmount: '',
               },
               { keepDirty: true, keepTouched: true }
             );
+            fetchLHQuote(values.outAmount);
           }}
         />
         <HStack>
@@ -305,14 +333,7 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
           </Text>
         </HStack>
         <HStack>
-          {shouldFetchQuoteInterval && (
-            <Countdown
-              seconds={QUOTE_REFETCH_INTERVAL / 1000}
-              onAsyncComplete={async () => {
-                await fetchLHQuote(inAmount);
-              }}
-            />
-          )}
+          {shouldFetchQuoteInterval && <Countdown {...countdownProps} />}
 
           {fetchingQuote && (
             <Box>
@@ -355,6 +376,7 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
                     form.resetField('outAmount');
                     form.setValue('outToken', e.target.value);
                     setShouldFetchQuoteInterval(false);
+                    stop();
                   }}
                 />
                 <FormErrorMessage>{fieldState.error?.message}</FormErrorMessage>
