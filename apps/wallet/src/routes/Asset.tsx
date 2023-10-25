@@ -41,7 +41,12 @@ export function Asset() {
         }}
       />
       <VStack spacing={4}>
-        {assetId && <Avatar name={assetId} />}
+        <Avatar
+          name={tokenData.symbol}
+          src={tokenData.logoURI}
+          colorScheme="telegram"
+        />
+
         <Balance
           primaryCurrencySymbol={tokenData?.symbol.toUpperCase()}
           primaryAmount={tokenData.balance}

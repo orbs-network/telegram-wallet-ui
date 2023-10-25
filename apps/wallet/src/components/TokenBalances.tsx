@@ -22,7 +22,13 @@ export function TokenBalances() {
         <Link key={token.symbol} to={`/asset/${token.symbol}`}>
           <Card>
             <DataDisplayItem
-              StartIconSlot={<Avatar name={token.symbol} src={token.logoURI} />}
+              StartIconSlot={
+                <Avatar
+                  name={token.symbol}
+                  src={token.logoURI}
+                  colorScheme="telegram"
+                />
+              }
               StartTextSlot={
                 <Box>
                   <Heading as="h3" variant="bodyTitle">
