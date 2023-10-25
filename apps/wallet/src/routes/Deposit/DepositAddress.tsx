@@ -6,7 +6,6 @@ import {
   VStack,
   useToast,
 } from '@chakra-ui/react';
-import { BackButton } from '@twa-dev/sdk/react';
 import { useNavigate } from 'react-router-dom';
 import { useUserData } from '../../hooks';
 import { Button, colors } from '@telegram-wallet-ui/twa-ui-kit';
@@ -15,7 +14,7 @@ import { css } from '@emotion/react';
 import { useState } from 'react';
 import { MdIosShare } from 'react-icons/md';
 import { BiCheck } from 'react-icons/bi';
-import { WalletSpinner } from '../../components';
+import { Page, WalletSpinner } from '../../components';
 
 const styles = {
   qr: css`
@@ -82,12 +81,7 @@ export function DepositAddress() {
   }
 
   return (
-    <Container size="sm" pt={4} height="100vh">
-      <BackButton
-        onClick={() => {
-          navigate(-1);
-        }}
-      />
+    <Page>
       <VStack
         justifyContent="center"
         alignItems="center"
@@ -121,6 +115,6 @@ export function DepositAddress() {
           )}
         </HStack>
       </VStack>
-    </Container>
+    </Page>
   );
 }

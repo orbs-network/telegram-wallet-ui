@@ -8,23 +8,17 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Card, DataDisplayItem, colors } from '@telegram-wallet-ui/twa-ui-kit';
-import { BackButton } from '@twa-dev/sdk/react';
 import { AiOutlineCreditCard } from 'react-icons/ai';
 import { BiChevronRight } from 'react-icons/bi';
 import { RiApps2Line } from 'react-icons/ri';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { Page } from '../../components';
 
 export function SelectMethod() {
-  const navigate = useNavigate();
+
 
   return (
-    <Container size="sm" pt={4}>
-      <BackButton
-        onClick={() => {
-          navigate(-1);
-        }}
-      />
-
+    <Page>
       <VStack spacing={8} alignItems="stretch">
         <Heading as="h1" size="md" textAlign="center">
           How would you like to deposit crypto?
@@ -74,6 +68,6 @@ export function SelectMethod() {
           </Link>
         </VStack>
       </VStack>
-    </Container>
+    </Page>
   );
 }

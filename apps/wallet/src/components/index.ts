@@ -4,3 +4,4 @@ export * from './WalletSpinner';
 export * from './TokenBalances';
 export * from './TokensList';
 export * from './TokenListItem';
+export * from './Page';

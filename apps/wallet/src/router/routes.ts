@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export const ROUTES = {
   root: '/',
   deposit: '/deposit',
@@ -8,4 +10,8 @@ export const ROUTES = {
   withdraw: '/withdraw',
   withdrawAddress: '/withdraw/:assetId/address',
   withdrawAmount: '/withdraw/:assetId/:recipient/amount',
+  withdrawSummary: '/withdraw/:assetId/:recipient/amount/:amount/summary',
+  withdrawSuccess: '/withdraw/:assetId/:recipient/amount/:amount/success',
 };
+
+

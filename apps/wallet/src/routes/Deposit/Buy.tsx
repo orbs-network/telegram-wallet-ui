@@ -5,6 +5,7 @@ import { TRANSAK_STAGING_API_KEY, account } from '../../config';
 import { Transak } from './transak/constants';
 import { MainButton } from '@twa-dev/sdk/react';
 import { useNavigate } from 'react-router-dom';
+import { Page } from '../../components';
 
 const walletAddress = account?.address;
 
@@ -73,7 +74,7 @@ export const Buy = () => {
   const src = constructSrcUrl(walletAddress);
 
   return (
-    <Container size="sm" height="100vh">
+    <Page>
       <iframe
         ref={iframeRef}
         id="transakIframe"
@@ -85,6 +86,6 @@ export const Buy = () => {
       {showDoneButton && (
         <MainButton text="Done" onClick={() => navigate('/')} />
       )}
-    </Container>
+    </Page>
   );
 };

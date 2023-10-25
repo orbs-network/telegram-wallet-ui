@@ -1,5 +1,4 @@
 import {
-  Container,
   Heading,
   Input,
   InputGroup,
@@ -8,42 +7,67 @@ import {
   VStack,
   Icon,
   useColorMode,
+  Container,
 } from '@chakra-ui/react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { MdOutlineContentPaste } from 'react-icons/md';
 import Telegram from '@twa-dev/sdk';
 import Web3 from 'web3';
-import { MainButton } from '@twa-dev/sdk/react';
 import { MdQrCodeScanner } from 'react-icons/md';
 import { tgColors } from '@telegram-wallet-ui/twa-ui-kit';
 import styled from '@emotion/styled';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { useNavigation } from '../../router/hooks';
+import { Page } from '../../components';
+import { useMainButtonContext } from '../../context/MainButtonContext';
+import { css } from '@emotion/react';
+import { useParams } from 'react-router-dom';
+import { URLParams } from '../../types';
+import { useCurrentPath } from '../../hooks';
+
+const styles = {
+    container: css`
+        flex:1
+    `
+}
+
 export function WithdrawAddress() {
   const [address, setAddress] = useState('');
-    const navigation = useNavigation();
+  const { withdrawAmount } = useNavigation();
+  const { onSetButton } = useMainButtonContext();
+  const {assetId} = useParams<URLParams>()
+
+  useCurrentPath();
 
   const isValidAddress = useMemo(
     () => Web3.utils.isAddress(address),
     [address]
   );
 
-  const onClick = () => navigation.withdrawAmount(address);
+  useEffect(() => {
+    onSetButton({
+      text: 'Continue',
+      disabled: !isValidAddress,
+      onClick: () => withdrawAmount(assetId!, address),
+    });
+  }, [onSetButton, withdrawAmount, isValidAddress, address, assetId]);
 
   return (
-    <StyledContainer size="sm" pt={4}>
-      <VStack spacing={4} alignItems="stretch" height="100%">
-        <Heading as="h1" size="md" textAlign="center">
-          Enter address
-        </Heading>
-        <AddressInput address={address} setAddress={setAddress} />
-        <ScanQR setAddress={setAddress} />
-        {isValidAddress && <MainButton text="Continue" onClick={onClick} />}
-        <button onClick={onClick}>Next</button>
-      </VStack>
-    </StyledContainer>
+    <Page>
+      <Container size="sm" pt={4} css={styles.container}>
+        <VStack spacing={4} alignItems="stretch" height="100%">
+          <Heading as="h1" size="md" textAlign="center">
+            Enter address
+          </Heading>
+          <AddressInput address={address} setAddress={setAddress} />
+          <ScanQR setAddress={setAddress} />
+        </VStack>
+      </Container>
+    </Page>
   );
 }
+
+
 
 const AddressInput = ({
   address,
@@ -98,7 +122,8 @@ const ScanQR = ({ setAddress }: { setAddress: (value: string) => void }) => {
   const onScan = () => {
     Telegram.showScanQrPopup({}, (value) => {
       try {
-        setAddress(value);
+        const result = value.substring(value.indexOf('0x'));
+        setAddress(result);
       } catch (error) {
         console.error(error);
       } finally {
@@ -127,12 +152,6 @@ const ScanQR = ({ setAddress }: { setAddress: (value: string) => void }) => {
     </StyledQRCode>
   );
 };
-
-const StyledContainer = styled(Container)({
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-});
 
 const StyledQRCode = styled('div')({
   display: 'flex',

@@ -7,6 +7,10 @@ import { fetchLatestPrice } from './utils/fetchLatestPrice';
 import { account, web3Provider } from './config';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Fetcher } from './utils/fetcher';
+import { useNumericFormat } from 'react-number-format';
+import { matchRoutes, useLocation } from 'react-router-dom';
+import { ROUTES } from './router/routes';
+import _ from 'lodash';
 
 export const useFetchLatestPrice = (coin?: string) => {
   return useQuery({
@@ -69,13 +73,14 @@ export const useCoinsList = () => {
   });
 };
 
-export const useTokenBalanceQuery = (tokenAddress: string) => {
+export const useTokenBalanceQuery = (tokenAddress?: string) => {
   return useQuery({
     queryKey: ['useTokenBalanceQuery', tokenAddress],
     queryFn: async () => {
-      const result = await web3Provider.balanceOf(tokenAddress);
-
-      return result.toString() || '0';
+      const result = await web3Provider.balanceOf(tokenAddress!);
+      // TODO remove this
+      return '10';
+      // return result.toString() || '0';
     },
     enabled: !!tokenAddress,
     refetchInterval: 20_000,
@@ -169,4 +174,43 @@ export const useUserData = () => {
   }, [updateBalances]);
 
   return userData;
+};
+
+export const useFormatNumber = ({
+  value,
+  decimalScale = 3,
+  prefix,
+  suffix,
+}: {
+  value?: string | number;
+  decimalScale?: number;
+  prefix?: string;
+  suffix?: string;
+}) => {
+  const result = useNumericFormat({
+    allowLeadingZeros: true,
+    thousandSeparator: ',',
+    displayType: 'text',
+    value: value || '',
+    decimalScale,
+    prefix,
+    suffix,
+  });
+
+  return result.value?.toString();
+};
+
+const MAP_ROUTES = _.map(ROUTES, (value, key) => {
+  return {
+    path: value,
+  };
+});
+
+export const useCurrentPath = () => {
+  const location = useLocation();
+  const result = matchRoutes(MAP_ROUTES, location);
+  if (!result) {
+    return '';
+  }
+  return result[0].route.path;
 };

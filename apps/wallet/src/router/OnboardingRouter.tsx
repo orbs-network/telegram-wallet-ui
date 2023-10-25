@@ -1,6 +1,6 @@
-import { RouteObject } from 'react-router-dom';
 import { AnimatedRouter } from './AnimatedRouter';
 import { Page1, Page2, Page3 } from '../routes';
+import { RouteObject } from 'react-router-dom';
 
 const routes: RouteObject[] = [
   {
@@ -15,7 +15,6 @@ const routes: RouteObject[] = [
     path: '/3',
     element: <Page3 />,
   },
-
 ];
 
 export const OnboardingRouter = () => {

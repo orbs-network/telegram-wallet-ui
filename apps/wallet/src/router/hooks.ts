@@ -1,48 +1,78 @@
-import { useNavigate, useParams } from 'react-router-dom';
-import { URLParams } from '../types';
+import { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ROUTES } from './routes';
 
 export const useNavigation = () => {
   const navigate = useNavigate();
-  const params = useParams<URLParams>();
 
-  const withdraw = () => {
+  const withdraw = useCallback(() => {
     navigate(ROUTES.withdraw);
-  };
+  }, [navigate]);
 
-  const deposit = () => {
+  const deposit = useCallback(() => {
     navigate(ROUTES.deposit);
-  };
+  }, [navigate]);
 
-  const depositBuy = () => {
+  const depositBuy = useCallback(() => {
     navigate(ROUTES.depositBuy);
-  };
+  }, [navigate]);
 
-  const depositCrypto = () => {
+  const depositCrypto = useCallback(() => {
     navigate(ROUTES.depositCrypto);
-  };
+  }, [navigate]);
 
-  const tempUtils = () => {
+  const tempUtils = useCallback(() => {
     navigate(ROUTES.tempUtils);
-  };
+  }, [navigate]);
 
-  const asset = (assetId: string) => {
-    navigate(ROUTES.asset.replace(':assetId', assetId));
-  };
+  const asset = useCallback(
+    (assetId: string) => {
+      navigate(ROUTES.asset.replace(':assetId', assetId));
+    },
+    [navigate]
+  );
 
-  const withdrawAddress = (assetId: string) => {
-    navigate(ROUTES.withdrawAddress.replace(':assetId', assetId));
-  };
+  const withdrawAddress = useCallback(
+    (assetId: string) => {
+      navigate(ROUTES.withdrawAddress.replace(':assetId', assetId));
+    },
+    [navigate]
+  );
 
-  const withdrawAmount = (recipient: string) => {
-    console.log(recipient);
-    
-    navigate(
-      ROUTES.withdrawAmount
-        .replace(':assetId', params.assetId || '')
-        .replace(':recipient', recipient)
-    );
-  };
+  const withdrawAmount = useCallback(
+    (assetId: string, recipient: string) => {
+      navigate(
+        ROUTES.withdrawAmount
+          .replace(':assetId', assetId || '')
+          .replace(':recipient', recipient)
+      );
+    },
+    [navigate]
+  );
+
+  const withdrawSummary = useCallback(
+    (assetId: string, recipient: string, amount: string) => {
+      navigate(
+        ROUTES.withdrawSummary
+          .replace(':assetId', assetId || '')
+          .replace(':recipient', recipient)
+          .replace(':amount', amount)
+      );
+    },
+    [navigate]
+  );
+
+   const withdrawSuccess = useCallback(
+     (assetId: string, recipient: string, amount: string) => {
+       navigate(
+         ROUTES.withdrawSuccess
+           .replace(':assetId', assetId || '')
+           .replace(':recipient', recipient)
+           .replace(':amount', amount)
+       );
+     },
+     [navigate]
+   );
 
   return {
     withdraw,
@@ -53,5 +83,7 @@ export const useNavigation = () => {
     asset,
     withdrawAddress,
     withdrawAmount,
+    withdrawSummary,
+    withdrawSuccess,
   };
 };
