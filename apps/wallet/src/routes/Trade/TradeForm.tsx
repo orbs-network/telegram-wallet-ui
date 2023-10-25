@@ -9,6 +9,7 @@ import {
   FormControl,
   FormErrorMessage,
   Spinner,
+  Box,
 } from '@chakra-ui/react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { MdSwapVerticalCircle } from 'react-icons/md';
@@ -16,8 +17,8 @@ import { useFetchLatestPrice } from '../../hooks';
 import { TradeFormSchema } from './schema';
 import { TokenData } from '../../types';
 import BN from 'bignumber.js';
-import { TokenSelect, WalletSpinner } from '../../components';
-import { useEffect, useState } from 'react';
+import { Countdown, TokenSelect, WalletSpinner } from '../../components';
+import { useCallback, useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { MainButton } from '@twa-dev/sdk/react';
@@ -26,6 +27,7 @@ import Twa from '@twa-dev/sdk';
 import { debounceAsync } from '../../lib/hooks/useDebounce';
 import { coinsProvider, swapProvider } from '../../config';
 import { bn6 } from '@defi.org/web3-candies';
+import { QUOTE_REFETCH_INTERVAL, useQuoteQuery } from './queries';
 
 const debouncedQuote = debounceAsync(
   async (inAmount: string, inToken: TokenData, outToken: TokenData) => {
@@ -123,6 +125,69 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
   );
 
   const [fetchingQuote, setFetchingQuote] = useState(false);
+  const [shouldFetchQuoteInterval, setShouldFetchQuoteInterval] =
+    useState(false);
+
+  // console.log('shouldFetchQuoteInterval', shouldFetchQuoteInterval);
+
+  // const { data: quoteIntervalData, isFetching } = useQuoteQuery({
+  //   inAmount: inAmount,
+  //   inToken: tokens ? tokens[inToken] : undefined,
+  //   outToken: tokens ? tokens[outToken] : undefined,
+  //   enabled: shouldFetchQuoteInterval,
+  // });
+
+  // useEffect(() => {
+  //   if (quoteIntervalData && tokens) {
+  //     form.setValue(
+  //       'outAmount',
+  //       BN(quoteIntervalData.quote.outAmount)
+  //         .dividedBy(Math.pow(10, tokens[outToken].decimals))
+  //         .toString(),
+  //       {
+  //         shouldDirty: true,
+  //         shouldTouch: true,
+  //       }
+  //     );
+  //   }
+  // }, [quoteIntervalData, form, tokens, outToken]);
+
+  const fetchLHQuote = useCallback(
+    async (inValue: string) => {
+      try {
+        if (!tokens) {
+          throw new Error('No tokens');
+        }
+
+        setFetchingQuote(true);
+
+        // Then fetch LH quote
+        const resp = await debouncedQuote(
+          inValue,
+          tokens[inToken],
+          tokens[outToken]
+        );
+
+        if (!resp) {
+          throw new Error('No quote');
+        }
+
+        form.setValue(
+          'outAmount',
+          BN(resp.quote.outAmount)
+            .dividedBy(Math.pow(10, tokens[outToken].decimals))
+            .toString()
+        );
+
+        setShouldFetchQuoteInterval(true);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setFetchingQuote(false);
+      }
+    },
+    [form, inToken, outToken, setShouldFetchQuoteInterval, tokens]
+  );
 
   if (!tokens) {
     return (
@@ -154,7 +219,9 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
               onChange={(e) => {
                 const quote = async () => {
                   try {
-                    setFetchingQuote(true);
+                    if (!tokens) {
+                      throw new Error('No tokens');
+                    }
 
                     // Get estimated out amount first
                     const estimatedOutAmount =
@@ -172,30 +239,12 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
                     );
 
                     // Then fetch LH quote
-                    const resp = await debouncedQuote(
-                      e.target.value,
-                      tokens[inToken],
-                      tokens[outToken]
-                    );
-
-                    if (!resp) {
-                      throw new Error('No quote');
-                    }
-
-                    form.setValue(
-                      'outAmount',
-                      BN(resp.quote.outAmount)
-                        .dividedBy(Math.pow(10, tokens[outToken].decimals))
-                        .toString()
-                    );
+                    fetchLHQuote(e.target.value);
                   } catch (err) {
                     console.error(err);
-                  } finally {
-                    setFetchingQuote(false);
                   }
                 };
-
-                void quote();
+                quote();
               }}
               placeholder="0.00"
               type="number"
@@ -247,31 +296,43 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
           </Text>
         </HStack>
         <HStack>
-          <FormControl>
-            {fetchingQuote && <Spinner />}
-            <Input
-              id="outAmount"
-              {...register('outAmount')}
-              contentEditable={false}
-              // onChange={(e) => {
-              //   if (outPrice) {
-              //     const outAmountInUsd = BN(outPrice).multipliedBy(
-              //       e.target.value
-              //     );
-
-              //     form.setValue(
-              //       'inAmount',
-              //       BN(outAmountInUsd)
-              //         .dividedBy(inPrice || 0)
-              //         .toString(),
-              //       { shouldDirty: true, shouldTouch: true }
-              //     );
-              //   }
-              // }}
-              placeholder="0.00"
-              type="number"
+          {shouldFetchQuoteInterval && (
+            <Countdown
+              seconds={QUOTE_REFETCH_INTERVAL / 1000}
+              onAsyncComplete={async () => {
+                await fetchLHQuote(inAmount);
+              }}
             />
-          </FormControl>
+          )}
+
+          {fetchingQuote && (
+            <Box>
+              <Spinner />
+            </Box>
+          )}
+
+          <Input
+            id="outAmount"
+            {...register('outAmount')}
+            contentEditable={false}
+            // onChange={(e) => {
+            //   if (outPrice) {
+            //     const outAmountInUsd = BN(outPrice).multipliedBy(
+            //       e.target.value
+            //     );
+
+            //     form.setValue(
+            //       'inAmount',
+            //       BN(outAmountInUsd)
+            //         .dividedBy(inPrice || 0)
+            //         .toString(),
+            //       { shouldDirty: true, shouldTouch: true }
+            //     );
+            //   }
+            // }}
+            placeholder="0.00"
+            type="number"
+          />
           <Controller
             control={form.control}
             name="outToken"

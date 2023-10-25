@@ -1,4 +1,4 @@
-import { BNComparable, QuoteResponse, Token } from '../types';
+import { BNComparable, LiquihubQuote, QuoteResponse, Token } from '../types';
 import { LiquihubProvider } from './LiquihubProvider';
 import { CoinsProvider } from './CoinsProvider';
 import { getDebug } from './utils/debug';
@@ -23,7 +23,11 @@ export class SwapProvider {
     private permit2Provider: Permit2Provider
   ) {}
 
-  async quote(quoteRequest: QuoteRequest) {
+  async quote(
+    quoteRequest: QuoteRequest
+  ): Promise<
+    { quote: LiquihubQuote & QuoteResponse } & { isAboveMin: boolean }
+  > {
     // TODO cache
     const fetchCoins = await this.coinsProvider.fetchCoins();
 
