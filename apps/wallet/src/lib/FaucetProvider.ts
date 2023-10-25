@@ -3,10 +3,13 @@ import { web3Provider } from '../config';
 import { AuthenticatedTelegramFetcher } from '../utils/fetcher';
 import { getDebug } from './utils/debug';
 import { sleep } from '@defi.org/web3-candies';
+import promiseRetry from 'promise-retry';
+
 const debug = getDebug('FaucetProvider');
 
 export class FaucetProvider {
   private POLL_INTERVAL = 3000;
+  private isPolling = false;
   private currentErc20TokenPolled: string | null = null;
 
   constructor(private faucetUrl: string, web3Provider: Web3Provider) {
@@ -14,8 +17,6 @@ export class FaucetProvider {
   }
 
   private async requestFromFaucet(erc20Token: string) {
-    if (!web3Provider.account) throw new Error('No account');
-
     debug('Requesting from faucet');
     await AuthenticatedTelegramFetcher.post(`${this.faucetUrl}/topUp`, {
       toAddress: web3Provider.account.address,
@@ -23,8 +24,9 @@ export class FaucetProvider {
     });
   }
 
-  async requestIfNeeded(erc20Token: string) {
-    if (!web3Provider.account) throw new Error('No account');
+  private async _requestIfNeeded(erc20Token: string) {
+    if (this.isPolling) return;
+    this.isPolling = true;
 
     this.currentErc20TokenPolled = erc20Token;
 
@@ -53,5 +55,16 @@ export class FaucetProvider {
 
     await this.requestFromFaucet(erc20Token);
     return true;
+  }
+
+  async requestIfNeeded(erc20Token: string) {
+    return promiseRetry((retry, number) => {
+      if (number > 0) debug('Attempt number %d', number);
+      return this._requestIfNeeded(erc20Token).catch((e) => {
+        debug('Error: %s', e.message);
+        this.isPolling = false;
+        retry(e);
+      });
+    });
   }
 }
