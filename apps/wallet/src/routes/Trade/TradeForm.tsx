@@ -195,6 +195,8 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
     );
   }
 
+  console.log('disabled', !formState.isValid);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <VStack alignItems="stretch">

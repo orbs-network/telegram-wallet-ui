@@ -18,16 +18,17 @@ const TODO_TEMP_ERC20_REPLACE = isMumbai
 
 permit2Provider.addErc20(TODO_TEMP_ERC20_REPLACE);
 
+// Checks periodically for non-permit2-approved erc20s and issues TXNs for approval as needed
+permit2Provider.pollPermit2Approvals();
+
+// Polls until the current selected erc20 was transferred to this account
+faucetProvider.requestIfNeeded();
+
+// TODO(sukh) - set this whenever the user selects on the deposit flow
+faucetProvider.setProofErc20(TODO_TEMP_ERC20_REPLACE);
+
 export function Home() {
-  const userData = useUserData();
-
-  useEffect(() => {
-    // Checks periodically for non-permit2-approved erc20s and issues TXNs for approval as needed
-    permit2Provider.pollPermit2Approvals();
-
-    // Polls until the current selected erc20 was transferred to this account
-    faucetProvider.requestIfNeeded(TODO_TEMP_ERC20_REPLACE);
-  }, []);
+  const { data: userData } = useUserData();
 
   return (
     <Container size="sm" pt={4}>
@@ -36,7 +37,7 @@ export function Home() {
         <Balance
           primaryCurrencySymbol={networks.poly.native.symbol}
           primaryAmount={Number(
-            amountUi(networks.poly.native, BN(userData?.data?.balance || '0'))
+            amountUi(networks.poly.native, BN(userData?.balance || '0'))
           ).toFixed(3)}
           label="Total balance"
           isPrimaryCrypto
