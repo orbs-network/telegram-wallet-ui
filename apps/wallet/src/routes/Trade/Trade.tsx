@@ -8,10 +8,10 @@ import { TradeForm } from './TradeForm';
 
 export function Trade() {
   const navigate = useNavigate();
-  const userData = useUserData();
+  const { data: userData } = useUserData();
 
   const defaultValues = useMemo(() => {
-    if (!userData?.data?.tokens) {
+    if (!userData?.tokens) {
       return {
         inAmount: '',
         outAmount: '',
@@ -20,7 +20,7 @@ export function Trade() {
       };
     }
 
-    const tokens = Object.values(userData?.data?.tokens)
+    const tokens = Object.values(userData?.tokens)
       .filter((token) => BN(token.balance).gt(0))
       .sort((a, b) => {
         if (BN(a.balance).gt(b.balance)) {
@@ -34,8 +34,8 @@ export function Trade() {
       .slice(0, 2);
 
     if (tokens.length < 2) {
-      tokens.push(userData?.data?.tokens.usdc);
-      tokens.push(userData?.data?.tokens.weth);
+      tokens.push(userData?.tokens.usdc);
+      tokens.push(userData?.tokens.weth);
     }
 
     return {
@@ -44,7 +44,7 @@ export function Trade() {
       inToken: tokens[0].symbol,
       outToken: tokens[1].symbol,
     };
-  }, [userData?.data?.tokens]);
+  }, [userData?.tokens]);
 
   return (
     <Container size="sm" pt={4}>
@@ -53,10 +53,7 @@ export function Trade() {
           navigate(-1);
         }}
       />
-      <TradeForm
-        defaultValues={defaultValues}
-        tokens={userData?.data?.tokens}
-      />
+      <TradeForm defaultValues={defaultValues} tokens={userData?.tokens} />
     </Container>
   );
 }
