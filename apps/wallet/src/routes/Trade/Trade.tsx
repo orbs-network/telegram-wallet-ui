@@ -13,10 +13,10 @@ export function Trade() {
   const defaultValues = useMemo(() => {
     if (!userData?.data?.tokens) {
       return {
-        primaryAmount: '',
-        secondaryAmount: '',
-        primaryToken: '',
-        secondaryToken: '',
+        inAmount: '',
+        outAmount: '',
+        inToken: '',
+        outToken: '',
       };
     }
 
@@ -39,10 +39,10 @@ export function Trade() {
     }
 
     return {
-      primaryAmount: '',
-      secondaryAmount: '',
-      primaryToken: tokens[0].symbol,
-      secondaryToken: tokens[1].symbol,
+      inAmount: '',
+      outAmount: '',
+      inToken: tokens[0].symbol,
+      outToken: tokens[1].symbol,
     };
   }, [userData?.data?.tokens]);
 

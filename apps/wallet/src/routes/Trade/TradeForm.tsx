@@ -8,6 +8,7 @@ import {
   Container,
   FormControl,
   FormErrorMessage,
+  Spinner,
 } from '@chakra-ui/react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { MdSwapVerticalCircle } from 'react-icons/md';
@@ -16,12 +17,31 @@ import { TradeFormSchema } from './schema';
 import { TokenData } from '../../types';
 import BN from 'bignumber.js';
 import { TokenSelect, WalletSpinner } from '../../components';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { MainButton } from '@twa-dev/sdk/react';
 import { Button } from '@telegram-wallet-ui/twa-ui-kit';
 import Twa from '@twa-dev/sdk';
+import { debounceAsync } from '../../lib/hooks/useDebounce';
+import { coinsProvider, swapProvider } from '../../config';
+import { bn6 } from '@defi.org/web3-candies';
+
+const debouncedQuote = debounceAsync(
+  async (inAmount: string, inToken: TokenData, outToken: TokenData) => {
+    try {
+      const resp = await swapProvider.quote({
+        inAmount: bn6(inAmount),
+        inToken: inToken.address,
+        outToken: outToken.address,
+      });
+      return resp;
+    } catch (err) {
+      console.error('Quote Error:', err);
+    }
+  },
+  300
+);
 
 type TradeFormProps = {
   defaultValues: TradeFormSchema;
@@ -30,7 +50,7 @@ type TradeFormProps = {
 
 export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
   const schema = yup.object().shape({
-    primaryAmount: yup
+    inAmount: yup
       .string()
       .required('Amount is required')
       .test((value, ctx) => {
@@ -38,15 +58,15 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
           return false;
         }
 
-        const primaryAmount = BN(value);
+        const inAmount = BN(value);
 
-        if (primaryAmount.eq(0)) {
+        if (inAmount.eq(0)) {
           return ctx.createError({
             message: 'Please enter a positive amount',
           });
         }
 
-        if (primaryAmount.gt(tokens[ctx.parent.primaryToken].balance)) {
+        if (inAmount.gt(tokens[ctx.parent.inToken].balance)) {
           return ctx.createError({
             message: 'Insufficient balance',
           });
@@ -54,7 +74,7 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
 
         return true;
       }),
-    secondaryAmount: yup
+    outAmount: yup
       .string()
       .required('Amount is required')
       .test((value, ctx) => {
@@ -62,9 +82,9 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
           return false;
         }
 
-        const secondaryAmount = BN(value);
+        const outAmount = BN(value);
 
-        if (secondaryAmount.eq(0)) {
+        if (outAmount.eq(0)) {
           return ctx.createError({
             message: 'Please enter a positive amount',
           });
@@ -72,8 +92,8 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
 
         return true;
       }),
-    primaryToken: yup.string().required('Token is required'),
-    secondaryToken: yup.string().required('Token is required'),
+    inToken: yup.string().required('Token is required'),
+    outToken: yup.string().required('Token is required'),
   });
 
   const form = useForm<TradeFormSchema>({
@@ -83,27 +103,26 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
   });
 
   useEffect(() => {
+    // if defaultValues change, reset the form
     form.reset(defaultValues);
   }, [defaultValues, form]);
 
   const { register, handleSubmit, watch, formState } = form;
-  const primaryToken = watch('primaryToken');
-  const secondaryToken = watch('secondaryToken');
-  const primaryAmount = watch('primaryAmount');
-  const secondaryAmount = watch('secondaryAmount');
+  const inToken = watch('inToken');
+  const outToken = watch('outToken');
+  const inAmount = watch('inAmount');
+  const outAmount = watch('outAmount');
 
   const onSubmit: SubmitHandler<TradeFormSchema> = (data) => console.log(data);
 
-  const { data: primaryPrice } = useFetchLatestPrice(
-    tokens && tokens[primaryToken]
-      ? tokens[primaryToken].coingeckoId
-      : undefined
+  const { data: inPrice } = useFetchLatestPrice(
+    tokens && tokens[inToken] ? tokens[inToken].coingeckoId : undefined
   );
-  const { data: secondaryPrice } = useFetchLatestPrice(
-    tokens && tokens[secondaryToken]
-      ? tokens[secondaryToken].coingeckoId
-      : undefined
+  const { data: outPrice } = useFetchLatestPrice(
+    tokens && tokens[outToken] ? tokens[outToken].coingeckoId : undefined
   );
+
+  const [fetchingQuote, setFetchingQuote] = useState(false);
 
   if (!tokens) {
     return (
@@ -118,47 +137,76 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
       <VStack alignItems="stretch">
         <HStack justifyContent="space-between">
           <div>
-            You pay{' '}
-            {tokens[primaryToken] && tokens[primaryToken].symbol.toUpperCase()}
+            You pay {tokens[inToken] && tokens[inToken].symbol.toUpperCase()}
           </div>
           <Text size="sm">
-            Max: {tokens[primaryToken] ? tokens[primaryToken].balance : '0.00'}{' '}
+            Max: {tokens[inToken] ? tokens[inToken].balance : '0.00'}{' '}
             <Text as="span" variant="hint">
-              {tokens[primaryToken] &&
-                tokens[primaryToken].symbol.toUpperCase()}
+              {tokens[inToken] && tokens[inToken].symbol.toUpperCase()}
             </Text>
           </Text>
         </HStack>
         <HStack>
-          <FormControl isInvalid={Boolean(formState.errors.primaryAmount)}>
+          <FormControl isInvalid={Boolean(formState.errors.inAmount)}>
             <Input
-              id="primaryAmount"
-              {...register('primaryAmount')}
+              id="inAmount"
+              {...register('inAmount')}
               onChange={(e) => {
-                if (primaryPrice) {
-                  const primaryInUsd = BN(primaryPrice).multipliedBy(
-                    e.target.value
-                  );
+                const quote = async () => {
+                  try {
+                    setFetchingQuote(true);
 
-                  form.setValue(
-                    'secondaryAmount',
-                    BN(primaryInUsd)
-                      .dividedBy(secondaryPrice || 0)
-                      .toString(),
-                    { shouldDirty: true, shouldTouch: true }
-                  );
-                }
+                    // Get estimated out amount first
+                    const estimatedOutAmount =
+                      await coinsProvider.getMinAmountOut(
+                        tokens[inToken],
+                        tokens[outToken],
+                        bn6(e.target.value)
+                      );
+                    form.setValue(
+                      'outAmount',
+                      estimatedOutAmount
+                        .dividedBy(Math.pow(10, tokens[outToken].decimals))
+                        .toString(),
+                      { shouldDirty: true, shouldTouch: true }
+                    );
+
+                    // Then fetch LH quote
+                    const resp = await debouncedQuote(
+                      e.target.value,
+                      tokens[inToken],
+                      tokens[outToken]
+                    );
+
+                    if (!resp) {
+                      throw new Error('No quote');
+                    }
+
+                    form.setValue(
+                      'outAmount',
+                      BN(resp.quote.outAmount)
+                        .dividedBy(Math.pow(10, tokens[outToken].decimals))
+                        .toString()
+                    );
+                  } catch (err) {
+                    console.error(err);
+                  } finally {
+                    setFetchingQuote(false);
+                  }
+                };
+
+                void quote();
               }}
               placeholder="0.00"
               type="number"
             />
             <FormErrorMessage>
-              {formState.errors.primaryAmount?.message}
+              {formState.errors.inAmount?.message}
             </FormErrorMessage>
           </FormControl>
           <Controller
             control={form.control}
-            name="primaryToken"
+            name="inToken"
             render={({ field, fieldState }) => (
               <FormControl isInvalid={Boolean(fieldState.error)}>
                 <TokenSelect {...field} />
@@ -168,12 +216,11 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
           />
         </HStack>
         <Text>
-          {primaryPrice && primaryAmount !== ''
-            ? `≈ $${BN(primaryPrice).multipliedBy(primaryAmount).toFixed(2)}`
+          {inPrice && inAmount !== ''
+            ? `≈ $${BN(inPrice).multipliedBy(inAmount).toFixed(2)}`
             : `1 ${
-                tokens[primaryToken] &&
-                tokens[primaryToken].symbol.toUpperCase()
-              } ≈ $${primaryPrice?.toFixed(2)}`}
+                tokens[inToken] && tokens[inToken].symbol.toUpperCase()
+              } ≈ $${inPrice?.toFixed(2)}`}
         </Text>
 
         <IconButton
@@ -184,10 +231,10 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
 
             form.reset(
               {
-                primaryToken: values.secondaryToken,
-                primaryAmount: values.secondaryAmount,
-                secondaryToken: values.primaryToken,
-                secondaryAmount: values.primaryAmount,
+                inToken: values.outToken,
+                inAmount: values.outAmount,
+                outToken: values.inToken,
+                outAmount: values.inAmount,
               },
               { keepDirty: true, keepTouched: true }
             );
@@ -196,40 +243,38 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
         <HStack>
           <Text size="2xl">
             You receive{' '}
-            {tokens[secondaryToken] &&
-              tokens[secondaryToken].symbol.toUpperCase()}
+            {tokens[outToken] && tokens[outToken].symbol.toUpperCase()}
           </Text>
         </HStack>
         <HStack>
-          <FormControl isInvalid={Boolean(formState.errors.secondaryAmount)}>
+          <FormControl>
+            {fetchingQuote && <Spinner />}
             <Input
-              id="secondaryAmount"
-              {...register('secondaryAmount')}
-              onChange={(e) => {
-                if (secondaryPrice) {
-                  const secondaryInUsd = BN(secondaryPrice).multipliedBy(
-                    e.target.value
-                  );
+              id="outAmount"
+              {...register('outAmount')}
+              contentEditable={false}
+              // onChange={(e) => {
+              //   if (outPrice) {
+              //     const outAmountInUsd = BN(outPrice).multipliedBy(
+              //       e.target.value
+              //     );
 
-                  form.setValue(
-                    'primaryAmount',
-                    BN(secondaryInUsd)
-                      .dividedBy(primaryPrice || 0)
-                      .toString(),
-                    { shouldDirty: true, shouldTouch: true }
-                  );
-                }
-              }}
+              //     form.setValue(
+              //       'inAmount',
+              //       BN(outAmountInUsd)
+              //         .dividedBy(inPrice || 0)
+              //         .toString(),
+              //       { shouldDirty: true, shouldTouch: true }
+              //     );
+              //   }
+              // }}
               placeholder="0.00"
               type="number"
             />
-            <FormErrorMessage>
-              {formState.errors.primaryAmount?.message}
-            </FormErrorMessage>
           </FormControl>
           <Controller
             control={form.control}
-            name="secondaryToken"
+            name="outToken"
             render={({ field, fieldState }) => (
               <FormControl isInvalid={Boolean(fieldState.error)}>
                 <TokenSelect {...field} />
@@ -240,14 +285,11 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
         </HStack>
 
         <Text>
-          {secondaryPrice && secondaryAmount !== ''
-            ? `≈ $${BN(secondaryPrice)
-                .multipliedBy(secondaryAmount)
-                .toFixed(2)}`
+          {outPrice && outAmount !== ''
+            ? `≈ $${BN(outPrice).multipliedBy(outAmount).toFixed(2)}`
             : `1 ${
-                tokens[secondaryToken] &&
-                tokens[secondaryToken].symbol.toUpperCase()
-              } ≈ $${secondaryPrice?.toFixed(2)}`}
+                tokens[outToken] && tokens[outToken].symbol.toUpperCase()
+              } ≈ $${outPrice?.toFixed(2)}`}
         </Text>
 
         {!Twa.isVersionAtLeast('6.0.1') && (
