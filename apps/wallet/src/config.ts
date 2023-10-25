@@ -1,6 +1,5 @@
 import web3 from 'web3';
 import { AccountProvider, LiquihubProvider, Web3Provider } from './lib';
-import { ERC20sDataProvider } from './lib/ERC20sDataProvider';
 import { FaucetProvider } from './lib/FaucetProvider';
 
 export const isMumbai = import.meta.env.VITE_IS_MUMBAI === '1';
@@ -19,8 +18,6 @@ const accountHolder = new AccountProvider(w3);
 export const account = accountHolder.account!;
 
 export const web3Provider = new Web3Provider(w3, account);
-
-export const erc20sDataProvider = new ERC20sDataProvider();
 
 export const liqHubProvider = new LiquihubProvider(web3Provider);
 

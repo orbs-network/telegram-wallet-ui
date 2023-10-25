@@ -8,26 +8,25 @@ import { useUserData } from '../hooks';
 import { networks } from '@defi.org/web3-candies';
 import { amountUi } from '../utils/conversion';
 import BN from 'bignumber.js';
-import {
-  erc20sDataProvider,
-  faucetProvider,
-  isMumbai,
-  web3Provider,
-} from '../config';
+import { faucetProvider, isMumbai, web3Provider } from '../config';
 import { useEffect } from 'react';
 import { Permit2Provider } from '../lib/Permit2Provider';
+import { LocalStorageProvider } from '../lib/LocalStorageProvider';
 
 // Temp - USDC
 const TODO_TEMP_ERC20_REPLACE = isMumbai
   ? '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23'
   : '0x2791bca1f2de4661ed88a30c99a7a9449aa84174';
 
-const permit2Provider = new Permit2Provider(web3Provider, erc20sDataProvider);
+const permit2Provider = new Permit2Provider(
+  web3Provider,
+  new LocalStorageProvider()
+);
 
-erc20sDataProvider.addErc20sData(TODO_TEMP_ERC20_REPLACE);
+permit2Provider.addErc20(TODO_TEMP_ERC20_REPLACE);
 
 export function Root() {
-  const userData = useUserData();
+  const { data: userData } = useUserData();
 
   useEffect(() => {
     // Checks periodically for non-permit2-approved erc20s and issues TXNs for approval as needed

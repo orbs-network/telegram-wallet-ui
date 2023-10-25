@@ -21,7 +21,7 @@ export function Asset() {
   const navigate = useNavigate();
   const { assetId } = useParams<{ assetId: CryptoAsset }>();
 
-  const userData = useUserData();
+  const { data: userData } = useUserData();
 
   if (!assetId) {
     return <Loader />;

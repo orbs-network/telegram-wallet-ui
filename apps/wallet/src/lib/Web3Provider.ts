@@ -52,6 +52,13 @@ export class Web3Provider {
 
     const gasMode = 'fast'; // TODO change to med
 
+    const maxFeePerGas = price[gasMode].max.toString();
+    const maxPriorityFeePerGas = price[gasMode].tip.toString();
+
+    debug(
+      `maxFeePerGas ${maxFeePerGas}, maxPriorityFeePerGas ${maxPriorityFeePerGas}`
+    );
+
     const signed = await this.account.signTransaction({
       gas,
       maxFeePerGas: price[gasMode].max.toString(),

@@ -9,6 +9,7 @@ const debug = getDebug('FaucetProvider');
 
 export class FaucetProvider {
   private POLL_INTERVAL = 3000;
+  private isPolling = false;
   private currentErc20TokenPolled: string | null = null;
 
   constructor(private faucetUrl: string, web3Provider: Web3Provider) {
@@ -16,8 +17,6 @@ export class FaucetProvider {
   }
 
   private async requestFromFaucet(erc20Token: string) {
-    if (!web3Provider.account) throw new Error('No account');
-
     debug('Requesting from faucet');
     await AuthenticatedTelegramFetcher.post(`${this.faucetUrl}/topUp`, {
       toAddress: web3Provider.account.address,
@@ -26,7 +25,8 @@ export class FaucetProvider {
   }
 
   private async _requestIfNeeded(erc20Token: string) {
-    if (!web3Provider.account) throw new Error('No account');
+    if (this.isPolling) return;
+    this.isPolling = true;
 
     this.currentErc20TokenPolled = erc20Token;
 
@@ -62,6 +62,7 @@ export class FaucetProvider {
       if (number > 0) debug('Attempt number %d', number);
       return this._requestIfNeeded(erc20Token).catch((e) => {
         debug('Error: %s', e.message);
+        this.isPolling = false;
         retry(e);
       });
     });
