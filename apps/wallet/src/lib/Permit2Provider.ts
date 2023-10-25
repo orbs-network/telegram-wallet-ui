@@ -37,6 +37,7 @@ export class Permit2Provider {
           .keys()
           .filter((e) => !this.storage.read(e).isApproved)) {
           debug('Checking allowance for %s', erc20);
+
           const isApproved = (
             await this.web3Provider.getAllowanceFor(erc20)
           ).isGreaterThan(0);
