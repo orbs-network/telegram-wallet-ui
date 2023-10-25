@@ -37,6 +37,7 @@ export class SwapProvider {
       quoteRequest.inAmount
     );
 
+    // TODO - what if this fails? (ui handling)
     const quoteResp = await this.liquidityHubProvider.quote({
       ...quoteRequest,
       outAmount: minOutAmount,
@@ -58,6 +59,16 @@ export class SwapProvider {
     };
   }
 
+  /*
+  TODO: discuss with Sukh and Tal - 
+  this would be called by a background process (optimistic)
+
+  1. what happens if the "pending txn" doesn't occur for X seconds?
+  2. what happens if swap() fails? (perhaps show this as failed in transaction history, clickable, and then shows up-to-date quote to reapprove)
+  3. do we deduct the amountIn from tradeable balance, so that the user doesn't try to swap using it while pending?
+  4. do we plan to demo on Polygonscan as well or can we add a backup-path to trade "internally" for demo purposes?
+
+  */
   async swap(quote: QuoteResponse) {
     // eslint-disable-next-line no-constant-condition
     while (true) {
