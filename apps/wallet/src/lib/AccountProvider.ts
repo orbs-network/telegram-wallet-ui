@@ -1,11 +1,11 @@
 import { Account } from 'web3-core';
 import Web3 from 'web3';
 import { getDebug } from './utils/debug';
-
 const debug = getDebug('AccountProvider');
+import { Web3Account } from 'web3-eth-accounts';
 
 export class AccountProvider {
-  account: Account | null = null;
+  account: Web3Account | null = null;
 
   constructor(private web3: Web3) {
     this.initializeAccount();

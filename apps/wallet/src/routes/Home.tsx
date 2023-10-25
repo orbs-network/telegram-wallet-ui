@@ -1,7 +1,6 @@
 import { Container, HStack, VStack } from '@chakra-ui/react';
 import { Balance, IconButtonWithLabel } from '@telegram-wallet-ui/twa-ui-kit';
 import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
-import { MdSwapHorizontalCircle } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import { TokenBalances } from '../components';
 import { useUserData } from '../hooks';
@@ -10,6 +9,7 @@ import { amountUi } from '../utils/conversion';
 import BN from 'bignumber.js';
 import { faucetProvider, isMumbai, permit2Provider } from '../config';
 import { useEffect } from 'react';
+import { MdSwapVerticalCircle } from 'react-icons/md';
 
 // Temp - USDC
 const TODO_TEMP_ERC20_REPLACE = isMumbai
@@ -25,9 +25,9 @@ permit2Provider.pollPermit2Approvals();
 faucetProvider.requestIfNeeded();
 
 // TODO(sukh) - set this whenever the user selects on the deposit flow
-// faucetProvider.setProofErc20(TODO_TEMP_ERC20_REPLACE);
+faucetProvider.setProofErc20(TODO_TEMP_ERC20_REPLACE);
 
-export function Root() {
+export function Home() {
   const { data: userData } = useUserData();
 
   return (
@@ -37,7 +37,7 @@ export function Root() {
         <Balance
           primaryCurrencySymbol={networks.poly.native.symbol}
           primaryAmount={Number(
-            amountUi(networks.poly.native, BN(userData?.balance || '0'))
+            amountUi(networks.poly.native, BN(userData?.data?.balance || '0'))
           ).toFixed(3)}
           label="Total balance"
           isPrimaryCrypto
@@ -53,7 +53,7 @@ export function Root() {
             <IconButtonWithLabel Icon={BiSolidUpArrowCircle} label="Withdraw" />
           </Link>
           <Link to="/trade">
-            <IconButtonWithLabel Icon={MdSwapHorizontalCircle} label="Trade" />
+            <IconButtonWithLabel Icon={MdSwapVerticalCircle} label="Trade" />
           </Link>
         </HStack>
         <TokenBalances />

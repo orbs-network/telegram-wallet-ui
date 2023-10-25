@@ -5,7 +5,7 @@ import { Heading, Box, Text, Avatar, Spinner } from '@chakra-ui/react';
 import { DataDisplayItem, Card } from '@telegram-wallet-ui/twa-ui-kit';
 
 export function TokenBalances() {
-  const {data: userData} = useUserData();
+  const { data: userData } = useUserData();
 
   if (!userData?.tokens) {
     return <Spinner />;
@@ -13,7 +13,7 @@ export function TokenBalances() {
 
   // filter out zero balances and at least show usdt
   const tokenBalances = Object.values(userData.tokens).filter(
-    (token) => token.symbol === 'usdt' || !BN(token.balance).eq(0)
+    (token) => token.symbol === 'usdc' || !BN(token.balance).eq(0)
   );
 
   return (
@@ -22,10 +22,7 @@ export function TokenBalances() {
         <Link key={token.symbol} to={`/asset/${token.symbol}`}>
           <Card>
             <DataDisplayItem
-              StartIconSlot={
-                // TODO: replace with real asset icon
-                <Avatar name={token.symbol} />
-              }
+              StartIconSlot={<Avatar name={token.symbol} src={token.logoURI} />}
               StartTextSlot={
                 <Box>
                   <Heading as="h3" variant="bodyTitle">

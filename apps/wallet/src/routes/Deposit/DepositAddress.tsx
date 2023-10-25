@@ -39,7 +39,7 @@ export function DepositAddress() {
   const { data: userData } = useUserData();
   const toast = useToast();
 
-  if (!userData?.account.address) {
+  if (!userData?.data?.account.address) {
     return (
       <Container size="sm" height="100vh" position="relative">
         <WalletSpinner />
@@ -47,7 +47,7 @@ export function DepositAddress() {
     );
   }
 
-  const address = userData.account.address;
+  const address = userData.data.account.address;
 
   function handleCopy() {
     navigator.clipboard

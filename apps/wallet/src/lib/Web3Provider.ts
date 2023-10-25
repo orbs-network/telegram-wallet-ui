@@ -1,4 +1,3 @@
-import { Account } from 'web3-core';
 import BN from 'bignumber.js';
 import {
   permit2Address,
@@ -23,11 +22,12 @@ import Web3 from 'web3';
 import { estimateGasPrice } from '../utils/estimate';
 import { BNComparable } from '../types';
 import { getDebug } from './utils/debug';
+import { Web3Account } from 'web3-eth-accounts';
 
 const debug = getDebug('Web3Provider');
 
 export class Web3Provider {
-  constructor(private web3: Web3, public account: Account) {
+  constructor(private web3: Web3, public account: Web3Account) {
     setWeb3Instance(this.web3);
   }
 
@@ -125,6 +125,8 @@ export class Web3Provider {
   async balance() {
     if (!this.account) throw new Error('balance: No account');
 
-    return BN(await this.web3.eth.getBalance(this.account.address));
+    return BN(
+      (await this.web3.eth.getBalance(this.account.address)).toString()
+    );
   }
 }

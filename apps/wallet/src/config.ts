@@ -1,6 +1,9 @@
 import web3 from 'web3';
 import { AccountProvider, LiquihubProvider, Web3Provider } from './lib';
 import { FaucetProvider } from './lib/FaucetProvider';
+import { TTLCache } from './lib/TTLCache';
+import { CoinsProvider } from './lib/CoinsProvider';
+import { SwapProvider } from './lib/SwapProvider';
 import { Permit2Provider } from './lib/Permit2Provider';
 import { LocalStorageProvider } from './lib/LocalStorageProvider';
 
@@ -23,6 +26,19 @@ export const web3Provider = new Web3Provider(w3, account);
 
 export const liqHubProvider = new LiquihubProvider(web3Provider);
 
+export const coinsProvider = new CoinsProvider(false, new TTLCache());
+
+export const localStorageProvider = new LocalStorageProvider();
+
+export const permit2Provider = new Permit2Provider(web3Provider, localStorageProvider)
+
+export const swapProvider = new SwapProvider(
+  coinsProvider,
+  liqHubProvider,
+  permit2Provider
+);
+
+// TODO: remove this
 export type CryptoAsset = 'MATIC' | 'ETH' | 'USDC';
 
 export const faucetProvider = new FaucetProvider(
@@ -30,7 +46,4 @@ export const faucetProvider = new FaucetProvider(
   web3Provider
 );
 
-export const permit2Provider = new Permit2Provider(
-  web3Provider,
-  new LocalStorageProvider()
-);
+
