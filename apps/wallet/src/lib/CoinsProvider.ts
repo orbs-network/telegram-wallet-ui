@@ -1,7 +1,7 @@
 import { erc20s, zeroAddress } from '@defi.org/web3-candies';
 import { BNComparable, Token, TokenListResponse } from '../types';
 import { Fetcher } from '../utils/fetcher';
-import { amountBN, dstAmount } from '../utils/conversion';
+import { amountBN, amountUi, dstAmount } from '../utils/conversion';
 import BN, { BigNumber } from 'bignumber.js';
 import { fetchLatestPrice } from '../utils/fetchLatestPrice';
 import { getDebug } from './utils/debug';
@@ -64,8 +64,12 @@ export class CoinsProvider {
       .slice(0, 10);
   }
 
-  toRawAmount(srcToken: Token, quantity: BNComparable) {
-    return amountBN(srcToken, quantity);
+  toRawAmount(token: Token, quantity: BNComparable) {
+    return amountBN(token, quantity);
+  }
+
+  fromRawAmount(token: Token, amount: BN) {
+    return amountUi(token, amount);
   }
 
   async getMinAmountOut(
