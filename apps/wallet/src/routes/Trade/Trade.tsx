@@ -7,9 +7,10 @@ import { useMemo } from 'react';
 import { TradeForm } from './TradeForm';
 import { Page } from '../../components';
 import styled from '@emotion/styled';
+import { colors } from '@telegram-wallet-ui/twa-ui-kit';
 
 const StyledPage = styled(Page)({
-  background: 'white',
+  background: colors.bg_color,
 });
 
 export function Trade() {
