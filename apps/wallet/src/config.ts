@@ -18,9 +18,9 @@ export const w3 = new web3(
 export const TRANSAK_STAGING_API_KEY = import.meta.env
   .VITE_TRANSAK_STAGING_API_KEY;
 
-const accountHolder = new AccountProvider(w3);
+export const accountProvider = new AccountProvider(w3);
 
-export const account = accountHolder.account!;
+export const account = accountProvider.account!;
 
 export const web3Provider = new Web3Provider(w3, account);
 
