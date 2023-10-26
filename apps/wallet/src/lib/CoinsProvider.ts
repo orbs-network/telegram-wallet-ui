@@ -14,7 +14,7 @@ export class CoinsProvider {
   coinsUrl: string;
 
   constructor(isMumbai: boolean, private ttlCache: TTLCache) {
-    this.coinsUrl = `https://ZZraw.githubusercontent.com/viaprotocol/tokenlists/main/tokenlists/${
+    this.coinsUrl = `https://raw.githubusercontent.com/viaprotocol/tokenlists/main/tokenlists/${
       isMumbai ? 'mumbai' : 'polygon'
     }.json`;
   }
