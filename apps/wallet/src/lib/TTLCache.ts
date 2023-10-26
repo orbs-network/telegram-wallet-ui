@@ -6,7 +6,7 @@ export class TTLCache {
   private cache = new Map<
     string,
     {
-      result: any;
+      value: any;
       expiresAt: number;
     }
   >();
@@ -27,12 +27,12 @@ export class TTLCache {
 
   execute = async (key: string, fn: () => Promise<any>, ttl: number) => {
     if (this.cache.has(key) && this.cache.get(key)!.expiresAt > Date.now()) {
-      return this.cache.get(key)!.result;
+      return this.cache.get(key)!.value;
     }
 
     const result = await fn();
     this.cache.set(key, {
-      result,
+      value: result,
       expiresAt: Date.now() + ttl,
     });
     return result;

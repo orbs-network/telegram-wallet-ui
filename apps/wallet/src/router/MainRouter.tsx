@@ -6,6 +6,7 @@ import {
   SelectMethod,
   DepositAddress,
   TempUtils,
+  Debug,
   Home,
   Trade,
 } from '../routes';
@@ -30,6 +31,10 @@ const routes: RouteObject[] = [
   {
     path: '/tempUtils',
     element: <TempUtils />,
+  },
+  {
+    path: '/debug',
+    element: <Debug />,
   },
   {
     path: '/asset/:assetId',

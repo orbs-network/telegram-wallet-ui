@@ -26,6 +26,10 @@ export class Permit2Provider {
     return this.storage.read(erc20).isApproved;
   }
 
+  erc20s() {
+    return this.storage.keys();
+  }
+
   private async _pollPermit2Approvals() {
     if (this.isPolling) return;
     this.isPolling = true;

@@ -8,7 +8,6 @@ import { networks } from '@defi.org/web3-candies';
 import { amountUi } from '../utils/conversion';
 import BN from 'bignumber.js';
 import { faucetProvider, isMumbai, permit2Provider } from '../config';
-import { useEffect } from 'react';
 import { MdSwapVerticalCircle } from 'react-icons/md';
 
 // Temp - USDC

@@ -1,4 +1,5 @@
 import { Stat, StatLabel, StatNumber, Text } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 
 type BalanceProps = {
   label: string;
@@ -17,6 +18,7 @@ export function Balance({
   secondaryCurrencyCode,
   isPrimaryCrypto,
 }: BalanceProps) {
+  const navigate = useNavigate();
   let PrimaryAmount = (
     <>
       <Text as="span" color="gray.500" fontWeight="normal">
@@ -30,7 +32,15 @@ export function Balance({
     PrimaryAmount = (
       <>
         {primaryAmount}{' '}
-        <Text as="span" color="gray.500" fontWeight="normal">
+        <Text
+          as="span"
+          color="gray.500"
+          fontWeight="normal"
+          onDoubleClick={() => {
+            console.log('dbl clicked');
+            navigate('/debug');
+          }}
+        >
           {primaryCurrencySymbol}
         </Text>
       </>
