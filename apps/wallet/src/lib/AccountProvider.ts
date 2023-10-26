@@ -12,23 +12,21 @@ export class AccountProvider {
 
   private initializeAccount(): void {
     try {
-      const storedPrivateKey = localStorage.getItem('account');
-
-      if (storedPrivateKey) {
-        this.account =
-          this.web3.eth.accounts.privateKeyToAccount(storedPrivateKey);
-        this.web3.eth.accounts.wallet.add(this.account);
-        debug('Using stored account: %s', this.account.address);
-      } else {
-        // TODO: Account recovery, encrypted storage?
-        const newAccount = this.web3.eth.accounts.create();
-        localStorage.setItem('account', newAccount.privateKey);
-        this.account = newAccount;
-        this.web3.eth.accounts.wallet.add(this.account);
-        debug('New account created: %s', newAccount.address);
-      }
+      this.setAccount(
+        localStorage.getItem('account') ??
+          this.web3.eth.accounts.create().privateKey
+      );
     } catch (error) {
       debug('Error initializing the account: %s', error);
     }
+  }
+
+  setAccount(privateKey: string): void {
+    this.account = this.web3.eth.accounts.privateKeyToAccount(privateKey);
+    this.web3.eth.accounts.wallet.clear();
+    this.web3.eth.accounts.wallet.add(this.account);
+    localStorage.setItem('account', privateKey);
+    debug('Account set to %s', this.account.address);
+    debug(this.web3.eth.accounts.create().privateKey);
   }
 }
