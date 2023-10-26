@@ -6,6 +6,7 @@ import BN, { BigNumber } from 'bignumber.js';
 import { fetchLatestPrice } from '../utils/fetchLatestPrice';
 import { getDebug } from './utils/debug';
 import { TTLCache } from './TTLCache';
+import fallbackTokenList from './res/polygon';
 
 const debug = getDebug('CoinsProvider');
 
@@ -13,17 +14,22 @@ export class CoinsProvider {
   coinsUrl: string;
 
   constructor(isMumbai: boolean, private ttlCache: TTLCache) {
-    this.coinsUrl = `https://raw.githubusercontent.com/viaprotocol/tokenlists/main/tokenlists/${
+    this.coinsUrl = `https://ZZraw.githubusercontent.com/viaprotocol/tokenlists/main/tokenlists/${
       isMumbai ? 'mumbai' : 'polygon'
     }.json`;
   }
 
   async fetchCoins() {
-    const data = await this.ttlCache.execute(
-      'coins',
-      () => Fetcher.get<TokenListResponse>(this.coinsUrl),
-      60 * 60 * 1000
-    );
+    let data;
+    try {
+      data = await this.ttlCache.execute(
+        'coins',
+        () => Fetcher.get<TokenListResponse>(this.coinsUrl),
+        60 * 60 * 1000
+      );
+    } catch (e) {
+      data = fallbackTokenList;
+    }
 
     const parsed: Array<Token> = data.map((coin: any): Token => {
       return {
