@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 
-function debounceAsync<T extends (...args: any[]) => Promise<any>>(
+export function debounceAsync<T extends (...args: any[]) => Promise<any>>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => Promise<ReturnType<T>> {

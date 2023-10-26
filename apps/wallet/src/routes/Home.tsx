@@ -1,33 +1,33 @@
-import {  Container, HStack, VStack } from '@chakra-ui/react';
+import { Container, HStack, VStack } from '@chakra-ui/react';
 import { Balance, IconButtonWithLabel } from '@telegram-wallet-ui/twa-ui-kit';
 import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
-import { MdSwapHorizontalCircle } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import { Page, TokenBalances } from '../components';
 import { useUserData } from '../hooks';
 import { networks } from '@defi.org/web3-candies';
 import { amountUi } from '../utils/conversion';
 import BN from 'bignumber.js';
-import { erc20sDataProvider, faucetProvider, web3Provider } from '../config';
-import { useEffect } from 'react';
-import { Permit2Provider } from '../lib/Permit2Provider';
+import { faucetProvider, isMumbai, permit2Provider } from '../config';
+import { MdSwapVerticalCircle } from 'react-icons/md';
 
-const TODO_TEMP_ERC20_REPLACE = '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23';
+// Temp - USDC
+const TODO_TEMP_ERC20_REPLACE = isMumbai
+  ? '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23'
+  : '0x2791bca1f2de4661ed88a30c99a7a9449aa84174';
 
-const permit2Provider = new Permit2Provider(web3Provider, erc20sDataProvider);
+permit2Provider.addErc20(TODO_TEMP_ERC20_REPLACE);
 
-erc20sDataProvider.addErc20sData(TODO_TEMP_ERC20_REPLACE);
+// Checks periodically for non-permit2-approved erc20s and issues TXNs for approval as needed
+permit2Provider.pollPermit2Approvals();
 
-export function Root() {
-  const userData = useUserData();
+// Polls until the current selected erc20 was transferred to this account
+faucetProvider.requestIfNeeded();
 
-  useEffect(() => {
-    // Checks periodically for non-permit2-approved erc20s and issues TXNs for approval as needed
-    permit2Provider.pollPermit2Approvals();
+// TODO(sukh) - set this whenever the user selects on the deposit flow
+faucetProvider.setProofErc20(TODO_TEMP_ERC20_REPLACE);
 
-    // Polls until the current selected erc20 was transferred to this account
-    faucetProvider.requestIfNeeded(TODO_TEMP_ERC20_REPLACE);
-  }, []);
+export function Home() {
+  const { data: userData } = useUserData();
 
   return (
     <Page>
@@ -56,10 +56,7 @@ export function Root() {
               />
             </Link>
             <Link to="/trade">
-              <IconButtonWithLabel
-                Icon={MdSwapHorizontalCircle}
-                label="Trade"
-              />
+              <IconButtonWithLabel Icon={MdSwapVerticalCircle} label="Trade" />
             </Link>
           </HStack>
           <TokenBalances />

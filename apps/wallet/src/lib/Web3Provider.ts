@@ -1,4 +1,3 @@
-import { Account } from 'web3-core';
 import BN from 'bignumber.js';
 import {
   permit2Address,
@@ -23,11 +22,12 @@ import Web3 from 'web3';
 import { estimateGasPrice } from '../utils/estimate';
 import { BNComparable } from '../types';
 import { getDebug } from './utils/debug';
+import { Web3Account } from 'web3-eth-accounts';
 
 const debug = getDebug('Web3Provider');
 
 export class Web3Provider {
-  constructor(private web3: Web3, public account: Account) {
+  constructor(private web3: Web3, public account: Web3Account) {
     setWeb3Instance(this.web3);
   }
 
@@ -39,32 +39,42 @@ export class Web3Provider {
     txn: NonPayableTransactionObject<T>,
     to: string
   ) {
-    if (!this.account) throw new Error('signAndSend: No account');
-
     const [nonce, price] = await Promise.all([
       this.web3.eth.getTransactionCount(this.account.address),
       estimateGasPrice(this.web3),
     ]);
 
+    debug(await txn.estimateGas({ from: this.account.address }));
+
     const gas = (
-      (await txn.estimateGas({ from: this.account.address })) * 1.2
+      Number(await txn.estimateGas({ from: this.account.address })) * 1.2
     ).toFixed(0);
 
-    debug('nonce: %d, gas: %d', nonce, gas);
-
     const gasMode = 'fast'; // TODO change to med
+
+    const maxFeePerGas = price[gasMode].max.toString();
+    const maxPriorityFeePerGas = price[gasMode].tip.toString();
+
+    debug(
+      `maxFeePerGas ${maxFeePerGas}, maxPriorityFeePerGas ${maxPriorityFeePerGas}`
+    );
 
     const signed = await this.account.signTransaction({
       gas,
       maxFeePerGas: price[gasMode].max.toString(),
       maxPriorityFeePerGas: price[gasMode].tip.toString(),
-      nonce: nonce,
+      nonce: parseInt(nonce.toString()),
       from: this.account.address,
       to,
       data: txn.encodeABI(),
     });
 
-    await this.web3.eth.sendSignedTransaction(signed.rawTransaction!);
+    debug(`Sending signed tx`);
+    const { transactionHash } = await this.web3.eth.sendSignedTransaction(
+      signed.rawTransaction!
+    );
+
+    return transactionHash;
   }
 
   async transfer(token: string, to: string, amount: BNComparable) {
@@ -73,6 +83,7 @@ export class Web3Provider {
   }
 
   async approvePermit2(token: string) {
+    debug('approvePermit2: %s', token);
     const txn = this.wrapToken(token).methods.approve(
       permit2Address,
       maxUint256
@@ -114,6 +125,8 @@ export class Web3Provider {
   async balance() {
     if (!this.account) throw new Error('balance: No account');
 
-    return BN(await this.web3.eth.getBalance(this.account.address));
+    return BN(
+      (await this.web3.eth.getBalance(this.account.address)).toString()
+    );
   }
 }

@@ -19,7 +19,7 @@ function Loader() {
 export function Asset() {
   const { assetId } = useParams<{ assetId: CryptoAsset }>();
 
-  const userData = useUserData();
+  const { data: userData } = useUserData();
 
   if (!assetId) {
     return <Loader />;
@@ -34,7 +34,12 @@ export function Asset() {
   return (
     <Page>
       <VStack spacing={4}>
-        {assetId && <Avatar name={assetId} />}
+        <Avatar
+          name={tokenData.symbol}
+          src={tokenData.logoURI}
+          colorScheme="telegram"
+        />
+
         <Balance
           primaryCurrencySymbol={tokenData?.symbol.toUpperCase()}
           primaryAmount={tokenData.balance}

@@ -34,7 +34,7 @@ const styles = {
 
 export function DepositAddress() {
   const [isCopied, setIsCopied] = useState(false);
-  const userData = useUserData();
+  const { data: userData } = useUserData();
   const toast = useToast();
 
   if (!userData?.account.address) {

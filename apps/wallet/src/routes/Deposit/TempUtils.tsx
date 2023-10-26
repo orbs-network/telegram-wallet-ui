@@ -1,14 +1,11 @@
 import { useState } from 'react';
 import { Fetcher } from '../../utils/fetcher';
-import { liqHubProvider, web3Provider } from '../../config';
+import { web3Provider, swapProvider } from '../../config';
 import { Button } from '@chakra-ui/react';
-import { SwapProvider } from '../../lib/SwapProvider';
-import { CoinsProvider } from '../../lib/CoinsProvider';
 import { getDebug } from '../../lib/utils/debug';
 import { bn6 } from '@defi.org/web3-candies';
 import { useDebounce } from '../../lib/hooks/useDebounce';
 import BN from 'bignumber.js';
-import { TTLCache } from '../../lib/TTLCache';
 
 const debug = getDebug('TempUtils');
 
@@ -43,15 +40,12 @@ const USDCFaucet = () => {
 };
 
 const Swapper = () => {
-  const coinsProvider = new CoinsProvider(false, new TTLCache());
-  const swapper = new SwapProvider(coinsProvider, liqHubProvider);
-
   const [amountOut, setAmountOut] = useState('0');
   const [isAboveMinAmountOut, setAboveMinAmountOut] = useState(false);
   const [isLoading, setLoading] = useState(false);
 
   const debounced = useDebounce(async (value: string) => {
-    return swapper.quote({
+    return swapProvider.quote({
       inAmount: bn6(value),
       inToken: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
       outToken: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',

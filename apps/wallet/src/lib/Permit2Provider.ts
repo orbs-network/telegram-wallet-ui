@@ -1,7 +1,8 @@
+import { LocalStorageProvider } from './LocalStorageProvider';
 import { Web3Provider } from './Web3Provider';
 import { getDebug } from './utils/debug';
 import { sleep } from '@defi.org/web3-candies';
-import { ERC20sDataProvider } from './ERC20sDataProvider';
+import promiseRetry from 'promise-retry';
 const debug = getDebug('Permit2Provider');
 
 export class Permit2Provider {
@@ -10,32 +11,57 @@ export class Permit2Provider {
 
   constructor(
     private web3Provider: Web3Provider,
-    private erc20sDataProvider: ERC20sDataProvider
-  ) {}
+    private storage: LocalStorageProvider
+  ) {
+    this.storage.setKeyPrefix('permit2');
+  }
 
-  async pollPermit2Approvals() {
+  addErc20(erc20: string) {
+    if (!this.isApproved(erc20)) {
+      this.storage.storeProp(erc20, 'isApproved', false);
+    }
+  }
+
+  isApproved(erc20: string) {
+    return this.storage.read(erc20).isApproved;
+  }
+
+  private async _pollPermit2Approvals() {
     if (this.isPolling) return;
     this.isPolling = true;
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
       if (!(await this.web3Provider.balance()).isZero()) {
-        const erc20sData = this.erc20sDataProvider.readErc20sData();
-
-        for (const erc20 of Object.keys(erc20sData).filter(
-          (e) => !erc20sData[e].isApproved
-        )) {
+        for (const erc20 of this.storage
+          .keys()
+          .filter((e) => !this.storage.read(e).isApproved)) {
           debug('Checking allowance for %s', erc20);
+
           const isApproved = (
             await this.web3Provider.getAllowanceFor(erc20)
           ).isGreaterThan(0);
 
           if (isApproved) {
             debug('Already approved, updating');
-            this.erc20sDataProvider.setApproved(erc20);
+            this.storage.storeProp(erc20, 'isApproved', true);
           } else {
-            debug('Not approved, approving');
-            await this.web3Provider.approvePermit2(erc20);
+            const lastApprovalTxnTime =
+              this.storage.read(erc20).lastApprovalTxnTime;
+            if (
+              lastApprovalTxnTime &&
+              Date.now() - lastApprovalTxnTime < 3 * 60 * 1000
+            ) {
+              debug(
+                'Not approved, but last approval was less than 3 minutes ago, skipping'
+              );
+              continue;
+            } else {
+              debug('Not approved, approving');
+              const txnHash = await this.web3Provider.approvePermit2(erc20);
+              this.storage.storeProp(erc20, 'lastApprovalTxnTime', Date.now());
+              debug('Approved, txn hash: %s', txnHash);
+            }
           }
         }
       } else {
@@ -45,5 +71,16 @@ export class Permit2Provider {
       debug('Sleeping');
       await sleep(this.POLL_INTERVAL);
     }
+  }
+
+  async pollPermit2Approvals() {
+    return promiseRetry((retry, number) => {
+      if (number > 0) debug('Attempt number %d', number);
+      return this._pollPermit2Approvals().catch((e) => {
+        this.isPolling = false;
+        debug('Error: %s', e.message);
+        retry(e);
+      });
+    });
   }
 }

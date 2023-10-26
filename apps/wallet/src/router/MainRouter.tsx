@@ -1,17 +1,25 @@
 import { AnimatedRouter } from './AnimatedRouter';
-import { Asset } from '../routes/Asset';
-import { Buy, SelectMethod } from '../routes/Deposit';
-import { DepositAddress } from '../routes/Deposit/DepositAddress';
-import { TempUtils } from '../routes/Deposit/TempUtils';
-import { Root } from '../routes/Root';
-import { Withdraw, WithdrawAddress, WithdrawAmount, WithdrawSuccess, WithdrawSummary } from '../routes';
-import { ROUTES } from './routes';
+import {
+  Asset,
+  Buy,
+  SelectMethod,
+  DepositAddress,
+  TempUtils,
+  Home,
+  Trade,
+  Withdraw,
+  WithdrawAddress,
+  WithdrawAmount,
+  WithdrawSuccess,
+  WithdrawSummary,
+} from '../routes';
 import { RouteObject } from 'react-router-dom';
+import { ROUTES } from './routes';
 
 const routes: RouteObject[] = [
   {
-    path: ROUTES.root,
-    element: <Root />,
+    path: '/',
+    element: <Home />,
   },
   {
     path: ROUTES.deposit,
@@ -52,6 +60,10 @@ const routes: RouteObject[] = [
   {
     path: ROUTES.withdrawSuccess,
     element: <WithdrawSuccess />,
+  },
+  {
+    path: '/trade',
+    element: <Trade />,
   },
 ];
 
