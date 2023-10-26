@@ -7,3 +7,4 @@ export * from './Page';
 export * from './TokenSelect';
 export * from './Countdown';
 export * from './SelectToken';
+export * from './CryptoAmountInput';

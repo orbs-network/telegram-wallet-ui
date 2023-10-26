@@ -34,7 +34,7 @@ const useTransferTx = () => {
       return web3Provider.transfer(
         token.address,
         recipient,
-        amountBN(token, amount)
+        amountBN(token, amount).toString(),
       );
     },
     onSuccess: () => {
