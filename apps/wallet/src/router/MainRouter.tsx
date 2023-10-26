@@ -14,6 +14,7 @@ import {
   WithdrawSuccess,
   WithdrawSummary,
   DepositSelectToken,
+  Review,
 } from '../routes';
 import { RouteObject } from 'react-router-dom';
 import { ROUTES } from './routes';
@@ -72,8 +73,12 @@ const routes: RouteObject[] = [
     element: <WithdrawSuccess />,
   },
   {
-    path: '/trade',
+    path: ROUTES.trade,
     element: <Trade />,
+  },
+  {
+    path: ROUTES.tradeReview,
+    element: <Review />,
   },
 ];
 

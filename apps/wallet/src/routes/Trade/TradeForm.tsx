@@ -32,6 +32,8 @@ import { debounceAsync } from '../../lib/hooks/useDebounce';
 import { coinsProvider, swapProvider } from '../../config';
 import { useCountdown } from '../../lib/hooks/useCountdown';
 import { css, keyframes } from '@emotion/react';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '../../router/routes';
 
 export const QUOTE_REFETCH_INTERVAL = 15 * 1000;
 
@@ -150,7 +152,10 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
   const inAmount = watch('inAmount');
   const outAmount = watch('outAmount');
 
-  const onSubmit: SubmitHandler<TradeFormSchema> = (data) => console.log(data);
+  const navigate = useNavigate();
+  const onSubmit: SubmitHandler<TradeFormSchema> = (data) => {
+    navigate(ROUTES.tradeReview, { state: data });
+  };
 
   const [fetchingQuote, setFetchingQuote] = useState(false);
 
