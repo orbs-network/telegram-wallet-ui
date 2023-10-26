@@ -11,18 +11,27 @@ import {
   Avatar,
   Divider,
   useToast,
+  Drawer,
+  Flex,
+  DrawerContent,
+  DrawerOverlay,
+  DrawerCloseButton,
 } from '@chakra-ui/react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { MdSwapVerticalCircle } from 'react-icons/md';
 import { TradeFormSchema } from './schema';
 import { TokenData } from '../../types';
 import BN from 'bignumber.js';
+import { BiSolidChevronRight } from 'react-icons/bi';
+
+
 import {
   CryptoAmountInput,
+  SelectToken,
   TokenSelect,
   WalletSpinner,
 } from '../../components';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { MainButton } from '@twa-dev/sdk/react';
@@ -32,6 +41,8 @@ import { debounceAsync } from '../../lib/hooks/useDebounce';
 import { coinsProvider, swapProvider } from '../../config';
 import { useCountdown } from '../../lib/hooks/useCountdown';
 import { css, keyframes } from '@emotion/react';
+import { useUserData } from '../../hooks';
+import styled from '@emotion/styled';
 
 export const QUOTE_REFETCH_INTERVAL = 15 * 1000;
 
@@ -139,6 +150,52 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
     resolver: yupResolver(schema),
   });
 
+  const quote = async (value: string) => {
+    try {
+      if (!tokens) {
+        throw new Error('No tokens');
+      }
+
+      form.setValue('inAmount', value, {
+        shouldDirty: true,
+        shouldTouch: true,
+        shouldValidate: true,
+      });
+
+      // Get estimated out amount first
+      const estimatedOutAmount = await debouncedEstimate(
+        value,
+        tokens[inToken],
+        tokens[outToken]
+      );
+
+      if (estimatedOutAmount.eq(0)) {
+        throw new Error('Estimated out amount is 0');
+      }
+
+      form.setValue(
+        'outAmount',
+        estimatedOutAmount
+          .dividedBy(Math.pow(10, tokens[outToken].decimals))
+          .toString(),
+        { shouldDirty: true, shouldTouch: true }
+      );
+
+      // Then fetch LH quote
+      await fetchLHQuote(value, tokens[inToken], tokens[outToken]);
+      reset();
+      start();
+    } catch (err) {
+      console.error(err);
+      // TODO: show toast
+      toast({
+        description: 'Failed to get quote',
+        status: 'error',
+        duration: 5000,
+      });
+    }
+  };
+
   useEffect(() => {
     // if defaultValues change, reset the form
     form.reset(defaultValues);
@@ -227,71 +284,28 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
             </Text>
           </HStack>
           <HStack>
-            <FormControl isInvalid={Boolean(formState.errors.inAmount)}>
-              <CryptoAmountInput
-                hideSymbol
-                name="inAmount"
-                value={inAmount}
-                tokenSymbol={inToken}
-                onChange={(value) => {
-                  const quote = async () => {
-                    try {
-                      if (!tokens) {
-                        throw new Error('No tokens');
-                      }
-
-                      form.setValue('inAmount', value, {
-                        shouldDirty: true,
-                        shouldTouch: true,
-                        shouldValidate: true,
-                      });
-
-                      // Get estimated out amount first
-                      const estimatedOutAmount = await debouncedEstimate(
-                        value,
-                        tokens[inToken],
-                        tokens[outToken]
-                      );
-
-                      if (estimatedOutAmount.eq(0)) {
-                        throw new Error('Estimated out amount is 0');
-                      }
-
-                      form.setValue(
-                        'outAmount',
-                        estimatedOutAmount
-                          .dividedBy(Math.pow(10, tokens[outToken].decimals))
-                          .toString(),
-                        { shouldDirty: true, shouldTouch: true }
-                      );
-
-                      // Then fetch LH quote
-                      await fetchLHQuote(
-                        value,
-                        tokens[inToken],
-                        tokens[outToken]
-                      );
-                      reset();
-                      start();
-                    } catch (err) {
-                      console.error(err);
-                      // TODO: show toast
-                      toast({
-                        description: 'Failed to get quote',
-                        status: 'error',
-                        duration: 5000,
-                      });
-                    }
-                  };
-                  quote();
-                }}
-              />
-
+            <TokenPanel
+              name="inAmount"
+              value={inAmount}
+              symbol={inToken}
+              filterToken={outToken}
+              onChange={(value) => {
+                quote(value);
+              }}
+              isSrc={true}
+              onTokenSelect={(token) => {
+                form.resetField('inAmount');
+                form.resetField('outAmount');
+                form.setValue('inToken', token.symbol);
+                stop();
+              }}
+            />
+            {/* <FormControl isInvalid={Boolean(formState.errors.inAmount)}>
               <FormErrorMessage>
                 {formState.errors.inAmount?.message}
               </FormErrorMessage>
-            </FormControl>
-            <Controller
+            </FormControl> */}
+            {/* <Controller
               control={form.control}
               name="inToken"
               render={({ field, fieldState }) => (
@@ -310,7 +324,7 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
                   </FormErrorMessage>
                 </FormControl>
               )}
-            />
+            /> */}
           </HStack>
           {/* <Text>
           {inPrice && inAmount !== ''
@@ -369,35 +383,21 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
           </HStack>
           <HStack>
             <Box css={fetchingQuote ? outAmountStyles : undefined}>
-              <CryptoAmountInput
-                hideSymbol
+              <TokenPanel
+                symbol={outToken}
+                editable={false}
                 name="outAmount"
                 value={outAmount}
-                editable={false}
-                tokenSymbol={outToken}
+                filterToken={inToken}
+                isSrc={false}
+                onTokenSelect={(token) => {
+                  form.resetField('inAmount');
+                  form.resetField('outAmount');
+                  form.setValue('outToken', token.symbol);
+                  stop();
+                }}
               />
             </Box>
-            <Controller
-              control={form.control}
-              name="outToken"
-              render={({ field, fieldState }) => (
-                <FormControl isInvalid={Boolean(fieldState.error)}>
-                  <TokenSelect
-                    {...field}
-                    filterTokens={[inToken]}
-                    onChange={(e) => {
-                      form.resetField('inAmount');
-                      form.resetField('outAmount');
-                      form.setValue('outToken', e.target.value);
-                      stop();
-                    }}
-                  />
-                  <FormErrorMessage>
-                    {fieldState.error?.message}
-                  </FormErrorMessage>
-                </FormControl>
-              )}
-            />
           </HStack>
 
           {/* <Text>
@@ -428,3 +428,113 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
     </form>
   );
 }
+
+const TokenPanel = ({
+  value,
+  symbol,
+  isSrc,
+  name,
+  onChange,
+  onTokenSelect,
+  editable = false,
+  filterToken
+}: {
+  value: string;
+  symbol: string;
+  isSrc: boolean;
+  name: string;
+  onChange?: (value: string) => void;
+  onTokenSelect: (token: TokenData) => void;
+  editable?: boolean;
+  filterToken?: string;
+}) => {
+  return (
+    <Flex>
+      <CryptoAmountInput
+        hideSymbol
+        name={name}
+        value={value}
+        tokenSymbol={symbol}
+        onChange={onChange}
+        editable={editable}
+      />
+      <TokenSelectDrawer
+        filterToken={filterToken}
+        onSelect={onTokenSelect}
+        selected={symbol}
+      />
+    </Flex>
+  );
+};
+
+const TokenSelectDrawer = ({
+  onSelect,
+  selected,
+  filterToken,
+}: {
+  onSelect: (token: TokenData) => void;
+  selected?: string;
+  filterToken?: string;
+}) => {
+  const { data , dataUpdatedAt} = useUserData();
+  const [isOpen, setIsOpen] = useState(false);
+  const btnRef = useRef<any>();
+
+  const tokens = useMemo(() => {
+    if (!data) return []
+      return Object.values(data.tokens).filter(
+        (token) => token.symbol !== filterToken
+      );
+      
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterToken, dataUpdatedAt]); 
+
+  return (
+    <Flex alignItems="center">
+      <TokenSelectButton ref={btnRef.current} onClick={() => setIsOpen(true)}>
+        <Text>{selected ? selected?.toUpperCase() : 'Select Token'}</Text>
+        <BiSolidChevronRight />
+      </TokenSelectButton>
+      <Drawer
+        placement="bottom"
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        closeOnOverlayClick={true}
+        finalFocusRef={btnRef}
+      >
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <StyledTokenList
+            onSelect={(token) => {
+              onSelect(token);
+              setIsOpen(false);
+            }}
+            tokens={tokens}
+          />
+        </DrawerContent>
+      </Drawer>
+    </Flex>
+  );
+};
+
+
+const TokenSelectButton = styled(Box)({
+  height:'auto',
+  display:'flex',
+  alignItems:'center',
+  "& p" :{
+    color:'#9D9D9D',
+    fontSize:'26px',
+    fontWeight: 700
+  },
+  svg: {
+    color:'#9D9D9D',
+    fontSize:'26px',
+  }
+})
+
+
+const StyledTokenList = styled(SelectToken)({
+  overflowY: 'auto',
+});

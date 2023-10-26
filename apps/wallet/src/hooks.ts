@@ -116,19 +116,21 @@ export const usePortfolioUsdValue = () => {
 
       // checking if all tokens usd values are fetched
       // if not - return 0
-      _.forEach(tokenWithBalance, (token) => {
-        if (!dictionary[token.coingeckoId]) {
-          return '0';
-        }
+      const isAllTokensFetched = _.every(tokenWithBalance, (token) => {
+        const value = dictionary[token.coingeckoId]?.price;
+        return !!value;
       });
 
-      return tokenWithBalance
-        .reduce((acc, token) => {
-          const price = dictionary[token.coingeckoId]?.price || 0;
-          const amount = new BN(token.balance).multipliedBy(price);
-          return acc.plus(amount);
-        }, new BN(0))
-        .toString();
+      if (!isAllTokensFetched) {
+        return '0';
+      }
+        return tokenWithBalance
+          .reduce((acc, token) => {
+            const price = dictionary[token.coingeckoId]?.price || 0;
+            const amount = new BN(token.balance).multipliedBy(price);
+            return acc.plus(amount);
+          }, new BN(0))
+          .toString();
     },
     enabled: !!data,
   });
