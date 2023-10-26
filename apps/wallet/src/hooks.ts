@@ -1,12 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { erc20s, zeroAddress, networks } from '@defi.org/web3-candies';
+import { networks } from '@defi.org/web3-candies';
 import { useQuery } from '@tanstack/react-query';
-import { Token, TokenListResponse, UserData } from './types';
+import { Token, UserData } from './types';
 import { fetchLatestPrice } from './utils/fetchLatestPrice';
 
-import { account, isMumbai, web3Provider } from './config';
+import { account, coinsProvider, web3Provider } from './config';
 import { useEffect, useMemo, useRef } from 'react';
-import { Fetcher } from './utils/fetcher';
 import { getDebug } from './lib/utils/debug';
 import { amountUi } from './utils/conversion';
 import { matchRoutes, useLocation } from 'react-router-dom';
@@ -39,41 +38,7 @@ export const useCoinsList = () => {
   return useQuery<Token[]>({
     queryKey: ['useCoinsList'],
     queryFn: async () => {
-      const data = await Fetcher.get<TokenListResponse>(
-        isMumbai
-          ? 'https://raw.githubusercontent.com/viaprotocol/tokenlists/main/tokenlists/mumbai.json'
-          : 'https://raw.githubusercontent.com/viaprotocol/tokenlists/main/tokenlists/polygon.json'
-      );
-
-      const parsed = data.map((coin): Token => {
-        return {
-          symbol: coin.symbol,
-          address: coin.address,
-          decimals: coin.decimals,
-          coingeckoId: coin.coingeckoId ?? '',
-          logoURI: coin.logoURI,
-          name: coin.name,
-        };
-      });
-
-      const candiesAddresses = [
-        zeroAddress,
-        ...Object.values(erc20s.poly).map((t) => t().address),
-      ];
-
-      return parsed
-        .sort((a, b) => {
-          const indexA = candiesAddresses.indexOf(a.address);
-          const indexB = candiesAddresses.indexOf(b.address);
-          return indexA >= 0 && indexB >= 0
-            ? indexA - indexB
-            : indexA >= 0
-            ? -1
-            : indexB >= 0
-            ? 1
-            : 0;
-        })
-        .slice(0, 10);
+      return coinsProvider.fetchCoins();
     },
   });
 };
@@ -83,8 +48,8 @@ export const useTokenBalanceQuery = (tokenAddress?: string) => {
   const query = useQuery({
     queryKey: ['useTokenBalanceQuery', tokenAddress],
     queryFn: async () => {
-       const result = await web3Provider.balanceOf(tokenAddress!);
-       return amountUi(token, result) || '0';
+      const result = await web3Provider.balanceOf(tokenAddress!);
+      return amountUi(token, result) || '0';
     },
 
     enabled: !!tokenAddress && !!token,

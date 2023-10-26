@@ -69,7 +69,6 @@ export class FaucetProvider {
       await sleep(this.POLL_INTERVAL);
     }
 
-    // TODO set up a healthcheck for the faucet saying if it doesn't have enough funds etc.
     // TODO maybe allow overriding the backend URL from the UI
   }
 

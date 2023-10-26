@@ -115,16 +115,12 @@ export class Web3Provider {
   }
 
   async balanceOf(token: string) {
-    if (!this.account) throw new Error('balanceOf: No account');
-
     return BN(
       await this.wrapToken(token).methods.balanceOf(this.account.address).call()
     );
   }
 
   async balance() {
-    if (!this.account) throw new Error('balance: No account');
-
     return BN(
       (await this.web3.eth.getBalance(this.account.address)).toString()
     );

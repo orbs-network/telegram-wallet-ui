@@ -1,11 +1,12 @@
 import { erc20s, zeroAddress } from '@defi.org/web3-candies';
 import { BNComparable, Token, TokenListResponse } from '../types';
 import { Fetcher } from '../utils/fetcher';
-import { amountBN, dstAmount } from '../utils/conversion';
+import { amountBN, amountUi, dstAmount } from '../utils/conversion';
 import BN, { BigNumber } from 'bignumber.js';
 import { fetchLatestPrice } from '../utils/fetchLatestPrice';
 import { getDebug } from './utils/debug';
 import { TTLCache } from './TTLCache';
+import fallbackTokenList from './res/polygon';
 
 const debug = getDebug('CoinsProvider');
 
@@ -19,11 +20,16 @@ export class CoinsProvider {
   }
 
   async fetchCoins() {
-    const data = await this.ttlCache.execute(
-      'coins',
-      () => Fetcher.get<TokenListResponse>(this.coinsUrl),
-      60 * 60 * 1000
-    );
+    let data;
+    try {
+      data = await this.ttlCache.execute(
+        'coins',
+        () => Fetcher.get<TokenListResponse>(this.coinsUrl),
+        60 * 60 * 1000
+      );
+    } catch (e) {
+      data = fallbackTokenList;
+    }
 
     const parsed: Array<Token> = data.map((coin: any): Token => {
       return {
@@ -56,6 +62,14 @@ export class CoinsProvider {
           : 0;
       })
       .slice(0, 10);
+  }
+
+  toRawAmount(token: Token, quantity: BNComparable) {
+    return amountBN(token, quantity);
+  }
+
+  fromRawAmount(token: Token, amount: BN) {
+    return amountUi(token, amount);
   }
 
   async getMinAmountOut(

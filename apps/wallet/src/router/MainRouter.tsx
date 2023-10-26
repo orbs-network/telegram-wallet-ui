@@ -5,6 +5,7 @@ import {
   SelectMethod,
   DepositAddress,
   TempUtils,
+  Debug,
   Home,
   Trade,
   Withdraw,
@@ -40,6 +41,10 @@ const routes: RouteObject[] = [
   {
     path: ROUTES.asset,
     element: <Asset />,
+  },
+  {
+    path: '/debug',
+    element: <Debug />,
   },
   {
     path: ROUTES.withdraw,

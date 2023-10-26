@@ -21,8 +21,7 @@ export function Trade() {
       };
     }
 
-    const tokens = Object.values(userData?.tokens)
-      .filter((token) => BN(token.balance).gt(0))
+    const tokensSortedByBalance = Object.values(userData?.tokens)
       .sort((a, b) => {
         if (BN(a.balance).gt(b.balance)) {
           return -1;
@@ -34,16 +33,11 @@ export function Trade() {
       })
       .slice(0, 2);
 
-    if (tokens.length < 2) {
-      tokens.push(userData?.tokens.usdc);
-      tokens.push(userData?.tokens.weth);
-    }
-
     return {
       inAmount: '',
       outAmount: '',
-      inToken: tokens[0].symbol,
-      outToken: tokens[1].symbol,
+      inToken: tokensSortedByBalance[0].symbol,
+      outToken: tokensSortedByBalance[1].symbol,
     };
   }, [userData?.tokens]);
 
