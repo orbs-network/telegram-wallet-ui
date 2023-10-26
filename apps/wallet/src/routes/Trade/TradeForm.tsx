@@ -10,6 +10,7 @@ import {
   Box,
   Avatar,
   Divider,
+  useToast,
 } from '@chakra-ui/react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { MdSwapVerticalCircle } from 'react-icons/md';
@@ -31,9 +32,19 @@ import { debounceAsync } from '../../lib/hooks/useDebounce';
 import { coinsProvider, swapProvider } from '../../config';
 import { useCountdown } from '../../lib/hooks/useCountdown';
 import { css, keyframes } from '@emotion/react';
-import { amountUi } from '../../utils/conversion';
 
 export const QUOTE_REFETCH_INTERVAL = 15 * 1000;
+
+const debouncedEstimate = debounceAsync(
+  async (inAmount: string, inToken: TokenData, outToken: TokenData) => {
+    return await coinsProvider.getMinAmountOut(
+      inToken,
+      outToken,
+      coinsProvider.toRawAmount(inToken, inAmount)
+    );
+  },
+  600
+);
 
 const debouncedQuote = debounceAsync(
   async (inAmount: string, inToken: TokenData, outToken: TokenData) => {
@@ -57,7 +68,7 @@ const flash = keyframes`
   }
 
   50% {
-    opacity: 0.5;
+    opacity: 0.1;
   }
 
   100% {
@@ -186,6 +197,8 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
     },
   });
 
+  const toast = useToast();
+
   if (!tokens) {
     return (
       <Container size="sm" height="100vh" position="relative">
@@ -207,10 +220,7 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
               <Text>You pay</Text>
             </HStack>
             <Text size="sm">
-              Max:{' '}
-              {tokens[inToken]
-                ? amountUi(tokens[inToken], BN(tokens[inToken].balance))
-                : '0.00'}{' '}
+              Max: {tokens[inToken] ? tokens[inToken].balance : '0.00'}{' '}
               <Text as="span" variant="hint">
                 {tokens[inToken] && tokens[inToken].symbol.toUpperCase()}
               </Text>
@@ -222,7 +232,7 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
                 hideSymbol
                 name="inAmount"
                 value={inAmount}
-                tokenAddress={tokens[inToken] ? tokens[inToken].address : ''}
+                tokenSymbol={inToken}
                 onChange={(value) => {
                   const quote = async () => {
                     try {
@@ -237,12 +247,11 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
                       });
 
                       // Get estimated out amount first
-                      const estimatedOutAmount =
-                        await coinsProvider.getMinAmountOut(
-                          tokens[inToken],
-                          tokens[outToken],
-                          coinsProvider.toRawAmount(tokens[inToken], value)
-                        );
+                      const estimatedOutAmount = await debouncedEstimate(
+                        value,
+                        tokens[inToken],
+                        tokens[outToken]
+                      );
 
                       if (estimatedOutAmount.eq(0)) {
                         throw new Error('Estimated out amount is 0');
@@ -267,6 +276,11 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
                     } catch (err) {
                       console.error(err);
                       // TODO: show toast
+                      toast({
+                        description: 'Failed to get quote',
+                        status: 'error',
+                        duration: 5000,
+                      });
                     }
                   };
                   quote();
@@ -360,7 +374,7 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
                 name="outAmount"
                 value={outAmount}
                 editable={false}
-                tokenAddress={tokens[outToken] ? tokens[outToken].address : ''}
+                tokenSymbol={outToken}
               />
             </Box>
             <Controller

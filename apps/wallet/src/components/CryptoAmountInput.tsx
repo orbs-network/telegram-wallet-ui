@@ -43,7 +43,7 @@ const StyledNumericFormat = styled(NumericFormat)({
 
 type CryptoAmountInputProps = {
   name: string;
-  tokenAddress: string;
+  tokenSymbol: string;
   value: string;
   onChange?: (value: string) => void;
   hideSymbol?: boolean;
@@ -51,14 +51,15 @@ type CryptoAmountInputProps = {
 };
 
 export function CryptoAmountInput({
-  tokenAddress,
+  tokenSymbol,
   name,
   value,
   onChange,
   hideSymbol,
   editable = true,
 }: CryptoAmountInputProps) {
-  const token = useGetTokenFromList(tokenAddress);
+  const token = useGetTokenFromList(tokenSymbol);
+
   const usdPrice = useMultiplyPriceByAmount(
     token?.coingeckoId || 'ethereum',
     Number(value)

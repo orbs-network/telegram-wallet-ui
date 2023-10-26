@@ -3,10 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { URLParams } from '../../types';
 import { css } from '@emotion/react';
-import {
-  useFormatNumber,
-  useGetTokenFromList,
-} from '../../hooks';
+import { useFormatNumber, useGetTokenFromList } from '../../hooks';
 import { CryptoAmountInput, Page } from '../../components';
 import styled from '@emotion/styled';
 import { useMainButtonContext } from '../../context/MainButtonContext';
@@ -57,9 +54,12 @@ export function WithdrawAmount() {
   const { onSetButton } = useMainButtonContext();
   const { withdrawSummary: navigateToWithdrawSummary } = useNavigation();
   const formattedAmount = useFormatNumber({ value: amount, decimalScale: 2 });
-  const token = useGetTokenFromList(assetId)
+  const token = useGetTokenFromList(assetId);
 
-  const formattedBalance = useFormatNumber({ value: token?.balance, decimalScale: 2 });
+  const formattedBalance = useFormatNumber({
+    value: token?.balance,
+    decimalScale: 2,
+  });
 
   const isValidAmount = useMemo(() => {
     const amountBN = new BN(amount);
@@ -97,7 +97,7 @@ export function WithdrawAmount() {
             name="withdrawalAmount"
             value={amount}
             onChange={setAmount}
-            tokenAddress={assetId || ''}
+            tokenSymbol={assetId || ''}
           />
           <Balance balance={formattedBalance} />
         </VStack>
