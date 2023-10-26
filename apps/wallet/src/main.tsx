@@ -1,7 +1,8 @@
-import { Container, Flex, Spinner } from '@chakra-ui/react';
-import { lazy, StrictMode, Suspense } from 'react';
+import { Container, Flex } from '@chakra-ui/react';
+import { lazy, Suspense } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { WalletSpinner } from './components';
 
 const App = lazy(() => import('./App'));
 
@@ -9,7 +10,7 @@ const Fallback = () => {
   return (
     <Container size="sm" pt={4}>
       <Flex justifyContent="center" style={{ paddingTop: 100 }}>
-        <Spinner width={100} height={100} color="#417FC6" />
+        <WalletSpinner />
       </Flex>
     </Container>
   );

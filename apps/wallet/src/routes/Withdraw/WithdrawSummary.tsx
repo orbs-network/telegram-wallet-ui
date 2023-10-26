@@ -10,28 +10,39 @@ import { useMainButtonContext } from '../../context/MainButtonContext';
 import { useGetTokenFromList } from '../../hooks';
 import { useNavigation } from '../../router/hooks';
 import { URLParams } from '../../types';
+import { amountBN } from '../../utils/conversion';
 import { Recipient } from './Components';
 
 const useTransferTx = () => {
+  const { recipient, amount, assetId } = useParams<URLParams>();
+  const { withdrawSuccess } = useNavigation();
+
+  const token = useGetTokenFromList(assetId);
+
   return useMutation({
-    mutationFn: async (params: {
-      assetId: string;
-      recipient: string;
-      amount: string;
-      onSuccess?: () => void;
-    }) => {
+    mutationFn: async () => {
+      if (!token) {
+        throw new Error('Token not found');
+      }
+      if (!recipient) {
+        throw new Error('Recipient not found');
+      }
+      if (!amount) {
+        throw new Error('Amount not found');
+      }
+
       return web3Provider.transfer(
-        params.assetId,
-        params.recipient,
-        params.amount
+        token.address,
+        recipient,
+        amountBN(token, amount)
       );
     },
-    onSuccess: (data, args) => {
-      args.onSuccess?.();
+    onSuccess: () => {
+      withdrawSuccess(assetId!, recipient!, amount!);
     },
     onError: (error) => {
-        console.log(error);
-        }
+      console.log(error);
+    },
   });
 };
 
@@ -40,30 +51,15 @@ export function WithdrawSummary() {
   const { recipient, amount, assetId } = useParams<URLParams>();
   const token = useGetTokenFromList(assetId);
   const { mutate, isPending } = useTransferTx();
-  const { withdrawSuccess } = useNavigation();
   const symbol = token?.symbol || '';
 
   useEffect(() => {
     onSetButton({
       text: 'CONFIRM AND SEND',
       progress: isPending,
-      onClick: () =>
-        mutate({
-          assetId: assetId!,
-          recipient: recipient!,
-          amount: amount!,
-          onSuccess: () => withdrawSuccess(assetId!, recipient!, amount!),
-        }),
+      onClick: () => mutate(),
     });
-  }, [
-    onSetButton,
-    assetId,
-    mutate,
-    recipient,
-    amount,
-    isPending,
-    withdrawSuccess,
-  ]);
+  }, [onSetButton, mutate, isPending]);
 
   return (
     <Page>

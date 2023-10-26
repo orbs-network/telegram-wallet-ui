@@ -1,10 +1,8 @@
 import { CryptoAsset } from './config';
 import type { TokenData as CandiesTokenData } from '@defi.org/web3-candies';
 import type { PermitData } from '@uniswap/permit2-sdk/dist/domain';
-
 import { Web3Account } from 'web3-eth-accounts';
 import BN from 'bignumber.js';
-import { RouteObject } from 'react-router-dom';
 
 export type BNComparable = BN | string | number;
 
@@ -21,7 +19,6 @@ export type TokenData = {
 
 export type UserData = {
   account: Web3Account;
-  balance: BN;
   tokens: Record<string, TokenData>;
 };
 
@@ -99,3 +96,10 @@ export type Transaction = {
 };
 
 export type URLParams = { assetId: string; recipient: string; amount: string };
+
+
+export type TokensListProps = {
+  onSelect: (token: TokenData) => void;
+  className?: string;
+  tokens?: TokenData[];
+};

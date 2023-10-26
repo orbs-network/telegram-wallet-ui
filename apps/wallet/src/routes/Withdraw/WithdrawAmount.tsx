@@ -8,7 +8,6 @@ import {
   useFormatNumber,
   useGetTokenFromList,
   useMultiplyPriceByAmount,
-  useTokenBalanceQuery,
 } from '../../hooks';
 import { Page } from '../../components';
 import styled from '@emotion/styled';
@@ -76,24 +75,26 @@ const styles = {
 export function WithdrawAmount() {
   const [amount, setAmount] = useState('');
   const { assetId, recipient } = useParams<URLParams>();
-  const balance = useTokenBalanceQuery(assetId).data;
+
   const { onSetButton } = useMainButtonContext();
   const { withdrawSummary: navigateToWithdrawSummary } = useNavigation();
   const formattedAmount = useFormatNumber({ value: amount, decimalScale: 2 });
-  const symbol = useGetTokenFromList(assetId)?.symbol;
+  const token = useGetTokenFromList(assetId)
 
-  const formattedBalance = useFormatNumber({ value: balance, decimalScale: 2 });
+  const formattedBalance = useFormatNumber({ value: token?.balance, decimalScale: 2 });
 
   const isValidAmount = useMemo(() => {
     const amountBN = new BN(amount);
-    const balanceBN = new BN(balance || '0');
+    const balanceBN = new BN(token?.balance || '0');
 
     return balanceBN.gte(amountBN) && !amountBN.isZero();
-  }, [amount, balance]);
+  }, [amount, token?.balance]);
 
   useEffect(() => {
     onSetButton({
-      text: !isValidAmount ? 'Send' : `Send ${formattedAmount} ${symbol}`,
+      text: !isValidAmount
+        ? 'Send'
+        : `Send ${formattedAmount} ${token?.symbol.toUpperCase()}`,
       disabled: !isValidAmount,
       onClick: () => navigateToWithdrawSummary(assetId!, recipient!, amount),
     });
@@ -101,7 +102,7 @@ export function WithdrawAmount() {
     onSetButton,
     isValidAmount,
     formattedAmount,
-    symbol,
+    token?.symbol,
     navigateToWithdrawSummary,
     assetId,
     recipient,
@@ -131,7 +132,7 @@ const Balance = ({ balance }: { balance?: string }) => {
       <VStack gap="0px" alignItems="flex-start">
         <Text css={styles.balanceTitle}>Balance</Text>
         <Text css={styles.balanceValue}>
-          {balance} {token?.symbol}
+          {balance} {token?.symbol.toUpperCase()}
         </Text>
       </VStack>
     </Flex>
@@ -180,11 +181,11 @@ const AmountInput = ({
         />
         <Text
           style={{
-            left: !amount ? 50 : textSizePX + 12,
+            left: !amount ? 50 : textSizePX + 10,
           }}
           css={styles.inputSymbol}
         >
-          {token?.symbol}
+          {token?.symbol.toUpperCase()}
         </Text>
       </Flex>
       <Text css={styles.usd}>≈ $ {formattedUsdPrice}</Text>

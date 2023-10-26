@@ -6,7 +6,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Page, Transactions, WalletSpinner } from '../components';
 import { mockTransactions } from '../mocks/transactions';
 import { CryptoAsset } from '../config';
-import { useUserData } from '../hooks';
+import { useFormatNumber, useUserData } from '../hooks';
 
 function Loader() {
   return (
@@ -20,12 +20,14 @@ export function Asset() {
   const { assetId } = useParams<{ assetId: CryptoAsset }>();
 
   const { data: userData } = useUserData();
+  const tokenData = assetId &&  userData?.tokens[assetId];
+
+  const balance = useFormatNumber({ value: tokenData?.balance, decimalScale: 5 });
 
   if (!assetId) {
     return <Loader />;
   }
 
-  const tokenData = userData?.tokens[assetId];
 
   if (!tokenData) {
     return <Loader />;
@@ -33,35 +35,43 @@ export function Asset() {
 
   return (
     <Page>
-      <VStack spacing={4}>
-        <Avatar
-          name={tokenData.symbol}
-          src={tokenData.logoURI}
-          colorScheme="telegram"
-        />
+      <Container size="sm" pt={4}>
+        <VStack spacing={4}>
+          <Avatar
+            name={tokenData.symbol}
+            src={tokenData.logoURI}
+            colorScheme="telegram"
+          />
 
-        <Balance
-          primaryCurrencySymbol={tokenData?.symbol.toUpperCase()}
-          primaryAmount={tokenData.balance}
-          label={`${tokenData.name} balance`}
-          isPrimaryCrypto
-        />
-        <HStack justifyContent="center" alignItems="center" spacing={2}>
-          <Link to="/deposit">
-            <IconButtonWithLabel
-              Icon={BiSolidDownArrowCircle}
-              label="Deposit"
-            />
-          </Link>
-          <Link to="/withdraw">
-            <IconButtonWithLabel Icon={BiSolidUpArrowCircle} label="Withdraw" />
-          </Link>
-          <Link to="/trade">
-            <IconButtonWithLabel Icon={MdSwapHorizontalCircle} label="Trade" />
-          </Link>
-        </HStack>
-        <Transactions transactions={mockTransactions} cryptoAsset={assetId} />
-      </VStack>
+          <Balance
+            primaryCurrencySymbol={tokenData?.symbol.toUpperCase()}
+            primaryAmount={balance || '0'}
+            label={`${tokenData.name} balance`}
+            isPrimaryCrypto
+          />
+          <HStack justifyContent="center" alignItems="center" spacing={2}>
+            <Link to="/deposit">
+              <IconButtonWithLabel
+                Icon={BiSolidDownArrowCircle}
+                label="Deposit"
+              />
+            </Link>
+            <Link to="/withdraw">
+              <IconButtonWithLabel
+                Icon={BiSolidUpArrowCircle}
+                label="Withdraw"
+              />
+            </Link>
+            <Link to="/trade">
+              <IconButtonWithLabel
+                Icon={MdSwapHorizontalCircle}
+                label="Trade"
+              />
+            </Link>
+          </HStack>
+          <Transactions transactions={mockTransactions} cryptoAsset={assetId} />
+        </VStack>
+      </Container>
     </Page>
   );
 }
