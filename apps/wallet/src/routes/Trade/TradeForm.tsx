@@ -1,7 +1,6 @@
 import {
   VStack,
   HStack,
-  Input,
   IconButton,
   Icon,
   Text,
@@ -9,10 +8,11 @@ import {
   FormControl,
   FormErrorMessage,
   Box,
+  Avatar,
+  Divider,
 } from '@chakra-ui/react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { MdSwapVerticalCircle } from 'react-icons/md';
-import { useFetchLatestPrice } from '../../hooks';
 import { TradeFormSchema } from './schema';
 import { TokenData } from '../../types';
 import BN from 'bignumber.js';
@@ -25,7 +25,7 @@ import { useCallback, useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { MainButton } from '@twa-dev/sdk/react';
-import { Button } from '@telegram-wallet-ui/twa-ui-kit';
+import { Button, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import Twa from '@twa-dev/sdk';
 import { debounceAsync } from '../../lib/hooks/useDebounce';
 import { coinsProvider, swapProvider } from '../../config';
@@ -83,8 +83,6 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
           return false;
         }
 
-        console.log('inAmount validating', value);
-
         const inAmount = BN(value);
 
         if (inAmount.eq(0)) {
@@ -134,20 +132,13 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
     form.reset(defaultValues);
   }, [defaultValues, form]);
 
-  const { register, handleSubmit, watch, formState } = form;
+  const { handleSubmit, watch, formState } = form;
   const inToken = watch('inToken');
   const outToken = watch('outToken');
   const inAmount = watch('inAmount');
   const outAmount = watch('outAmount');
 
   const onSubmit: SubmitHandler<TradeFormSchema> = (data) => console.log(data);
-
-  const { data: inPrice } = useFetchLatestPrice(
-    tokens && tokens[inToken] ? tokens[inToken].coingeckoId : undefined
-  );
-  const { data: outPrice } = useFetchLatestPrice(
-    tokens && tokens[outToken] ? tokens[outToken].coingeckoId : undefined
-  );
 
   const [fetchingQuote, setFetchingQuote] = useState(false);
 
@@ -204,181 +195,201 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <VStack alignItems="stretch">
-        <HStack justifyContent="space-between">
-          <div>
-            You pay {tokens[inToken] && tokens[inToken].symbol.toUpperCase()}
-          </div>
-          <Text size="sm">
-            Max: {tokens[inToken] ? tokens[inToken].balance : '0.00'}{' '}
-            <Text as="span" variant="hint">
-              {tokens[inToken] && tokens[inToken].symbol.toUpperCase()}
+      <VStack alignItems="stretch" spacing={8}>
+        <VStack alignItems="stretch">
+          <HStack justifyContent="space-between">
+            <HStack>
+              <Avatar
+                src={tokens[inToken] && tokens[inToken].logoURI}
+                size="sm"
+              />
+              <Text>You pay</Text>
+            </HStack>
+            <Text size="sm">
+              Max: {tokens[inToken] ? tokens[inToken].balance : '0.00'}{' '}
+              <Text as="span" variant="hint">
+                {tokens[inToken] && tokens[inToken].symbol.toUpperCase()}
+              </Text>
             </Text>
-          </Text>
-        </HStack>
-        <HStack>
-          <FormControl isInvalid={Boolean(formState.errors.inAmount)}>
-            <CryptoAmountInput
-              hideSymbol
-              name="inAmount"
-              value={inAmount}
-              tokenAddress={tokens[inToken] ? tokens[inToken].address : ''}
-              onChange={(value) => {
-                const quote = async () => {
-                  try {
-                    if (!tokens) {
-                      throw new Error('No tokens');
-                    }
+          </HStack>
+          <HStack>
+            <FormControl isInvalid={Boolean(formState.errors.inAmount)}>
+              <CryptoAmountInput
+                hideSymbol
+                name="inAmount"
+                value={inAmount}
+                tokenAddress={tokens[inToken] ? tokens[inToken].address : ''}
+                onChange={(value) => {
+                  const quote = async () => {
+                    try {
+                      if (!tokens) {
+                        throw new Error('No tokens');
+                      }
 
-                    form.setValue('inAmount', value, {
-                      shouldDirty: true,
-                      shouldTouch: true,
-                      shouldValidate: true,
-                    });
+                      form.setValue('inAmount', value, {
+                        shouldDirty: true,
+                        shouldTouch: true,
+                        shouldValidate: true,
+                      });
 
-                    // Get estimated out amount first
-                    const estimatedOutAmount =
-                      await coinsProvider.getMinAmountOut(
-                        tokens[inToken],
-                        tokens[outToken],
-                        coinsProvider.toRawAmount(tokens[inToken], value)
+                      // Get estimated out amount first
+                      const estimatedOutAmount =
+                        await coinsProvider.getMinAmountOut(
+                          tokens[inToken],
+                          tokens[outToken],
+                          coinsProvider.toRawAmount(tokens[inToken], value)
+                        );
+
+                      if (estimatedOutAmount.eq(0)) {
+                        throw new Error('Estimated out amount is 0');
+                      }
+
+                      form.setValue(
+                        'outAmount',
+                        estimatedOutAmount
+                          .dividedBy(Math.pow(10, tokens[outToken].decimals))
+                          .toString(),
+                        { shouldDirty: true, shouldTouch: true }
                       );
 
-                    if (estimatedOutAmount.eq(0)) {
-                      throw new Error('Estimated out amount is 0');
+                      // Then fetch LH quote
+                      await fetchLHQuote(
+                        value,
+                        tokens[inToken],
+                        tokens[outToken]
+                      );
+                      reset();
+                      start();
+                    } catch (err) {
+                      console.error(err);
+                      // TODO: show toast
                     }
+                  };
+                  quote();
+                }}
+              />
 
-                    console.log(
-                      'estimatedOutAmount',
-                      estimatedOutAmount.toString()
-                    );
-
-                    form.setValue(
-                      'outAmount',
-                      estimatedOutAmount
-                        .dividedBy(Math.pow(10, tokens[outToken].decimals))
-                        .toString(),
-                      { shouldDirty: true, shouldTouch: true }
-                    );
-
-                    // Then fetch LH quote
-                    await fetchLHQuote(
-                      value,
-                      tokens[inToken],
-                      tokens[outToken]
-                    );
-                    reset();
-                    start();
-                  } catch (err) {
-                    console.error(err);
-                    // TODO: show toast
-                  }
-                };
-                quote();
-              }}
+              <FormErrorMessage>
+                {formState.errors.inAmount?.message}
+              </FormErrorMessage>
+            </FormControl>
+            <Controller
+              control={form.control}
+              name="inToken"
+              render={({ field, fieldState }) => (
+                <FormControl isInvalid={Boolean(fieldState.error)}>
+                  <TokenSelect
+                    {...field}
+                    onChange={(e) => {
+                      form.resetField('inAmount');
+                      form.resetField('outAmount');
+                      form.setValue('inToken', e.target.value);
+                      stop();
+                    }}
+                  />
+                  <FormErrorMessage>
+                    {fieldState.error?.message}
+                  </FormErrorMessage>
+                </FormControl>
+              )}
             />
-
-            <FormErrorMessage>
-              {formState.errors.inAmount?.message}
-            </FormErrorMessage>
-          </FormControl>
-          <Controller
-            control={form.control}
-            name="inToken"
-            render={({ field, fieldState }) => (
-              <FormControl isInvalid={Boolean(fieldState.error)}>
-                <TokenSelect
-                  {...field}
-                  onChange={(e) => {
-                    form.resetField('inAmount');
-                    form.resetField('outAmount');
-                    form.setValue('inToken', e.target.value);
-                    stop();
-                  }}
-                />
-                <FormErrorMessage>{fieldState.error?.message}</FormErrorMessage>
-              </FormControl>
-            )}
-          />
-        </HStack>
-        {/* <Text>
+          </HStack>
+          {/* <Text>
           {inPrice && inAmount !== ''
             ? `≈ $${BN(inPrice).multipliedBy(inAmount).toFixed(2)}`
             : `1 ${
                 tokens[inToken] && tokens[inToken].symbol.toUpperCase()
               } ≈ $${inPrice?.toFixed(2)}`}
         </Text> */}
+        </VStack>
 
-        <IconButton
-          aria-label="Switch"
-          icon={<Icon as={MdSwapVerticalCircle} />}
-          onClick={() => {
-            const values = form.getValues();
-            stop();
+        <HStack justifyContent="flex-end">
+          <Divider variant="thick" />
+          <IconButton
+            aria-label="Switch"
+            width="auto"
+            backgroundColor="transparent"
+            isRound
+            icon={
+              <Icon
+                as={MdSwapVerticalCircle}
+                fontSize="5xl"
+                color={colors.button_color}
+              />
+            }
+            onClick={() => {
+              const values = form.getValues();
+              stop();
 
-            form.reset(
-              {
-                inToken: values.outToken,
-                inAmount: values.outAmount,
-                outToken: values.inToken,
-                outAmount: values.inAmount,
-              },
-              { keepDirty: true, keepTouched: true }
-            );
-            fetchLHQuote(
-              values.outAmount,
-              tokens[values.outToken],
-              tokens[values.inToken]
-            );
-            reset();
-            start();
-          }}
-        />
-        <HStack>
-          <Text size="2xl">
-            You receive{' '}
-            {tokens[outToken] && tokens[outToken].symbol.toUpperCase()}
-          </Text>
-        </HStack>
-        <HStack>
-          <Box css={fetchingQuote ? outAmountStyles : undefined}>
-            <CryptoAmountInput
-              hideSymbol
-              name="outAmount"
-              value={outAmount}
-              editable={false}
-              tokenAddress={tokens[outToken] ? tokens[outToken].address : ''}
-            />
-          </Box>
-          <Controller
-            control={form.control}
-            name="outToken"
-            render={({ field, fieldState }) => (
-              <FormControl isInvalid={Boolean(fieldState.error)}>
-                <TokenSelect
-                  {...field}
-                  filterTokens={[inToken]}
-                  onChange={(e) => {
-                    form.resetField('inAmount');
-                    form.resetField('outAmount');
-                    form.setValue('outToken', e.target.value);
-                    stop();
-                  }}
-                />
-                <FormErrorMessage>{fieldState.error?.message}</FormErrorMessage>
-              </FormControl>
-            )}
+              form.reset(
+                {
+                  inToken: values.outToken,
+                  inAmount: values.outAmount,
+                  outToken: values.inToken,
+                  outAmount: values.inAmount,
+                },
+                { keepDirty: true, keepTouched: true }
+              );
+              fetchLHQuote(
+                values.outAmount,
+                tokens[values.outToken],
+                tokens[values.inToken]
+              );
+              reset();
+              start();
+            }}
           />
         </HStack>
 
-        {/* <Text>
+        <VStack alignItems="stretch">
+          <HStack>
+            <Avatar
+              src={tokens[outToken] && tokens[outToken].logoURI}
+              size="sm"
+            />
+            <Text>You pay</Text>
+          </HStack>
+          <HStack>
+            <Box css={fetchingQuote ? outAmountStyles : undefined}>
+              <CryptoAmountInput
+                hideSymbol
+                name="outAmount"
+                value={outAmount}
+                editable={false}
+                tokenAddress={tokens[outToken] ? tokens[outToken].address : ''}
+              />
+            </Box>
+            <Controller
+              control={form.control}
+              name="outToken"
+              render={({ field, fieldState }) => (
+                <FormControl isInvalid={Boolean(fieldState.error)}>
+                  <TokenSelect
+                    {...field}
+                    filterTokens={[inToken]}
+                    onChange={(e) => {
+                      form.resetField('inAmount');
+                      form.resetField('outAmount');
+                      form.setValue('outToken', e.target.value);
+                      stop();
+                    }}
+                  />
+                  <FormErrorMessage>
+                    {fieldState.error?.message}
+                  </FormErrorMessage>
+                </FormControl>
+              )}
+            />
+          </HStack>
+
+          {/* <Text>
           {outPrice && outAmount !== ''
             ? `≈ $${BN(outPrice).multipliedBy(outAmount).toFixed(2)}`
             : `1 ${
                 tokens[outToken] && tokens[outToken].symbol.toUpperCase()
               } ≈ $${outPrice?.toFixed(2)}`}
         </Text> */}
-
+        </VStack>
         {!Twa.isVersionAtLeast('6.0.1') && (
           <Button
             variant="primary"
@@ -389,7 +400,6 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
             Review Trade
           </Button>
         )}
-
         <MainButton
           text="Review Trade"
           disabled={!formState.isValid}

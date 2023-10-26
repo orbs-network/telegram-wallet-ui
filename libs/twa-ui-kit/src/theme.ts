@@ -228,9 +228,7 @@ export const theme = extendTheme({
         thick: defineStyle({
           borderWidth: '3px',
           borderStyle: 'solid',
-          borderColor: (props) =>
-            Twa.themeParams.bg_color ||
-            mode(tgColors.light.bg_color, tgColors.dark.bg_color)(props),
+          borderColor: 'gray.400',
           borderRadius: 6,
         }),
       },

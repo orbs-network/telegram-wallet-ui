@@ -6,7 +6,6 @@ import BN from 'bignumber.js';
 import { useMemo } from 'react';
 import { TradeForm } from './TradeForm';
 import { Page } from '../../components';
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
 const StyledPage = styled(Page)({
