@@ -31,6 +31,7 @@ import { debounceAsync } from '../../lib/hooks/useDebounce';
 import { coinsProvider, swapProvider } from '../../config';
 import { useCountdown } from '../../lib/hooks/useCountdown';
 import { css, keyframes } from '@emotion/react';
+import { amountUi } from '../../utils/conversion';
 
 export const QUOTE_REFETCH_INTERVAL = 15 * 1000;
 
@@ -206,7 +207,10 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
               <Text>You pay</Text>
             </HStack>
             <Text size="sm">
-              Max: {tokens[inToken] ? tokens[inToken].balance : '0.00'}{' '}
+              Max:{' '}
+              {tokens[inToken]
+                ? amountUi(tokens[inToken], BN(tokens[inToken].balance))
+                : '0.00'}{' '}
               <Text as="span" variant="hint">
                 {tokens[inToken] && tokens[inToken].symbol.toUpperCase()}
               </Text>
