@@ -24,7 +24,6 @@ import { Button } from '@telegram-wallet-ui/twa-ui-kit';
 import Twa from '@twa-dev/sdk';
 import { debounceAsync } from '../../lib/hooks/useDebounce';
 import { coinsProvider, swapProvider } from '../../config';
-import { bn6 } from '@defi.org/web3-candies';
 import { useCountdown } from '../../lib/hooks/useCountdown';
 import { css, keyframes } from '@emotion/react';
 
@@ -34,7 +33,7 @@ const debouncedQuote = debounceAsync(
   async (inAmount: string, inToken: TokenData, outToken: TokenData) => {
     try {
       const resp = await swapProvider.quote({
-        inAmount: bn6(inAmount),
+        inAmount: coinsProvider.toRawAmount(inToken, inAmount),
         inToken: inToken.address,
         outToken: outToken.address,
       });
@@ -232,7 +231,10 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
                       await coinsProvider.getMinAmountOut(
                         tokens[inToken],
                         tokens[outToken],
-                        bn6(e.target.value)
+                        coinsProvider.toRawAmount(
+                          tokens[inToken],
+                          e.target.value
+                        )
                       );
 
                     if (estimatedOutAmount.eq(0)) {
