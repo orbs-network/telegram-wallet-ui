@@ -1,22 +1,37 @@
-import { erc20s, zeroAddress, networks } from '@defi.org/web3-candies';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { networks } from '@defi.org/web3-candies';
 import { useQuery } from '@tanstack/react-query';
-import { Token, TokenListResponse, UserData } from './types';
+import { Token, UserData } from './types';
 import { fetchLatestPrice } from './utils/fetchLatestPrice';
 
-import { account, coinsProvider, isMumbai, web3Provider } from './config';
-import { useEffect, useRef } from 'react';
-import { Fetcher } from './utils/fetcher';
+import { account, coinsProvider, web3Provider } from './config';
+import { useEffect, useMemo, useRef } from 'react';
 import { getDebug } from './lib/utils/debug';
+import { amountUi } from './utils/conversion';
+import { matchRoutes, useLocation } from 'react-router-dom';
+import { ROUTES } from './router/routes';
+import _ from 'lodash';
+import { useNumericFormat } from 'react-number-format';
 
 const debug = getDebug('hooks');
 
 export const useFetchLatestPrice = (coin?: string, vsCurrencies?: string) => {
   return useQuery({
-    queryKey: [coin],
-    queryFn: () => fetchLatestPrice(coin ?? '', vsCurrencies),
+    queryKey: ['useFetchLatestPrice', coin],
+    queryFn: () => fetchLatestPrice(coin ?? ''),
     enabled: !!coin,
     staleTime: 10000,
   });
+};
+
+export const useMultiplyPriceByAmount = (coin?: string, amount?: number) => {
+  const { data: price } = useFetchLatestPrice(coin);
+
+  return useMemo(() => {
+    if (!amount || !price) return '0';
+
+    return amount * price;
+  }, [amount, price]);
 };
 
 export const useCoinsList = () => {
@@ -26,6 +41,31 @@ export const useCoinsList = () => {
       return coinsProvider.fetchCoins();
     },
   });
+};
+
+export const useTokenBalanceQuery = (tokenAddress?: string) => {
+  const token = useGetTokenFromList(tokenAddress);
+  const query = useQuery({
+    queryKey: ['useTokenBalanceQuery', tokenAddress],
+    queryFn: async () => {
+      const result = await web3Provider.balanceOf(tokenAddress!);
+      return amountUi(token, result) || '0';
+    },
+
+    enabled: !!tokenAddress && !!token,
+    // refetchInterval: 20_000,
+  });
+
+  return query;
+};
+
+export const useGetTokenFromList = (tokenAddress?: string) => {
+  const { data: tokens, dataUpdatedAt } = useCoinsList();
+
+  return useMemo(
+    () => tokens?.find((it) => it.address === tokenAddress),
+    [dataUpdatedAt, tokenAddress]
+  );
 };
 
 export const useInterval = (callback: VoidFunction, delay: number | null) => {
@@ -100,4 +140,43 @@ export const useUserData = () => {
       }
     },
   });
+};
+
+export const useFormatNumber = ({
+  value,
+  decimalScale = 3,
+  prefix,
+  suffix,
+}: {
+  value?: string | number;
+  decimalScale?: number;
+  prefix?: string;
+  suffix?: string;
+}) => {
+  const result = useNumericFormat({
+    allowLeadingZeros: true,
+    thousandSeparator: ',',
+    displayType: 'text',
+    value: value || '',
+    decimalScale,
+    prefix,
+    suffix,
+  });
+
+  return result.value?.toString();
+};
+
+const MAP_ROUTES = _.map(ROUTES, (value, key) => {
+  return {
+    path: value,
+  };
+});
+
+export const useCurrentPath = () => {
+  const location = useLocation();
+  const result = matchRoutes(MAP_ROUTES, location);
+  if (!result) {
+    return '';
+  }
+  return result[0].route.path;
 };

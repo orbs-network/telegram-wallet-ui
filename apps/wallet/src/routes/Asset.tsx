@@ -3,8 +3,7 @@ import { Balance, IconButtonWithLabel } from '@telegram-wallet-ui/twa-ui-kit';
 import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
 import { MdSwapHorizontalCircle } from 'react-icons/md';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { BackButton } from '@twa-dev/sdk/react';
-import { Transactions, WalletSpinner } from '../components';
+import { Page, Transactions, WalletSpinner } from '../components';
 import { mockTransactions } from '../mocks/transactions';
 import { CryptoAsset } from '../config';
 import { useUserData } from '../hooks';
@@ -18,7 +17,6 @@ function Loader() {
 }
 
 export function Asset() {
-  const navigate = useNavigate();
   const { assetId } = useParams<{ assetId: CryptoAsset }>();
 
   const { data: userData } = useUserData();
@@ -34,12 +32,7 @@ export function Asset() {
   }
 
   return (
-    <Container size="sm" pt={4}>
-      <BackButton
-        onClick={() => {
-          navigate(-1);
-        }}
-      />
+    <Page>
       <VStack spacing={4}>
         <Avatar
           name={tokenData.symbol}
@@ -69,6 +62,6 @@ export function Asset() {
         </HStack>
         <Transactions transactions={mockTransactions} cryptoAsset={assetId} />
       </VStack>
-    </Container>
+    </Page>
   );
 }

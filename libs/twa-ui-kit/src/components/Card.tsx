@@ -5,15 +5,18 @@ const styles = css`
   border-radius: 1rem;
   min-height: 72px;
   width: 100%;
+  box-shadow: unset;
 `;
 
 type CardProps = {
   children: React.ReactNode;
+  onClick?: () => void;
+  className?: string;
 };
 
-export function Card({ children }: CardProps) {
+export function Card({ children, onClick, className = '' }: CardProps) {
   return (
-    <ChakraCard size="sm" css={styles}>
+    <ChakraCard onClick={onClick} size="sm" css={styles} className={className}>
       <CardBody>{children}</CardBody>
     </ChakraCard>
   );

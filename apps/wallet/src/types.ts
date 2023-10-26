@@ -4,6 +4,7 @@ import type { PermitData } from '@uniswap/permit2-sdk/dist/domain';
 
 import { Web3Account } from 'web3-eth-accounts';
 import BN from 'bignumber.js';
+import { RouteObject } from 'react-router-dom';
 
 export type BNComparable = BN | string | number;
 
@@ -96,3 +97,5 @@ export type Transaction = {
   type: TransactionType;
   asset: CryptoAsset;
 };
+
+export type URLParams = { assetId: string; recipient: string; amount: string };

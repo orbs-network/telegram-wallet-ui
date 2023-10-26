@@ -1,12 +1,26 @@
-import React from 'react'
-import { Link } from 'react-router-dom';
+import { Container } from '@chakra-ui/react';
+import React, { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Page } from '../../components';
+import { useMainButtonContext } from '../../context/MainButtonContext';
+import { ROUTES } from '../../router/routes';
 
 export function Page2() {
+  const { onSetButton } = useMainButtonContext();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    onSetButton({
+      text: 'Next',
+      onClick: () => navigate(ROUTES.onboardingPage2),
+    });
+  }, [onSetButton, navigate]);
+
   return (
-    <div>
-      <p>Page2</p>
-      <Link to="/3">Next</Link>
-    </div>
+    <Page>
+      <Container size="sm" pt={4}>
+        <p>Page2</p>
+      </Container>
+    </Page>
   );
 }
-

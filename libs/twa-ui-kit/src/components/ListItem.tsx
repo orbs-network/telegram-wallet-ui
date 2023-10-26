@@ -1,20 +1,32 @@
 import { css } from '@emotion/react';
 import { DataDisplayItem } from './DataDisplayItem';
 import { Box, Icon, useColorMode } from '@chakra-ui/react';
-import { AiOutlineCheck } from 'react-icons/ai';
+import { BiCheck } from 'react-icons/bi';
+
 import { tgColors } from '../theme';
 
 const styles = css`
-  padding: 1rem 0;
-
+ padding: 10px 12px 8px 10px;
+  position: relative;
   &:first-child {
     padding-top: 0;
   }
-  &:last-child {
+
+   &:after {
+    content: "";
+    position: absolute;
+    bottom: 0px;
+    left: 65px;
+    right: 0;
+    height: 1px;
+    background: #D9D9D9;
+  }
+    &:last-child {
     padding-bottom: 0;
   }
-  :not(:last-child) {
-    border-bottom: 1px solid #e5e7eb;
+
+    &:last-child:after {
+    display: none;
   }
 `;
 
@@ -24,6 +36,8 @@ type ListItemProps = {
   StartIconSlot?: React.ReactNode;
   EndIconSlot?: React.ReactNode;
   selected?: boolean;
+  onClick?: () => void;
+  className?: string;
 };
 
 export function ListItem({
@@ -32,20 +46,19 @@ export function ListItem({
   EndTextSlot,
   EndIconSlot,
   selected,
+  onClick,
+  className = '',
 }: ListItemProps) {
   const mode = useColorMode();
 
   return (
-    <Box css={styles}>
+    <Box css={styles} onClick={onClick} className={className}>
       <DataDisplayItem
         StartIconSlot={StartIconSlot}
         StartTextSlot={StartTextSlot}
         EndTextSlot={
           selected ? (
-            <Icon
-              as={AiOutlineCheck}
-              color={tgColors[mode.colorMode].button_color}
-            />
+            <Icon as={BiCheck} color={tgColors[mode.colorMode].button_color} />
           ) : (
             EndTextSlot
           )

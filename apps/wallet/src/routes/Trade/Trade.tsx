@@ -5,6 +5,7 @@ import { useUserData } from '../../hooks';
 import BN from 'bignumber.js';
 import { useMemo } from 'react';
 import { TradeForm } from './TradeForm';
+import { Page } from '../../components';
 
 export function Trade() {
   const navigate = useNavigate();
@@ -41,13 +42,15 @@ export function Trade() {
   }, [userData?.tokens]);
 
   return (
-    <Container size="sm" pt={4}>
-      <BackButton
-        onClick={() => {
-          navigate(-1);
-        }}
-      />
-      <TradeForm defaultValues={defaultValues} tokens={userData?.tokens} />
-    </Container>
+    <Page>
+      <Container size="sm" pt={4}>
+        <BackButton
+          onClick={() => {
+            navigate(-1);
+          }}
+        />
+        <TradeForm defaultValues={defaultValues} tokens={userData?.tokens} />
+      </Container>
+    </Page>
   );
 }
