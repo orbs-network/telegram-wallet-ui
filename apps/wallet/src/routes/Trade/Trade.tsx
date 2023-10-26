@@ -6,6 +6,12 @@ import BN from 'bignumber.js';
 import { useMemo } from 'react';
 import { TradeForm } from './TradeForm';
 import { Page } from '../../components';
+import { css } from '@emotion/react';
+import styled from '@emotion/styled';
+
+const StyledPage = styled(Page)({
+  background: 'white',
+});
 
 export function Trade() {
   const navigate = useNavigate();
@@ -42,7 +48,7 @@ export function Trade() {
   }, [userData?.tokens]);
 
   return (
-    <Page>
+    <StyledPage>
       <Container size="sm" pt={4}>
         <BackButton
           onClick={() => {
@@ -51,6 +57,6 @@ export function Trade() {
         />
         <TradeForm defaultValues={defaultValues} tokens={userData?.tokens} />
       </Container>
-    </Page>
+    </StyledPage>
   );
 }

@@ -8,3 +8,4 @@ export * from './Page';
 export * from './TokenListItemLoader';
 export * from './TokenSelect';
 export * from './Countdown';
+export * from './CryptoAmountInput';

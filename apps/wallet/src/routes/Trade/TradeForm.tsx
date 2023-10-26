@@ -15,7 +15,11 @@ import { useFetchLatestPrice } from '../../hooks';
 import { TradeFormSchema } from './schema';
 import { TokenData } from '../../types';
 import BN from 'bignumber.js';
-import { TokenSelect, WalletSpinner } from '../../components';
+import {
+  CryptoAmountInput,
+  TokenSelect,
+  WalletSpinner,
+} from '../../components';
 import { useCallback, useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -77,6 +81,8 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
         if (!value || !tokens) {
           return false;
         }
+
+        console.log('inAmount validating', value);
 
         const inAmount = BN(value);
 
@@ -211,19 +217,22 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
         </HStack>
         <HStack>
           <FormControl isInvalid={Boolean(formState.errors.inAmount)}>
-            <Input
-              id="inAmount"
-              {...register('inAmount')}
-              onChange={(e) => {
+            <CryptoAmountInput
+              hideSymbol
+              name="inAmount"
+              value={inAmount}
+              assetId={tokens[inToken] ? tokens[inToken].address : ''}
+              onChange={(value) => {
                 const quote = async () => {
                   try {
                     if (!tokens) {
                       throw new Error('No tokens');
                     }
 
-                    form.setValue('inAmount', e.target.value, {
+                    form.setValue('inAmount', value, {
                       shouldDirty: true,
                       shouldTouch: true,
+                      shouldValidate: true,
                     });
 
                     // Get estimated out amount first
@@ -231,10 +240,7 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
                       await coinsProvider.getMinAmountOut(
                         tokens[inToken],
                         tokens[outToken],
-                        coinsProvider.toRawAmount(
-                          tokens[inToken],
-                          e.target.value
-                        )
+                        coinsProvider.toRawAmount(tokens[inToken], value)
                       );
 
                     if (estimatedOutAmount.eq(0)) {
@@ -256,7 +262,7 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
 
                     // Then fetch LH quote
                     await fetchLHQuote(
-                      e.target.value,
+                      value,
                       tokens[inToken],
                       tokens[outToken]
                     );
@@ -269,11 +275,8 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
                 };
                 quote();
               }}
-              placeholder="0.00"
-              type="number"
-              step="any"
-              min="0"
             />
+
             <FormErrorMessage>
               {formState.errors.inAmount?.message}
             </FormErrorMessage>
