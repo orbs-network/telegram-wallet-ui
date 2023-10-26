@@ -64,6 +64,10 @@ export class CoinsProvider {
       .slice(0, 10);
   }
 
+  toRawAmount(srcToken: Token, quantity: BNComparable) {
+    return amountBN(srcToken, quantity);
+  }
+
   async getMinAmountOut(
     srcCoin: Token,
     dstCoin: Token,
