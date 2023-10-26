@@ -96,7 +96,7 @@ export function WithdrawAmount() {
             name="withdrawalAmount"
             value={amount}
             onChange={setAmount}
-            assetId={assetId || 'usdc'}
+            tokenAddress={assetId || ''}
           />
           <Balance balance={formattedBalance} />
         </VStack>

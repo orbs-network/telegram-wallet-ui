@@ -8,6 +8,7 @@ import {
   Container,
   FormControl,
   FormErrorMessage,
+  Box,
 } from '@chakra-ui/react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { MdSwapVerticalCircle } from 'react-icons/md';
@@ -221,7 +222,7 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
               hideSymbol
               name="inAmount"
               value={inAmount}
-              assetId={tokens[inToken] ? tokens[inToken].address : ''}
+              tokenAddress={tokens[inToken] ? tokens[inToken].address : ''}
               onChange={(value) => {
                 const quote = async () => {
                   try {
@@ -300,13 +301,13 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
             )}
           />
         </HStack>
-        <Text>
+        {/* <Text>
           {inPrice && inAmount !== ''
             ? `≈ $${BN(inPrice).multipliedBy(inAmount).toFixed(2)}`
             : `1 ${
                 tokens[inToken] && tokens[inToken].symbol.toUpperCase()
               } ≈ $${inPrice?.toFixed(2)}`}
-        </Text>
+        </Text> */}
 
         <IconButton
           aria-label="Switch"
@@ -340,17 +341,15 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
           </Text>
         </HStack>
         <HStack>
-          <Input
-            id="outAmount"
-            {...register('outAmount')}
-            contentEditable={false}
-            disabled
-            placeholder="0.00"
-            type="number"
-            step="any"
-            min="0"
-            css={fetchingQuote ? outAmountStyles : undefined}
-          />
+          <Box css={fetchingQuote ? outAmountStyles : undefined}>
+            <CryptoAmountInput
+              hideSymbol
+              name="outAmount"
+              value={outAmount}
+              editable={false}
+              tokenAddress={tokens[outToken] ? tokens[outToken].address : ''}
+            />
+          </Box>
           <Controller
             control={form.control}
             name="outToken"
@@ -372,13 +371,13 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
           />
         </HStack>
 
-        <Text>
+        {/* <Text>
           {outPrice && outAmount !== ''
             ? `≈ $${BN(outPrice).multipliedBy(outAmount).toFixed(2)}`
             : `1 ${
                 tokens[outToken] && tokens[outToken].symbol.toUpperCase()
               } ≈ $${outPrice?.toFixed(2)}`}
-        </Text>
+        </Text> */}
 
         {!Twa.isVersionAtLeast('6.0.1') && (
           <Button
