@@ -6,7 +6,6 @@ import {
   VStack,
   useToast,
 } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
 import { useUserData } from '../../hooks';
 import { Button, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import QRCode from 'react-qr-code';

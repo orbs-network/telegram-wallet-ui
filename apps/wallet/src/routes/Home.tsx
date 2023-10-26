@@ -3,10 +3,7 @@ import { Balance, IconButtonWithLabel } from '@telegram-wallet-ui/twa-ui-kit';
 import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
 import { Link } from 'react-router-dom';
 import { Page, TokenBalances } from '../components';
-import { useUserData } from '../hooks';
-import { networks } from '@defi.org/web3-candies';
-import { amountUi } from '../utils/conversion';
-import BN from 'bignumber.js';
+import { useFormatNumber, usePortfolioUsdValue } from '../hooks';
 import { faucetProvider, isMumbai, permit2Provider } from '../config';
 import { MdSwapVerticalCircle } from 'react-icons/md';
 
@@ -26,25 +23,29 @@ permit2Provider.pollPermit2Approvals();
 // Polls until the current selected erc20 was transferred to this account
 faucetProvider.requestIfNeeded();
 
-// TODO(sukh) - set this whenever the user selects on the deposit flow
-faucetProvider.setProofErc20(TODO_TEMP_ERC20_REPLACE);
+
+const TotalUSDAmount = () => {
+  const usdValue = usePortfolioUsdValue();
+
+  const primaryAmount = useFormatNumber({
+    value: usdValue.data,
+  });
+
+  return (
+    <Balance
+      primaryCurrencySymbol="$"
+      primaryAmount={primaryAmount || '0'}
+      label="Total balance"
+    />
+  );
+};
 
 export function Home() {
-  const { data: userData } = useUserData();
-
   return (
     <Page>
       <Container size="sm" pt={4}>
         <VStack spacing={4} alignItems="stretch">
-          {/* TODO: convert total assets amounts to USD and display */}
-          <Balance
-            primaryCurrencySymbol={networks.poly.native.symbol}
-            primaryAmount={Number(
-              amountUi(networks.poly.native, BN(userData?.balance || '0'))
-            ).toFixed(3)}
-            label="Total balance"
-            isPrimaryCrypto
-          />
+          <TotalUSDAmount />
           <HStack justifyContent="center" alignItems="center" spacing={2}>
             <Link to="/deposit">
               <IconButtonWithLabel

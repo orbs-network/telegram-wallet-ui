@@ -1,60 +1,149 @@
-import { Flex, Skeleton, VStack } from '@chakra-ui/react';
+import { Avatar, Heading, Skeleton, Text, VStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Card } from '@telegram-wallet-ui/twa-ui-kit';
+import { Card, ListItem } from '@telegram-wallet-ui/twa-ui-kit';
 import _ from 'lodash';
-import { useCoinsList } from '../hooks';
-import { TokenListItem } from './TokenListItem';
-import { TokenListItemLoader } from './TokenListItemLoader';
+import { useFormatNumber, useMultiplyPriceByAmount } from '../hooks';
+import {  TokenData, TokensListProps } from '../types';
 
-type Props = {
-  onSelect: (token: string) => void;
-  selected?: string;
-};
+export function TokensList({ onSelect, className = '', tokens }: TokensListProps) {
+  const isLoading = !tokens || _.isEmpty(tokens);
 
-
-export function TokensList({ onSelect, selected }: Props) {
-  const { data: tokens, isLoading } = useCoinsList();
-
-  if (isLoading) {
-    return (
-      <StyledCard>
-        <TokenListItemLoader />
-      </StyledCard>
-    );
-  }
   return (
-    <StyledCard>
-      <List>
-        {tokens?.map((token) => {
-          const isSelected = token.address === selected;
+    <List className={className}>
+      {isLoading ? (
+        <Card>
+          <TokenListItemLoader />
+        </Card>
+      ) : (
+        _.map(tokens, (token) => {
           return (
-            <StyledTokenListItem
-              selected={isSelected}
-              onClick={() => onSelect(token.address)}
+            <TokenListItem
+              balance={token.balance}
+              onClick={() => onSelect(token)}
               key={token.address}
               token={token}
             />
           );
-        })}
-      </List>
-    </StyledCard>
+        })
+      )}
+    </List>
   );
 }
-
-const StyledCard = styled(Card)({
-  '.chakra-card__body': {
-    padding: '12px 0px',
-  },
-});
-
-const StyledTokenListItem = styled(TokenListItem)({
-  position: 'relative',
-});
-
-const List = styled('div')({
+const List = styled(VStack)({
   display: 'flex',
   flexDirection: 'column',
   borderRadius: 10,
   overflow: 'hidden',
 });
+
+const styles = {
+  usd: css`
+    color: black;
+    font-size: 16px;
+    font-weight: 500;
+  `,
+};
+
+type TokenListItemProps = {
+  token: TokenData;
+  balance?: string;
+  usd?: string;
+  onClick?: () => void;
+  className?: string;
+  EndIconSlot?: React.ReactNode;
+  selected?: boolean;
+};
+
+function TokenListItem({
+  token,
+  onClick,
+  EndIconSlot,
+  selected,
+}: TokenListItemProps) {
+  return (
+    <StyledCard className="list-item">
+      <StyledListItem
+        selected={selected}
+        onClick={onClick}
+        className="list-item-content"
+        StartIconSlot={
+          <Avatar width="40px" height="40px" src={token.logoURI} />
+        }
+        EndIconSlot={EndIconSlot}
+        EndTextSlot={<USD token={token} />}
+        StartTextSlot={
+          <VStack alignItems="flex-start" gap="2px">
+            <Heading as="h3" variant="bodyTitle">
+              {token.name}
+            </Heading>
+            <Balance token={token} />
+          </VStack>
+        }
+      />
+    </StyledCard>
+  );
+}
+
+const StyledCard = styled(Card)({
+  borderRadius: '20px',
+  minHeight: 'unset',
+  '.chakra-card__body': {
+    padding: '0px',
+  },
+});
+const StyledListItem = styled(ListItem)({
+  padding: '10px 20px 10px 16px',
+});
+
+const USD = ({ token }: { token: TokenData }) => {
+  const value = useMultiplyPriceByAmount(token.coingeckoId, token.balance);
+  const formattedAmount = useFormatNumber({
+    value: value || '0',
+    decimalScale: 2,
+  });
+
+  if (!formattedAmount) {
+    return (
+      <Skeleton
+        height="13px"
+        width="60px"
+        borderRadius="20px"
+        marginTop="2px"
+      />
+    );
+  }
+
+  return (
+    <Text variant="hint" css={styles.usd}>
+      ${formattedAmount}
+    </Text>
+  );
+};
+
+const Balance = ({ token }: { token: TokenData }) => {
+  const formattedAmount = useFormatNumber({
+    value: token.balance || '0',
+    decimalScale: 3,
+  });
+
+  return (
+    <Text variant="hint">
+      {formattedAmount} {token.symbol.toUpperCase()}
+    </Text>
+  );
+};
+
+function TokenListItemLoader() {
+  return (
+    <ListItem
+      StartIconSlot={<Skeleton width="40px" height="40px" borderRadius="50%" />}
+      StartTextSlot={
+        <VStack alignItems="flex-start" gap="5px">
+          <Skeleton width="150px" height="15px" borderRadius="10px" />
+          <Skeleton width="50px" height="15px" borderRadius="10px" />
+        </VStack>
+      }
+    />
+  );
+}

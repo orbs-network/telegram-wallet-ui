@@ -13,13 +13,20 @@ export const useNavigation = () => {
     navigate(ROUTES.deposit);
   }, [navigate]);
 
+  const depositSelectMethod = useCallback((assetId: string) => {
+    navigate(ROUTES.depositSelectMethod.replace(':assetId', assetId));
+  }, [navigate]);
+
   const depositBuy = useCallback(() => {
     navigate(ROUTES.depositBuy);
   }, [navigate]);
 
-  const depositCrypto = useCallback(() => {
-    navigate(ROUTES.depositCrypto);
-  }, [navigate]);
+  const depositCrypto = useCallback(
+    (assetId: string) => {
+      navigate(ROUTES.depositCrypto.replace(':assetId', assetId));
+    },
+    [navigate]
+  );
 
   const tempUtils = useCallback(() => {
     navigate(ROUTES.tempUtils);
@@ -85,5 +92,6 @@ export const useNavigation = () => {
     withdrawAmount,
     withdrawSummary,
     withdrawSuccess,
+    depositSelectMethod,
   };
 };

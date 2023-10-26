@@ -5,26 +5,12 @@ import { BiCheck } from 'react-icons/bi';
 
 import { tgColors } from '../theme';
 
+
+
+
 const styles = css`
  padding: 10px 12px 8px 10px;
-  position: relative;
-  &:first-child {
-    padding-top: 0;
-  }
-
-   &:after {
-    content: "";
-    position: absolute;
-    bottom: 0px;
-    left: 65px;
-    right: 0;
-    height: 1px;
-    background: #D9D9D9;
-  }
-    &:last-child {
-    padding-bottom: 0;
-  }
-
+  
     &:last-child:after {
     display: none;
   }

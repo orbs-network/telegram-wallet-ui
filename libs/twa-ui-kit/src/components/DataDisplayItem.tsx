@@ -25,7 +25,7 @@ export function DataDisplayItem({
       width="100%"
       onClick={onClick}
     >
-      <HStack spacing={4} alignItems="center">
+      <HStack spacing={3} alignItems="center">
         {StartIconSlot}
         {StartTextSlot}
       </HStack>

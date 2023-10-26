@@ -13,6 +13,7 @@ import {
   WithdrawAmount,
   WithdrawSuccess,
   WithdrawSummary,
+  DepositSelectToken,
 } from '../routes';
 import { RouteObject } from 'react-router-dom';
 import { ROUTES } from './routes';
@@ -24,6 +25,10 @@ const routes: RouteObject[] = [
   },
   {
     path: ROUTES.deposit,
+    element: <DepositSelectToken />,
+  },
+  {
+    path: ROUTES.depositSelectMethod,
     element: <SelectMethod />,
   },
   {

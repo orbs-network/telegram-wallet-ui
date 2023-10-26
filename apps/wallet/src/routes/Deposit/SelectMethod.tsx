@@ -11,10 +11,13 @@ import { Card, DataDisplayItem, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import { AiOutlineCreditCard } from 'react-icons/ai';
 import { BiChevronRight } from 'react-icons/bi';
 import { RiApps2Line } from 'react-icons/ri';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Page } from '../../components';
+import { ROUTES } from '../../router/routes';
+import { URLParams } from '../../types';
 
 export function SelectMethod() {
+  const {assetId} = useParams<URLParams>()
 
 
   return (
@@ -25,7 +28,7 @@ export function SelectMethod() {
             How would you like to deposit crypto?
           </Heading>
           <VStack spacing={4} alignItems="stretch">
-            <Link to="/deposit/buy">
+            <Link to={ROUTES.depositBuy.replace(':assetId', assetId!)}>
               <Card>
                 <DataDisplayItem
                   StartIconSlot={
@@ -48,7 +51,7 @@ export function SelectMethod() {
                 />
               </Card>
             </Link>
-            <Link to="/deposit/crypto">
+            <Link to={ROUTES.depositCrypto.replace(':assetId', assetId!)}>
               <Card>
                 <DataDisplayItem
                   StartIconSlot={

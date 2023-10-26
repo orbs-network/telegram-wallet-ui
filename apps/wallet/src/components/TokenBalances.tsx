@@ -1,48 +1,27 @@
 import { useUserData } from '../hooks';
 import BN from 'bignumber.js';
-import { Link } from 'react-router-dom';
-import { Heading, Box, Text, Avatar, Spinner } from '@chakra-ui/react';
-import { DataDisplayItem, Card } from '@telegram-wallet-ui/twa-ui-kit';
+import { TokensList } from './TokensList';
+import { useNavigation } from '../router/hooks';
+import styled from '@emotion/styled';
 
 export function TokenBalances() {
+  const {asset} = useNavigation()
   const { data: userData } = useUserData();
-
-  if (!userData?.tokens) {
-    return <Spinner />;
-  }
-
   // filter out zero balances and at least show usdt
-  const tokenBalances = Object.values(userData.tokens).filter(
+  const tokenBalances = !userData?.tokens ? undefined :  Object.values(userData.tokens).filter(
     (token) => token.symbol === 'usdc' || !BN(token.balance).eq(0)
   );
 
   return (
-    <>
-      {tokenBalances.map((token) => (
-        <Link key={token.symbol} to={`/asset/${token.symbol}`}>
-          <Card>
-            <DataDisplayItem
-              StartIconSlot={
-                <Avatar
-                  name={token.symbol}
-                  src={token.logoURI}
-                  colorScheme="telegram"
-                />
-              }
-              StartTextSlot={
-                <Box>
-                  <Heading as="h3" variant="bodyTitle">
-                    {token.name}
-                  </Heading>
-                  <Text variant="hint">
-                    {token.balance} {token.symbol.toUpperCase()}
-                  </Text>
-                </Box>
-              }
-            />
-          </Card>
-        </Link>
-      ))}
-    </>
+    <StyledTokensList
+      tokens={tokenBalances}
+      onSelect={(token) => asset(token.symbol)}
+    />
   );
 }
+
+
+
+const StyledTokensList = styled(TokensList)`
+  gap: 15px;
+  `
