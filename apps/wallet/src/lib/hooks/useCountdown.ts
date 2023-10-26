@@ -52,8 +52,14 @@ export function useCountdown({ seconds, onAsyncComplete }: CountdownProps) {
     if (time === 0) {
       if (onAsyncComplete) {
         const asyncCallback = async () => {
-          await onAsyncComplete();
-          setTime(seconds);
+          try {
+            await onAsyncComplete();
+            setTime(seconds);
+          } catch (err) {
+            console.error('onAsyncComplete error:', err);
+            stop();
+            throw err;
+          }
         };
 
         asyncCallback();
@@ -61,7 +67,7 @@ export function useCountdown({ seconds, onAsyncComplete }: CountdownProps) {
         setTime(seconds);
       }
     }
-  }, [onAsyncComplete, running, seconds, time]);
+  }, [onAsyncComplete, running, seconds, stop, time]);
 
   const progress = 100 - (time / seconds) * 100;
 
