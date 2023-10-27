@@ -22,12 +22,24 @@ const debouncedQuote = debounceAsync(
   600
 );
 
+const debouncedEstimate = debounceAsync(
+  async (inAmount: string, inToken: TokenData, outToken: TokenData) => {
+    return await coinsProvider.getMinAmountOut(
+      inToken,
+      outToken,
+      coinsProvider.toRawAmount(inToken, inAmount)
+    );
+  },
+  600
+);
+
 type FetchLHQuote = {
-  key: string;
+  key: string[];
   srcAmount: string;
   srcToken: TokenData | undefined;
   dstToken: TokenData | undefined;
   enabled?: boolean;
+  refetchInterval?: number | false;
 };
 
 export function useFetchLHQuote({
@@ -36,9 +48,10 @@ export function useFetchLHQuote({
   srcToken,
   dstToken,
   enabled = true,
+  refetchInterval,
 }: FetchLHQuote) {
   return useQuery({
-    queryKey: [key],
+    queryKey: key,
     queryFn: async () => {
       try {
         if (srcAmount === '' || !srcToken || !dstToken) {
@@ -59,7 +72,7 @@ export function useFetchLHQuote({
       }
     },
     enabled,
-    refetchInterval: 10000,
+    refetchInterval,
   });
 }
 

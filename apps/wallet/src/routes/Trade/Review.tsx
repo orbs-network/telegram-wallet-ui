@@ -52,7 +52,7 @@ export function Review() {
   const dstToken = userData?.tokens[outToken];
 
   const { data: quoteData, isFetching } = useFetchLHQuote({
-    key: 'fetchTradeQuote',
+    key: ['fetchTradeQuote', inAmount],
     srcAmount: inAmount,
     srcToken,
     dstToken,
