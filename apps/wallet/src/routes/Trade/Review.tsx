@@ -209,7 +209,6 @@ export function Review() {
           {!Twa.isVersionAtLeast('6.0.1') && (
             <Button
               variant="primary"
-              type="submit"
               isDisabled={isFetching}
               isLoading={isFetching}
               onClick={executeSwap}
