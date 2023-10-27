@@ -284,7 +284,7 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
                       toast({
                         description: 'Failed to get quote',
                         status: 'error',
-                        duration: 5000,
+                        duration: 3000,
                       });
                     }
                   };
@@ -347,14 +347,14 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
               form.reset(
                 {
                   inToken: values.outToken,
-                  inAmount: values.outAmount,
+                  inAmount: values.inAmount,
                   outToken: values.inToken,
-                  outAmount: values.inAmount,
+                  outAmount: values.outAmount,
                 },
                 { keepDirty: true, keepTouched: true }
               );
               fetchLHQuote(
-                values.outAmount,
+                values.inAmount,
                 tokens[values.outToken],
                 tokens[values.inToken]
               );
@@ -370,7 +370,7 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
               src={tokens[outToken] && tokens[outToken].logoURI}
               size="sm"
             />
-            <Text>You pay</Text>
+            <Text>You receive</Text>
           </HStack>
           <HStack>
             <Box css={fetchingQuote ? outAmountStyles : undefined}>
