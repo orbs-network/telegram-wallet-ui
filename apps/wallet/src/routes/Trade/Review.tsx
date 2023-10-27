@@ -209,13 +209,13 @@ export function Review() {
               isLoading={isFetching}
               onClick={executeSwap}
             >
-              Trade
+              Confirm and Trade
             </Button>
           )}
         </VStack>
 
         <MainButton
-          text="Trade"
+          text="Confirm and Trade"
           onClick={executeSwap}
           progress={isFetching}
           disabled={isFetching}
