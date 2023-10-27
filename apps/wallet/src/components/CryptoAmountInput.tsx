@@ -4,6 +4,7 @@ import {
   useMultiplyPriceByAmount,
   useFormatNumber,
   useGetTokenFromList,
+  useFetchLatestPrice,
 } from '../hooks';
 import { getTextSizeInPixels } from '../utils/utils';
 import { css } from '@emotion/react';
@@ -60,7 +61,9 @@ export function CryptoAmountInput({
 }: CryptoAmountInputProps) {
   const token = useGetTokenFromList(tokenSymbol);
 
-  const usdPrice = useMultiplyPriceByAmount(
+  const { data: price } = useFetchLatestPrice(token?.coingeckoId);
+
+  const calculatedPrice = useMultiplyPriceByAmount(
     token?.coingeckoId || 'ethereum',
     Number(value)
   );
@@ -77,10 +80,15 @@ export function CryptoAmountInput({
   }, [formattedAmount]);
 
   const formattedUsdPrice = useFormatNumber({
-    value: usdPrice,
+    value: calculatedPrice,
     prefix: '$',
     decimalScale: 2,
   });
+
+  const fiatConversion =
+    value !== ''
+      ? `≈ ${formattedUsdPrice}`
+      : `1 ${token?.symbol.toUpperCase()} ≈ $${price?.toFixed()}`;
 
   return (
     <VStack alignItems="flex-start" gap="0px">
@@ -97,6 +105,7 @@ export function CryptoAmountInput({
           value={value}
           onValueChange={({ value }) => onChange && onChange(value)}
           contentEditable={editable}
+          readOnly={!editable}
         />
         {!hideSymbol && (
           <Text
@@ -109,7 +118,8 @@ export function CryptoAmountInput({
           </Text>
         )}
       </Flex>
-      <Text css={styles.usd}>≈ {formattedUsdPrice}</Text>
+
+      <Text css={styles.usd}>{fiatConversion}</Text>
     </VStack>
   );
 }

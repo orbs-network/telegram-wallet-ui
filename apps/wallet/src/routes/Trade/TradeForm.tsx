@@ -83,6 +83,11 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
 
   const navigate = useNavigate();
   const onSubmit = () => {
+    if (inAmount === '') {
+      setInError('Please enter an amount');
+      return;
+    }
+
     navigate(ROUTES.tradeReview, {
       state: {
         inAmount,
@@ -93,7 +98,11 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
     });
   };
 
-  const { data: quoteData, isFetching: fetchingQuote } = useFetchLHQuote({
+  const {
+    data: quoteData,
+    isFetching: fetchingQuote,
+    isError,
+  } = useFetchLHQuote({
     key: ['fetchQuote', inAmount],
     srcAmount: inAmount,
     srcToken: tokens && tokens[inToken],
@@ -109,6 +118,16 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
   }, [quoteData?.quote, tokens, outToken]);
 
   const toast = useToast();
+
+  useEffect(() => {
+    if (isError) {
+      toast({
+        description: 'Error fetching quote',
+        status: 'error',
+      });
+      setInError('Enter a minimum amount equivalent to $1.00');
+    }
+  }, [isError, toast]);
 
   if (!tokens) {
     return (
@@ -130,41 +149,23 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
             <Text>You pay</Text>
           </HStack>
           <Text size="sm">
-            Max: {tokens[inToken] ? tokens[inToken].balance : '0.00'}{' '}
+            Max:{' '}
+            {tokens[inToken] ? BN(tokens[inToken].balance).toFixed(5) : '0.00'}{' '}
             <Text as="span" variant="hint">
               {tokens[inToken] && tokens[inToken].symbol.toUpperCase()}
             </Text>
           </Text>
         </HStack>
         <HStack>
-          <Box>
-            <CryptoAmountInput
-              hideSymbol
-              name="inAmount"
-              value={inAmount}
-              tokenSymbol={inToken}
-              onChange={(value) => {
-                const quote = async () => {
-                  try {
-                    if (!tokens) {
-                      throw new Error('No tokens');
-                    }
-
-                    setInAmount(value);
-                  } catch (err) {
-                    console.error(err);
-                    toast({
-                      description: 'Failed to get quote',
-                      status: 'error',
-                      duration: 3000,
-                    });
-                  }
-                };
-                quote();
-              }}
-            />
-            {inError && <Text color="red">{inError}</Text>}
-          </Box>
+          <CryptoAmountInput
+            hideSymbol
+            name="inAmount"
+            value={inAmount}
+            tokenSymbol={inToken}
+            onChange={(value) => {
+              setInAmount(value);
+            }}
+          />
 
           <TokenSelect
             name="inToken"
@@ -174,13 +175,8 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
             }}
           />
         </HStack>
-        {/* <Text>
-          {inPrice && inAmount !== ''
-            ? `≈ $${BN(inPrice).multipliedBy(inAmount).toFixed(2)}`
-            : `1 ${
-                tokens[inToken] && tokens[inToken].symbol.toUpperCase()
-              } ≈ $${inPrice?.toFixed(2)}`}
-        </Text> */}
+
+        {inError && <Text color="red">{inError}</Text>}
       </VStack>
 
       <HStack justifyContent="flex-end">
@@ -200,6 +196,8 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
           onClick={() => {
             setInToken(outToken);
             setOutToken(inToken);
+            setOutAmount('');
+            setInAmount('');
           }}
         />
       </HStack>
@@ -228,17 +226,10 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
             filterTokens={[inToken]}
             onChange={(e) => {
               setOutToken(e.target.value);
+              setOutAmount('');
             }}
           />
         </HStack>
-
-        {/* <Text>
-          {outPrice && outAmount !== ''
-            ? `≈ $${BN(outPrice).multipliedBy(outAmount).toFixed(2)}`
-            : `1 ${
-                tokens[outToken] && tokens[outToken].symbol.toUpperCase()
-              } ≈ $${outPrice?.toFixed(2)}`}
-        </Text> */}
       </VStack>
       {!Twa.isVersionAtLeast('6.0.1') && (
         <Button

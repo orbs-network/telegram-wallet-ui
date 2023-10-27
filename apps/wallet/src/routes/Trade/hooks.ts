@@ -73,6 +73,7 @@ export function useFetchLHQuote({
     },
     enabled,
     refetchInterval,
+    retry: false,
   });
 }
 
