@@ -6,6 +6,7 @@ import {
   Heading,
   VStack,
   Text,
+  useToast,
 } from '@chakra-ui/react';
 import { BackButton, MainButton } from '@twa-dev/sdk/react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -57,19 +58,37 @@ export function Review() {
     srcToken,
     dstToken,
   });
-  const { mutate } = useSwap({
+  const { mutateAsync } = useSwap({
     key: 'swap',
   });
 
+  const toast = useToast();
+
   const executeSwap = useCallback(() => {
-    if (quoteData?.quote) {
-      mutate(quoteData.quote, {
-        onSuccess: () => {
-          navigate(ROUTES.tradeSuccess);
-        },
+    try {
+      if (quoteData?.quote) {
+        mutateAsync(quoteData.quote, {
+          onSuccess: () => {
+            navigate(ROUTES.tradeSuccess);
+          },
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      let message = 'Something went wrong';
+
+      if (err instanceof Error) {
+        message = err.message;
+      }
+
+      toast({
+        description: message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
       });
     }
-  }, [mutate, navigate, quoteData?.quote]);
+  }, [mutateAsync, navigate, quoteData?.quote, toast]);
 
   useEffect(() => {
     if (isFetching) {
