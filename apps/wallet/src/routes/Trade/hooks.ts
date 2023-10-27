@@ -2,6 +2,9 @@ import { QuoteResponse, TokenData } from '../../types';
 import { swapProvider, coinsProvider } from '../../config';
 import { debounceAsync } from '../../lib/hooks/useDebounce';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { getDebug } from '../../lib/utils/debug';
+
+const debug = getDebug('SwapHooks');
 
 const debouncedQuote = debounceAsync(
   async (inAmount: string, inToken: TokenData, outToken: TokenData) => {
@@ -72,7 +75,7 @@ export function useSwap({ key }: Swap) {
         if (!quote) {
           return;
         }
-
+        debug('Quote for swap', quote);
         await swapProvider.swap(quote);
       } catch (err) {
         console.error(err);

@@ -19,6 +19,7 @@ import { useFetchLHQuote, useSwap } from './hooks';
 import { css, keyframes } from '@emotion/react';
 import { amountUi } from '../../utils/conversion';
 import BN from 'bignumber.js';
+import { ROUTES } from '../../router/routes';
 
 const flash = keyframes`
   0% {
@@ -62,9 +63,13 @@ export function Review() {
 
   const executeSwap = useCallback(() => {
     if (quoteData?.quote) {
-      mutate(quoteData.quote);
+      mutate(quoteData.quote, {
+        onSuccess: () => {
+          navigate(ROUTES.tradeSuccess);
+        },
+      });
     }
-  }, [mutate, quoteData?.quote]);
+  }, [mutate, navigate, quoteData?.quote]);
 
   useEffect(() => {
     if (isFetching) {

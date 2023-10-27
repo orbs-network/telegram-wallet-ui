@@ -15,4 +15,5 @@ export const ROUTES = {
   onboardingPage2: '/2',
   trade: '/trade',
   tradeReview: '/trade/review',
+  tradeSuccess: '/trade/success',
 };

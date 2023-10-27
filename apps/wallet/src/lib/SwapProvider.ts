@@ -72,8 +72,8 @@ export class SwapProvider {
   async swap(quote: QuoteResponse) {
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      if (this.permit2Provider.isApproved(quote.inToken)) break;
-      debug(`Token ${quote.inToken} is not approved, sleeping`);
+      if (this.permit2Provider.isApproved(quote.inToken.toLowerCase())) break;
+      debug(`Token ${quote.inToken.toLowerCase()} is not approved, sleeping`);
       await sleep(this.SLEEP_INTERVAL);
     }
 
