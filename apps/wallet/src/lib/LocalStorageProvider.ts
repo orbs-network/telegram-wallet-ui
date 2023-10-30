@@ -30,6 +30,12 @@ export class LocalStorageProvider {
     localStorage.removeItem(this.toKey(key));
   }
 
+  clear() {
+    for (const key of this.keys()) {
+      this.delete(key);
+    }
+  }
+
   keys() {
     const keys = [];
 

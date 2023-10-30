@@ -100,6 +100,10 @@ export class EventsProvider {
       return e;
     });
   }
+  
+  clear() {
+    this.storage.clear();
+  }
 }
 
 export function useEventsProvider() {
