@@ -5,12 +5,11 @@ import { Card } from '@telegram-wallet-ui/twa-ui-kit';
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Page } from '../../components';
-import { eventsProvider, web3Provider } from '../../config';
+import { eventsProvider } from '../../config';
 import { useMainButtonContext } from '../../context/MainButtonContext';
 import { useGetTokenFromList } from '../../hooks';
 import { useNavigation } from '../../router/hooks';
-import { URLParams, WithdrawalTransactionEvent } from '../../types';
-import { amountBN } from '../../utils/conversion';
+import { URLParams } from '../../types';
 import { Recipient } from './Components';
 
 const useTransferTx = () => {

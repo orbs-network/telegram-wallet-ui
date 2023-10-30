@@ -1,4 +1,3 @@
-import { CryptoAsset } from './config';
 import type { TokenData as CandiesTokenData } from '@defi.org/web3-candies';
 import type { PermitData } from '@uniswap/permit2-sdk/dist/domain';
 import { Web3Account } from 'web3-eth-accounts';
