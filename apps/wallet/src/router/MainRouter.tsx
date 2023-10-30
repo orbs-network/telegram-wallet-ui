@@ -18,6 +18,7 @@ import {
   TradeSuccess,
   Review,
   Success,
+  Trade,
 } from '../routes';
 import { RouteObject } from 'react-router-dom';
 import { ROUTES } from './routes';
@@ -79,7 +80,7 @@ const routes: RouteObject[] = [
   },
   {
     path: ROUTES.trade,
-    element: <OptimizedTrade />,
+    element: <Trade />,
   },
   {
     path: ROUTES.tradeReview,
