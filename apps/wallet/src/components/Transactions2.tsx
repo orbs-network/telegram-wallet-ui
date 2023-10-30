@@ -1,15 +1,18 @@
 import { Avatar, Heading, Box, Text, Icon } from '@chakra-ui/react';
 import { Card, ListItem } from '@telegram-wallet-ui/twa-ui-kit';
 import { MdSwapHorizontalCircle } from 'react-icons/md';
-import { useEventsProvider } from '../lib/EventsProvider';
-import { BiSolidUpArrowCircle } from 'react-icons/bi';
+import {
+  DepositTransactionEvent,
+  TradeTransactionEvent,
+  useEventsProvider,
+  WithdrawalTransactionEvent,
+} from '../lib/EventsProvider';
+import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
 
 export function Transactions2() {
   const events = useEventsProvider();
 
-  const sortedTxs = events.sort((a, b) => b.date - a.date);
-
-  if (sortedTxs.length === 0) {
+  if (events.length === 0) {
     return (
       <Card>
         <Text>No transactions</Text>
@@ -20,9 +23,10 @@ export function Transactions2() {
   return (
     <Card>
       <Text variant="hint">TRANSACTION HISTORY</Text>
-      {sortedTxs.map((tx) => {
+      {events.map((tx) => {
         let StartIcon = null;
         let CardTitle = null;
+        let CardData = null;
 
         switch (tx.type) {
           // case 'transfer': {
@@ -38,21 +42,39 @@ export function Transactions2() {
           //   }
           //   break;
           // }
-          // case 'deposit': {
-          //   StartIcon = <Avatar icon={<Icon as={BiSolidDownArrowCircle} />} />;
-          //   CardTitle = (
-          //     <Heading as="h3" variant="bodyTitle">
-          //       Deposit
-          //     </Heading>
-          //   );
-          //   break;
-          // }
+          case 'deposit': {
+            StartIcon = <Avatar icon={<Icon as={BiSolidDownArrowCircle} />} />;
+            CardTitle = (
+              <Heading as="h3" variant="bodyTitle">
+                Deposit
+              </Heading>
+            );
+            CardData = (
+              <Box>
+                <Heading as="h3" variant="bodyTitle">
+                  +{(tx as DepositTransactionEvent).amount}
+                </Heading>
+              </Box>
+            );
+            break;
+          }
           case 'withdrawal': {
             StartIcon = <Avatar icon={<Icon as={BiSolidUpArrowCircle} />} />;
             CardTitle = (
               <Heading as="h3" variant="bodyTitle">
                 Withdrawal
               </Heading>
+            );
+            CardData = (
+              <Box>
+                <Heading as="h3" variant="bodyTitle">
+                  -{(tx as WithdrawalTransactionEvent).amount}
+                </Heading>
+                <Text variant="hint" fontSize={12}>
+                  {(tx as WithdrawalTransactionEvent).toAddress.slice(0, 8) +
+                    '...'}
+                </Text>
+              </Box>
             );
             break;
           }
@@ -63,6 +85,14 @@ export function Transactions2() {
                 Trade
               </Heading>
             );
+            const trade = tx as TradeTransactionEvent;
+            CardData = (
+              <Box>
+                <Heading as="h3" variant="bodyTitle">
+                  {`+${trade.amountIn} ${trade.inToken.slice(0, 4)}...`}
+                </Heading>
+              </Box>
+            );
             break;
           }
           default: {
@@ -72,6 +102,7 @@ export function Transactions2() {
 
         return (
           <ListItem
+            key={tx.id}
             StartIconSlot={StartIcon}
             StartTextSlot={
               <Box>
@@ -88,10 +119,7 @@ export function Transactions2() {
                   // color: tx.direction === 'incoming' ? 'green' : 'inherit',
                 }}
               >
-                <Heading as="h3" variant="bodyTitle">
-                  {tx.direction === 'incoming' ? '+' : ''}
-                  {`${tx.inAmount} ${tx.inToken}`}
-                </Heading>
+                {CardData}
                 <Text fontSize={12}>
                   {tx.direction === 'incoming' ? 'Received' : 'Sent'}
                 </Text>

@@ -34,13 +34,14 @@ export type TransactionEvent = {
   status: TransactionEventStatus;
   type: TransactionEventType;
   direction: TransactionEventDirection;
+  id: string;
 };
 
 export type WithdrawalTransactionEvent = TransactionEvent &
   AddedWithdrawalTransactionEvent & {
     token: string;
     amount: string;
-    toAddress?: string;
+    toAddress: string;
   };
 
 export type TradeTransactionEvent = TransactionEvent & {
@@ -66,7 +67,7 @@ export class EventsProvider {
   private addEvent(event: Record<string, any>) {
     this.storage.storeObject(v1(), {
       ...event,
-      timestamp: Date.now(),
+      date: Date.now(),
       status: 'completed',
     });
     window.dispatchEvent(new Event('events-provider-update'));
@@ -85,22 +86,28 @@ export class EventsProvider {
   }
 
   events() {
-    return (this.storage.readAll() as TransactionEvent[]).map((e) => {
-      e.date = new Date(e.date);
-      switch (e.type) {
-        case 'withdrawal':
-          e.direction = 'outgoing';
-          break;
-        case 'trade':
-          e.direction = 'incoming';
-          break;
-        default:
-          throw new Error(`Unknown event type: ${e.type}`);
-      }
-      return e;
-    });
+    return Object.entries(this.storage.readAll<TransactionEvent>())
+      .map(([id, e]) => {
+        e.date = new Date(e.date);
+        e.id = id;
+        switch (e.type) {
+          case 'withdrawal':
+            e.direction = 'outgoing';
+            break;
+          case 'trade':
+            e.direction = 'incoming';
+            break;
+          case 'deposit':
+            e.direction = 'incoming';
+            break;
+          default:
+            throw new Error(`Unknown event type: ${e.type}`);
+        }
+        return e;
+      })
+      .sort((a, b) => b.date.getTime() - a.date.getTime());
   }
-  
+
   clear() {
     this.storage.clear();
   }
