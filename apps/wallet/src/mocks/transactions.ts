@@ -1,29 +1,6 @@
-import { Transaction, User } from '../types';
+import { Transaction } from '../types';
+import { mockUsers } from './user';
 
-export const mockUsers: User[] = [
-  {
-    id: '0x0000000',
-    name: 'Alice',
-    address: '0x0000000001',
-    telegramId: '000000001',
-  },
-  {
-    id: '0x0000001',
-    name: 'Bob',
-    address: '0x0000000002',
-    telegramId: '000000002',
-    avatarUrl:
-      'https://pbs.twimg.com/profile_images/1601531707072675841/TmRVWuA0_400x400.jpg',
-  },
-  {
-    id: '0x0000002',
-    name: 'Charlie',
-    address: '0x0000000003',
-    telegramId: '000000003',
-    avatarUrl:
-      'https://pbs.twimg.com/profile_images/956331551435960322/OaqR8pAB_400x400.jpg',
-  },
-];
 export const mockTransactions: Transaction[] = [
   {
     id: '0',
@@ -34,7 +11,7 @@ export const mockTransactions: Transaction[] = [
     to: mockUsers[0],
     status: 'completed',
     type: 'transfer',
-    asset: 'MATIC',
+    tokenSymbol: 'MATIC',
   },
   {
     id: '1',
@@ -45,7 +22,7 @@ export const mockTransactions: Transaction[] = [
     to: mockUsers[1],
     status: 'completed',
     type: 'transfer',
-    asset: 'MATIC',
+    tokenSymbol: 'MATIC',
   },
   {
     id: '3',
@@ -56,7 +33,7 @@ export const mockTransactions: Transaction[] = [
     to: mockUsers[1],
     status: 'completed',
     type: 'transfer',
-    asset: 'MATIC',
+    tokenSymbol: 'MATIC',
   },
   {
     id: '4',
@@ -65,7 +42,7 @@ export const mockTransactions: Transaction[] = [
     direction: 'incoming',
     status: 'completed',
     type: 'deposit',
-    asset: 'MATIC',
+    tokenSymbol: 'MATIC',
   },
   {
     id: '5',
@@ -74,7 +51,7 @@ export const mockTransactions: Transaction[] = [
     direction: 'outgoing',
     status: 'completed',
     type: 'withdrawal',
-    asset: 'MATIC',
+    tokenSymbol: 'MATIC',
   },
   {
     id: '6',
@@ -83,6 +60,6 @@ export const mockTransactions: Transaction[] = [
     direction: 'incoming',
     status: 'completed',
     type: 'trade',
-    asset: 'MATIC',
+    tokenSymbol: 'MATIC',
   },
 ];
