@@ -1,3 +1,3 @@
 export * from './Trade';
-export * from './Review';
-export * from './Success';
+export * from './TradeReview';
+export * from './TradeSuccess';

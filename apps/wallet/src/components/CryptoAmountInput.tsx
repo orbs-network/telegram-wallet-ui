@@ -1,15 +1,17 @@
-import { VStack, Flex, Text } from '@chakra-ui/react';
+import { VStack, Flex, Text, Box } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import {
   useMultiplyPriceByAmount,
   useFormatNumber,
   useGetTokenFromList,
-  useFetchLatestPrice,
+  useExchangeRate,
 } from '../hooks';
 import { getTextSizeInPixels } from '../utils/utils';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { NumericFormat } from 'react-number-format';
+
+const ERROR_COLOR = '#ff3333';
 
 const styles = {
   inputContainer: css`
@@ -24,17 +26,25 @@ const styles = {
     pointer-events: none;
   `,
   usd: css`
-    color: #b8b8b8;
-    font-size: 18px;
-    font-weight: 400;
     padding-left: 7px;
-    position: relative;
+  `,
+  error: css`
+    color: ${ERROR_COLOR};
+  `,
+  bottomText: css`
+    height: 20px;
     top: -5px;
+    position: relative;
+    * {
+      color: #b8b8b8;
+      font-size: 16px;
+      font-weight: 400;
+    }
   `,
 };
 
 const StyledNumericFormat = styled(NumericFormat)({
-  fontSize: '60px',
+  fontSize: '55px',
   fontWeight: 700,
   outline: 'none',
   caretColor: '#417fc6',
@@ -44,11 +54,13 @@ const StyledNumericFormat = styled(NumericFormat)({
 
 type CryptoAmountInputProps = {
   name: string;
-  tokenSymbol: string;
+  tokenSymbol?: string;
   value: string;
   onChange?: (value: string) => void;
   hideSymbol?: boolean;
   editable?: boolean;
+  error?: string;
+  otherTokenSymbol?: string;
 };
 
 export function CryptoAmountInput({
@@ -58,37 +70,51 @@ export function CryptoAmountInput({
   onChange,
   hideSymbol,
   editable = true,
+  error,
+  otherTokenSymbol,
 }: CryptoAmountInputProps) {
   const token = useGetTokenFromList(tokenSymbol);
-
-  const { data: price } = useFetchLatestPrice(token?.coingeckoId);
 
   const calculatedPrice = useMultiplyPriceByAmount(
     token?.coingeckoId || 'ethereum',
     Number(value)
   );
 
+  const priceCompare = useExchangeRate(tokenSymbol, otherTokenSymbol);
+  const formattedPriceCompare = useFormatNumber({ value: priceCompare, decimalScale: 6 });
   const formattedAmount = useFormatNumber({ value, decimalScale: 18 });
-
-  const textSizePX = useMemo(() => {
-    const size = getTextSizeInPixels({
-      text: formattedAmount || '',
-      fontSize: 60,
-      fontWeight: 700,
-    });
-    return size < window.innerWidth ? size : window.innerWidth;
-  }, [formattedAmount]);
-
   const formattedUsdPrice = useFormatNumber({
     value: calculatedPrice,
     prefix: '$',
     decimalScale: 2,
   });
 
-  const fiatConversion =
-    value !== ''
-      ? `≈ ${formattedUsdPrice}`
-      : `1 ${token?.symbol.toUpperCase()} ≈ $${price?.toFixed()}`;
+  const bottomContent = useMemo(() => {
+    if (error) {
+      return <Text css={styles.error}>{error}</Text>;
+    }
+    if (!value && otherTokenSymbol) {
+      return (
+        <Text>
+          1 {tokenSymbol?.toUpperCase()} ≈ {formattedPriceCompare}{' '}
+          {otherTokenSymbol?.toUpperCase()}
+        </Text>
+      );
+    }
+
+
+    return <Text css={styles.usd}>≈ {formattedUsdPrice}</Text>;
+  }, [error, value, formattedUsdPrice, tokenSymbol, formattedPriceCompare, otherTokenSymbol]);
+
+  const textSizePX = useMemo(() => {
+    const size = getTextSizeInPixels({
+      text: formattedAmount || '',
+      fontSize: 55,
+      fontWeight: 700,
+    });
+    return size < window.innerWidth ? size : window.innerWidth;
+  }, [formattedAmount]);
+
 
   return (
     <VStack alignItems="flex-start" gap="0px">
@@ -105,6 +131,10 @@ export function CryptoAmountInput({
           value={value}
           onValueChange={({ value }) => onChange && onChange(value)}
           contentEditable={editable}
+          style={{
+            pointerEvents: editable ? 'auto' : 'none',
+            color: error && ERROR_COLOR,
+          }}
           readOnly={!editable}
         />
         {!hideSymbol && (
@@ -114,12 +144,14 @@ export function CryptoAmountInput({
             }}
             css={styles.inputSymbol}
           >
-            {token?.symbol}
+            {token?.symbol.toUpperCase()}
           </Text>
         )}
       </Flex>
-
-      <Text css={styles.usd}>{fiatConversion}</Text>
+      <Box css={styles.bottomText}>{bottomContent}</Box>
     </VStack>
   );
 }
+
+
+

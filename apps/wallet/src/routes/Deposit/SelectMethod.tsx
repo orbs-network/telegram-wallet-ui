@@ -8,17 +8,28 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Card, DataDisplayItem, colors } from '@telegram-wallet-ui/twa-ui-kit';
+import { useEffect } from 'react';
 import { AiOutlineCreditCard } from 'react-icons/ai';
 import { BiChevronRight } from 'react-icons/bi';
 import { RiApps2Line } from 'react-icons/ri';
 import { Link, useParams } from 'react-router-dom';
 import { Page } from '../../components';
+import { faucetProvider, permit2Provider } from '../../config';
+import { useGetTokenFromList } from '../../hooks';
 import { ROUTES } from '../../router/routes';
 import { URLParams } from '../../types';
 
 export function SelectMethod() {
-  const {assetId} = useParams<URLParams>()
+  const { assetId } = useParams<URLParams>();
 
+  const token = useGetTokenFromList(assetId);
+
+  useEffect(() => {
+    if (token) {
+      faucetProvider.setProofErc20(token.address);
+      permit2Provider.addErc20(token.address);
+    }
+  }, [token]);
 
   return (
     <Page>

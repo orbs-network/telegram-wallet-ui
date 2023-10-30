@@ -7,6 +7,9 @@ import { Page, Transactions, WalletSpinner } from '../components';
 import { mockTransactions } from '../mocks/transactions';
 import { CryptoAsset } from '../config';
 import { useFormatNumber, useUserData } from '../hooks';
+import { ROUTES } from '../router/routes';
+import { useMainButtonContext } from '../context/MainButtonContext';
+import { useEffect } from 'react';
 
 function Loader() {
   return (
@@ -18,6 +21,11 @@ function Loader() {
 
 export function Asset() {
   const { assetId } = useParams<{ assetId: CryptoAsset }>();
+  const {resetButton} = useMainButtonContext()
+  useEffect(() => {
+  resetButton();
+  }, [resetButton]);
+  
 
   const { data: userData } = useUserData();
   const tokenData = assetId &&  userData?.tokens[assetId];
@@ -50,19 +58,26 @@ export function Asset() {
             isPrimaryCrypto
           />
           <HStack justifyContent="center" alignItems="center" spacing={2}>
-            <Link to="/deposit">
+            <Link
+              to={`${ROUTES.depositSelectMethod.replace(
+                ':assetId',
+                tokenData.symbol
+              )}`}
+            >
               <IconButtonWithLabel
                 Icon={BiSolidDownArrowCircle}
                 label="Deposit"
               />
             </Link>
-            <Link to="/withdraw">
+            <Link
+              to={ROUTES.withdrawAddress.replace(':assetId', tokenData.symbol)}
+            >
               <IconButtonWithLabel
                 Icon={BiSolidUpArrowCircle}
                 label="Withdraw"
               />
             </Link>
-            <Link to="/trade">
+            <Link to={`/trade?inToken=${tokenData.symbol}`}>
               <IconButtonWithLabel
                 Icon={MdSwapHorizontalCircle}
                 label="Trade"

@@ -14,6 +14,6 @@ export const ROUTES = {
   onboardingPage1: '/1',
   onboardingPage2: '/2',
   trade: '/trade',
-  tradeReview: '/trade/review',
-  tradeSuccess: '/trade/success',
+  tradeReview: '/trade/:inToken/:outToken/:inAmount/review',
+  tradeSuccess: '/trade/:outToken/:outAmount/:txHash/success',
 };

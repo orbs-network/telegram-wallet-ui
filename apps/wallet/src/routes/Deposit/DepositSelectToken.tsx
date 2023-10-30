@@ -1,7 +1,6 @@
 import { Container, Heading, VStack } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { Page, SelectToken } from '../../components';
-import { faucetProvider } from '../../config';
 import { useMainButtonContext } from '../../context/MainButtonContext';
 import { useUserData } from '../../hooks';
 import { useNavigation } from '../../router/hooks';
@@ -16,10 +15,7 @@ export function DepositSelectToken() {
     resetButton();
   }, [resetButton]);
 
-  const onSelect = (token: TokenData) => {
-    faucetProvider.setProofErc20(token.address);
-    depositSelectMethod(token.symbol);
-  };
+  const onSelect = (token: TokenData) => depositSelectMethod(token.symbol);
 
   return (
     <Page>

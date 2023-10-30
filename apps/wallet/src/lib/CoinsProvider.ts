@@ -72,6 +72,30 @@ export class CoinsProvider {
     return amountUi(token, amount);
   }
 
+  OptimizedGetMinAmountOut(
+    srcCoin: Token,
+    dstCoin: Token,
+    srcCoinLatestPrice: number,
+    dstCoinLatestPrice: number,
+    quantity: BNComparable
+  ) {
+    const _dstAmount = dstAmount(
+      srcCoin,
+      dstCoin,
+      quantity,
+      new BN(srcCoinLatestPrice!),
+      new BN(dstCoinLatestPrice!)
+    )
+      .dividedBy(1.05)
+      .integerValue(BigNumber.ROUND_DOWN); // 5% price difference. TODO: this can be more competitive
+
+    debug(
+      `srcCoinLatestPrice: ${srcCoinLatestPrice}, dstCoinLatestPrice: ${dstCoinLatestPrice}, _dstAmount: ${_dstAmount} for quantity: ${quantity}, src decimals ${srcCoin.decimals}, dst decimals ${dstCoin.decimals}`
+    );
+
+    return _dstAmount;
+  }
+
   async getMinAmountOut(
     srcCoin: Token,
     dstCoin: Token,

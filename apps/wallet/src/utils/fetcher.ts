@@ -12,13 +12,15 @@ export class Fetcher {
     return this._handleResponse<T>(res);
   }
 
-  static async post<T = unknown>(url: string, body: any): Promise<T> {
-    const res = await fetch(url, {
+  static async post<T = unknown>(url: string, body: any, signal?: AbortSignal): Promise<T> {
+    const res = await fetch(url,  {
+      signal,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
+      
     });
 
     return this._handleResponse<T>(res);
