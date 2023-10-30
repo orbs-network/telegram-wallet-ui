@@ -1,65 +1,30 @@
-import { Transaction } from '../types';
-import { mockUsers } from './user';
+import {
+  DepositTransactionEvent,
+  TradeTransactionEvent,
+  WithdrawalTransactionEvent,
+} from '../lib/EventsProvider';
 
-export const mockTransactions: Transaction[] = [
+export const mockTransactions: (
+  | DepositTransactionEvent
+  | WithdrawalTransactionEvent
+  | TradeTransactionEvent
+)[] = [
   {
     id: '0',
     amount: '0.1231445',
     date: new Date('2021-04-07T14:50:00.000Z'),
-    from: mockUsers[1],
     direction: 'outgoing',
-    to: mockUsers[0],
     status: 'completed',
-    type: 'transfer',
-    tokenSymbol: 'MATIC',
+    type: 'withdrawal',
+    token: 'MATIC',
   },
   {
     id: '1',
     amount: '0.12',
     date: new Date('2021-03-07T14:50:00.000Z'),
-    from: mockUsers[0],
-    direction: 'incoming',
-    to: mockUsers[1],
-    status: 'completed',
-    type: 'transfer',
-    tokenSymbol: 'MATIC',
-  },
-  {
-    id: '3',
-    amount: '0.666345435',
-    date: new Date('2023-09-07T11:50:00.000Z'),
-    from: mockUsers[2],
-    direction: 'incoming',
-    to: mockUsers[1],
-    status: 'completed',
-    type: 'transfer',
-    tokenSymbol: 'MATIC',
-  },
-  {
-    id: '4',
-    amount: '10',
-    date: new Date('2023-08-07T11:50:00.000Z'),
     direction: 'incoming',
     status: 'completed',
     type: 'deposit',
-    tokenSymbol: 'MATIC',
-  },
-  {
-    id: '5',
-    amount: '0.5',
-    date: new Date('2023-08-19T11:50:00.000Z'),
-    direction: 'outgoing',
-    status: 'completed',
-    type: 'withdrawal',
-    tokenSymbol: 'MATIC',
-  },
-  {
-    id: '6',
-    amount: '0.15',
-    date: new Date('2023-03-19T11:50:00.000Z'),
-    direction: 'incoming',
-    status: 'completed',
-    type: 'trade',
-    tokenSymbol: 'MATIC',
+    token: 'MATIC',
   },
 ];

@@ -1,10 +1,8 @@
 import { Web3Provider } from './Web3Provider';
-import { web3Provider } from '../config';
 import { AuthenticatedTelegramFetcher } from '../utils/fetcher';
 import { getDebug } from './utils/debug';
 import { sleep } from '@defi.org/web3-candies';
 import promiseRetry from 'promise-retry';
-import { LocalStorageProvider } from './LocalStorageProvider';
 import { EventsProvider } from './EventsProvider';
 
 const debug = getDebug('FaucetProvider');
