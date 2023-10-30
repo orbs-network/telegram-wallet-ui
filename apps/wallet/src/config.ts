@@ -6,6 +6,7 @@ import { CoinsProvider } from './lib/CoinsProvider';
 import { SwapProvider } from './lib/SwapProvider';
 import { Permit2Provider } from './lib/Permit2Provider';
 import { LocalStorageProvider } from './lib/LocalStorageProvider';
+import { EventsProvider } from './lib/EventsProvider';
 
 export const isMumbai = import.meta.env.VITE_IS_MUMBAI === '1';
 
@@ -28,14 +29,18 @@ export const liqHubProvider = new LiquihubProvider(web3Provider);
 
 export const coinsProvider = new CoinsProvider(false, new TTLCache());
 
-export const localStorageProvider = new LocalStorageProvider();
+export const permit2Provider = new Permit2Provider(
+  web3Provider,
+  new LocalStorageProvider()
+);
 
-export const permit2Provider = new Permit2Provider(web3Provider, localStorageProvider)
+export const eventsProvider = new EventsProvider(new LocalStorageProvider());
 
 export const swapProvider = new SwapProvider(
   coinsProvider,
   liqHubProvider,
-  permit2Provider
+  permit2Provider,
+  eventsProvider
 );
 
 // TODO: remove this
@@ -45,5 +50,3 @@ export const faucetProvider = new FaucetProvider(
   import.meta.env.VITE_FAUCET_BACKEND_URL,
   web3Provider
 );
-
-

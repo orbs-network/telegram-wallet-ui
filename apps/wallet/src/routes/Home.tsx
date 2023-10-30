@@ -7,6 +7,7 @@ import { useFormatNumber, usePortfolioUsdValue } from '../hooks';
 import { faucetProvider, isMumbai, permit2Provider } from '../config';
 import { MdSwapVerticalCircle } from 'react-icons/md';
 import { mockTransactions } from '../mocks/transactions';
+import { Transactions2 } from '../components/Transactions2';
 
 // Temp - USDC
 const TODO_TEMP_ERC20_REPLACE = isMumbai
@@ -64,7 +65,7 @@ export function Home() {
             </Link>
           </HStack>
           <TokenBalances />
-          <Transactions transactions={mockTransactions} />
+          <Transactions2 />
         </VStack>
       </Container>
     </Page>

@@ -5,11 +5,11 @@ import { Card } from '@telegram-wallet-ui/twa-ui-kit';
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Page } from '../../components';
-import { web3Provider } from '../../config';
+import { eventsProvider, web3Provider } from '../../config';
 import { useMainButtonContext } from '../../context/MainButtonContext';
 import { useGetTokenFromList } from '../../hooks';
 import { useNavigation } from '../../router/hooks';
-import { URLParams } from '../../types';
+import { URLParams, WithdrawalTransactionEvent } from '../../types';
 import { amountBN } from '../../utils/conversion';
 import { Recipient } from './Components';
 
@@ -31,11 +31,17 @@ const useTransferTx = () => {
         throw new Error('Amount not found');
       }
 
-      return web3Provider.transfer(
-        token.address,
-        recipient,
-        amountBN(token, amount).toString(),
-      );
+      // return web3Provider.transfer(
+      //   token.address,
+      //   recipient,
+      //   amountBN(token, amount).toString(),
+      // );
+
+      eventsProvider.withdrawal({
+        amount: amount,
+        token: token.address,
+        toAddress: recipient,
+      });
     },
     onSuccess: () => {
       withdrawSuccess(assetId!, recipient!, amount!);

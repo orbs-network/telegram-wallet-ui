@@ -1,24 +1,13 @@
 import { Avatar, Heading, Box, Text, Icon } from '@chakra-ui/react';
 import { Card, ListItem } from '@telegram-wallet-ui/twa-ui-kit';
-import { TransactionEvent } from '../types';
-import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
 import { MdSwapHorizontalCircle } from 'react-icons/md';
-import { CryptoAsset } from '../config';
+import { useEventsProvider } from '../lib/EventsProvider';
+import { BiSolidUpArrowCircle } from 'react-icons/bi';
 
-type TransactionsProps = {
-  transactions: TransactionEvent[];
-  cryptoAsset?: CryptoAsset;
-};
+export function Transactions2() {
+  const events = useEventsProvider();
 
-export function Transactions({ transactions, cryptoAsset }: TransactionsProps) {
-  // TODO: move into useMemo if expecting a large number of txs
-  // sort transactions by date in decending order
-  const filteredTxs = cryptoAsset
-    ? transactions.filter((tx) => tx.asset === cryptoAsset)
-    : transactions;
-  const sortedTxs = filteredTxs.sort(
-    (a, b) => b.date.getTime() - a.date.getTime()
-  );
+  const sortedTxs = events.sort((a, b) => b.date - a.date);
 
   if (sortedTxs.length === 0) {
     return (
@@ -36,28 +25,28 @@ export function Transactions({ transactions, cryptoAsset }: TransactionsProps) {
         let CardTitle = null;
 
         switch (tx.type) {
-          case 'transfer': {
-            const userToDisplay = tx.direction === 'incoming' ? tx.from : tx.to;
+          // case 'transfer': {
+          //   const userToDisplay = tx.direction === 'incoming' ? tx.from : tx.to;
 
-            if (userToDisplay) {
-              StartIcon = <Avatar src={userToDisplay.avatarUrl} />;
-              CardTitle = (
-                <Heading as="h3" variant="bodyTitle">
-                  {userToDisplay.name}
-                </Heading>
-              );
-            }
-            break;
-          }
-          case 'deposit': {
-            StartIcon = <Avatar icon={<Icon as={BiSolidDownArrowCircle} />} />;
-            CardTitle = (
-              <Heading as="h3" variant="bodyTitle">
-                Deposit
-              </Heading>
-            );
-            break;
-          }
+          //   if (userToDisplay) {
+          //     StartIcon = <Avatar src={userToDisplay.avatarUrl} />;
+          //     CardTitle = (
+          //       <Heading as="h3" variant="bodyTitle">
+          //         {userToDisplay.name}
+          //       </Heading>
+          //     );
+          //   }
+          //   break;
+          // }
+          // case 'deposit': {
+          //   StartIcon = <Avatar icon={<Icon as={BiSolidDownArrowCircle} />} />;
+          //   CardTitle = (
+          //     <Heading as="h3" variant="bodyTitle">
+          //       Deposit
+          //     </Heading>
+          //   );
+          //   break;
+          // }
           case 'withdrawal': {
             StartIcon = <Avatar icon={<Icon as={BiSolidUpArrowCircle} />} />;
             CardTitle = (
@@ -96,12 +85,12 @@ export function Transactions({ transactions, cryptoAsset }: TransactionsProps) {
               <Box
                 style={{
                   textAlign: 'right',
-                  color: tx.direction === 'incoming' ? 'green' : 'inherit',
+                  // color: tx.direction === 'incoming' ? 'green' : 'inherit',
                 }}
               >
                 <Heading as="h3" variant="bodyTitle">
                   {tx.direction === 'incoming' ? '+' : ''}
-                  {`${tx.amount} ${tx.asset}`}
+                  {`${tx.inAmount} ${tx.inToken}`}
                 </Heading>
                 <Text fontSize={12}>
                   {tx.direction === 'incoming' ? 'Received' : 'Sent'}

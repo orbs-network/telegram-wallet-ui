@@ -1,4 +1,4 @@
-import { Transaction, User } from '../types';
+import { TransactionEvent, User } from '../types';
 
 export const mockUsers: User[] = [
   {
@@ -24,7 +24,7 @@ export const mockUsers: User[] = [
       'https://pbs.twimg.com/profile_images/956331551435960322/OaqR8pAB_400x400.jpg',
   },
 ];
-export const mockTransactions: Transaction[] = [
+export const mockTransactions: TransactionEvent[] = [
   {
     id: '0',
     amount: '0.1231445',

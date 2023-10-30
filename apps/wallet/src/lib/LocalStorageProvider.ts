@@ -1,4 +1,3 @@
-
 export class LocalStorageProvider {
   private keyPrefix = '';
 
@@ -21,6 +20,10 @@ export class LocalStorageProvider {
 
   read(key: string): Record<string, any | undefined> {
     return JSON.parse(localStorage.getItem(this.toKey(key)) ?? '{}');
+  }
+
+  readAll() {
+    return this.keys().map((k) => this.read(k));
   }
 
   delete(key: string) {
