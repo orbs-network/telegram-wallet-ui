@@ -95,8 +95,16 @@ export type Transaction = {
   asset: CryptoAsset;
 };
 
-export type URLParams = { assetId: string; recipient: string; amount: string };
-
+export type URLParams = {
+  assetId: string;
+  recipient: string;
+  amount: string;
+  inToken: string;
+  outToken: string;
+  inAmount: string;
+  outAmount: string;
+  txHash: string;
+};
 
 export type TokensListProps = {
   onSelect: (token: TokenData) => void;

@@ -7,16 +7,20 @@ import {
   TempUtils,
   Debug,
   Home,
-  Trade,
   Withdraw,
   WithdrawAddress,
   WithdrawAmount,
   WithdrawSuccess,
   WithdrawSummary,
   DepositSelectToken,
+  OptimizedTrade,
+  TradeReview,
+  TradeSuccess,
 } from '../routes';
 import { RouteObject } from 'react-router-dom';
 import { ROUTES } from './routes';
+
+
 
 const routes: RouteObject[] = [
   {
@@ -72,8 +76,16 @@ const routes: RouteObject[] = [
     element: <WithdrawSuccess />,
   },
   {
-    path: '/trade',
-    element: <Trade />,
+    path: ROUTES.trade,
+    element: <OptimizedTrade />,
+  },
+  {
+    path: ROUTES.tradeReview,
+    element: <TradeReview />,
+  },
+  {
+    path: ROUTES.tradeSuccess,
+    element: <TradeSuccess />,
   },
 ];
 

@@ -13,9 +13,12 @@ export const useNavigation = () => {
     navigate(ROUTES.deposit);
   }, [navigate]);
 
-  const depositSelectMethod = useCallback((assetId: string) => {
-    navigate(ROUTES.depositSelectMethod.replace(':assetId', assetId));
-  }, [navigate]);
+  const depositSelectMethod = useCallback(
+    (assetId: string) => {
+      navigate(ROUTES.depositSelectMethod.replace(':assetId', assetId));
+    },
+    [navigate]
+  );
 
   const depositBuy = useCallback(() => {
     navigate(ROUTES.depositBuy);
@@ -69,17 +72,43 @@ export const useNavigation = () => {
     [navigate]
   );
 
-   const withdrawSuccess = useCallback(
-     (assetId: string, recipient: string, amount: string) => {
-       navigate(
-         ROUTES.withdrawSuccess
-           .replace(':assetId', assetId || '')
-           .replace(':recipient', recipient)
-           .replace(':amount', amount)
-       );
-     },
-     [navigate]
-   );
+  const withdrawSuccess = useCallback(
+    (assetId: string, recipient: string, amount: string) => {
+      navigate(
+        ROUTES.withdrawSuccess
+          .replace(':assetId', assetId || '')
+          .replace(':recipient', recipient)
+          .replace(':amount', amount)
+      );
+    },
+    [navigate]
+  );
+
+  const tradeReview = useCallback(
+    (inToken: string, outToken: string, inAmount: string) => {
+      navigate(
+        ROUTES.tradeReview
+
+          .replace(':inToken', inToken || '')
+          .replace(':outToken', outToken || '')
+          .replace(':inAmount', inAmount || '')
+      );
+    },
+    [navigate]
+  );
+
+  const tradeSuccess = useCallback(
+    (outToken: string, outAmount: string, txHash: string) => {
+      navigate(
+        ROUTES.tradeSuccess
+
+          .replace(':outToken', outToken || '')
+          .replace(':outAmount', outAmount || '')
+          .replace(':txHash', txHash)
+      );
+    },
+    [navigate]
+  );
 
   return {
     withdraw,
@@ -93,5 +122,7 @@ export const useNavigation = () => {
     withdrawSummary,
     withdrawSuccess,
     depositSelectMethod,
+    tradeReview,
+    tradeSuccess,
   };
 };

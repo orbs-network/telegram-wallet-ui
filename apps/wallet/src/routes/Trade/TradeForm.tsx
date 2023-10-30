@@ -292,7 +292,6 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
               onChange={(value) => {
                 quote(value);
               }}
-              isSrc={true}
               onTokenSelect={(token) => {
                 form.resetField('inAmount');
                 form.resetField('outAmount');
@@ -389,7 +388,6 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
                 name="outAmount"
                 value={outAmount}
                 filterToken={inToken}
-                isSrc={false}
                 onTokenSelect={(token) => {
                   form.resetField('inAmount');
                   form.resetField('outAmount');
@@ -432,7 +430,6 @@ export function TradeForm({ defaultValues, tokens }: TradeFormProps) {
 const TokenPanel = ({
   value,
   symbol,
-  isSrc,
   name,
   onChange,
   onTokenSelect,
@@ -441,7 +438,6 @@ const TokenPanel = ({
 }: {
   value: string;
   symbol: string;
-  isSrc: boolean;
   name: string;
   onChange?: (value: string) => void;
   onTokenSelect: (token: TokenData) => void;

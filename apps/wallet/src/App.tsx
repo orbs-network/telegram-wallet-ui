@@ -1,7 +1,6 @@
 import { ChakraProvider, Container } from '@chakra-ui/react';
 import { MainButton, theme } from '@telegram-wallet-ui/twa-ui-kit';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Router } from './router/Router';
 import {
   MainButtonContextProvider,
   useMainButtonContext,
@@ -9,9 +8,12 @@ import {
 import { useLocation } from 'react-router-dom';
 import { ROUTES } from './router/routes';
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { usePersistedStore } from './store/persisted-store';
+import { WalletSpinner } from './components';
 const queryClient = new QueryClient();
+
+const Router = lazy(() => import('./router/Router'));
 
 const App = () =>  {
   const [height] = useState(window.innerHeight);
@@ -21,7 +23,9 @@ const App = () =>  {
       <ChakraProvider theme={theme}>
         <MainButtonContextProvider>
           <AppContainer style={{ height }}>
-            <Router />
+            <Suspense fallback={<Fallback />}>
+              <Router />
+            </Suspense>
             <ActionButton />
           </AppContainer>
         </MainButtonContextProvider>
@@ -29,6 +33,16 @@ const App = () =>  {
     </QueryClientProvider>
   );
 }
+
+const Fallback = () => {
+  return (
+    <Container size="sm" style={{ height: '100vh', position: 'relative' }}>
+      <WalletSpinner width="80px" height="80px" />
+    </Container>
+  );
+};
+
+
 
 const AppContainer = styled('div')({
   display: 'flex',

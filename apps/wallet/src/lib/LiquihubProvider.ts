@@ -18,14 +18,15 @@ export class LiquihubProvider {
   constructor(private web3Provider: Web3Provider) {}
 
   // TODO: better error handling
-  async quote(request: LiquihubQuote) {
+  async quote(request: LiquihubQuote, signal?: AbortSignal) {
     debug('Getting quote from LiquidityHub');
     const quote = await Fetcher.post<QuoteResponse>(
       `${this.BACKEND_URL}/quote?chainId=${this.CHAIN_ID}`,
       {
         ...request,
         user: this.web3Provider.account.address,
-      }
+      },
+      signal
     );
 
     if (!quote.permitData) {

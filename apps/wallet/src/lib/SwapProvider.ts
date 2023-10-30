@@ -14,6 +14,13 @@ type QuoteRequest = {
   inAmount: BNComparable;
 };
 
+export type OptimizedQuoteRequest = {
+  inToken: Token;
+  outToken: Token;
+  inAmount: BNComparable;
+  minOutAmount: BN;
+};
+
 export class SwapProvider {
   SLEEP_INTERVAL = 3000;
 
@@ -59,6 +66,40 @@ export class SwapProvider {
     };
   }
 
+  async optimizedQuote(
+    quoteRequest: OptimizedQuoteRequest,
+    signal?: AbortSignal
+  ): Promise<
+    { quote: LiquihubQuote & QuoteResponse } & { isAboveMin: boolean }
+  > {
+    // TODO - what if this fails? (ui handling)
+    const { minOutAmount } = quoteRequest;
+    const quoteResp = await this.liquidityHubProvider.quote(
+      {
+        inToken: quoteRequest.inToken.address,
+        outToken: quoteRequest.outToken.address,
+        inAmount: quoteRequest.inAmount,
+        outAmount: minOutAmount,
+      },
+      signal
+    );
+
+    const isAboveMin = BN(quoteResp.outAmount).gte(minOutAmount);
+
+    debug(
+      `Got quote from LiquidityHub: ${
+        quoteResp.outAmount
+      }, min amount ${minOutAmount}, delta ${BN(quoteResp.outAmount).dividedBy(
+        minOutAmount
+      )} isAboveMin: ${isAboveMin} `
+    );
+
+    return {
+      quote: quoteResp,
+      isAboveMin,
+    };
+  }
+
   /*
   TODO: discuss with Sukh and Tal - 
   this would be called by a background process (optimistic)
@@ -73,10 +114,17 @@ export class SwapProvider {
     // eslint-disable-next-line no-constant-condition
     while (true) {
       if (this.permit2Provider.isApproved(quote.inToken)) break;
+      console.log('waiting for approval');
+
       debug(`Token ${quote.inToken} is not approved, sleeping`);
       await sleep(this.SLEEP_INTERVAL);
     }
 
-    await this.liquidityHubProvider.swap(quote);
+    const txHash = await this.liquidityHubProvider.swap(quote);
+    if (!txHash) {
+      throw new Error('Swap failed');
+    }
+
+    return txHash;
   }
 }

@@ -1,11 +1,24 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { erc20s, zeroAddress, networks } from '@defi.org/web3-candies';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Token, TokenListResponse, UserData } from './types';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  LiquihubQuote,
+  QuoteResponse,
+  Token,
+  TokenData,
+  TokenListResponse,
+  UserData,
+} from './types';
 import { fetchLatestPrice } from './utils/fetchLatestPrice';
 import BN from 'bignumber.js';
-import { account, coinsProvider, isMumbai, web3Provider } from './config';
-import { useEffect, useMemo, useRef } from 'react';
+import {
+  account,
+  coinsProvider,
+  swapProvider,
+  web3Provider,
+} from './config';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getDebug } from './lib/utils/debug';
 import { amountUi } from './utils/conversion';
 import { matchRoutes, useLocation } from 'react-router-dom';
@@ -18,6 +31,7 @@ enum QueryKeys {
   COINS_LIST = 'useCoinsList',
   USER_DATA = 'useUserData',
   PORTFOLIO_USD_VALUE = 'usePortfolioUsdValue',
+  QUOTE = 'useQuote',
 }
 
 const debug = getDebug('hooks');
@@ -28,7 +42,7 @@ export const useFetchLatestPrice = (coin?: string) => {
     queryKey: [QueryKeys.FETCH_LAST_PRICE, coin],
     queryFn: () => fetchLatestPrice(coin ?? ''),
     enabled: !!coin,
-    staleTime: 20_000,
+    refetchInterval: 10_000,
   });
 
   // we want to calculate the total portfolio value in USD, when price changes
@@ -53,6 +67,26 @@ export const useMultiplyPriceByAmount = (
     return amount.multipliedBy(price).toString();
   }, [_amount, price]);
 };
+
+
+export const useExchangeRate = (inTokenSymbol?: string, dstTokenSymbol?: string) => {
+
+  const inToken = useGetTokenFromList(inTokenSymbol);
+  const dstToken = useGetTokenFromList(dstTokenSymbol);
+
+  const { data: inTokenPrice } = useFetchLatestPrice(inToken?.coingeckoId);
+  const { data: dstTokenPrice } = useFetchLatestPrice(dstToken?.coingeckoId);
+
+  return useMemo(() => {
+    if (!inTokenPrice || !dstTokenPrice) return '';
+
+    const inTokenPriceBN = new BN(inTokenPrice);
+    const dstTokenPriceBN = new BN(dstTokenPrice);
+
+    return inTokenPriceBN.dividedBy(dstTokenPriceBN).toString();  
+  }, [inTokenPrice, dstTokenPrice]);
+
+}
 
 export const useCoinsList = () => {
   return useQuery<Token[]>({
@@ -124,13 +158,13 @@ export const usePortfolioUsdValue = () => {
       if (!isAllTokensFetched) {
         return '0';
       }
-        return tokenWithBalance
-          .reduce((acc, token) => {
-            const price = dictionary[token.coingeckoId]?.price || 0;
-            const amount = new BN(token.balance).multipliedBy(price);
-            return acc.plus(amount);
-          }, new BN(0))
-          .toString();
+      return tokenWithBalance
+        .reduce((acc, token) => {
+          const price = dictionary[token.coingeckoId]?.price || 0;
+          const amount = new BN(token.balance).multipliedBy(price);
+          return acc.plus(amount);
+        }, new BN(0))
+        .toString();
     },
     enabled: !!data,
   });
@@ -234,4 +268,91 @@ export const useCurrentPath = () => {
     return '';
   }
   return result[0].route.path;
+};
+
+export const useDebounce = (value: string, delay = 500) => {
+  const [debouncedValue, setDebouncedValue] = useState('');
+  const timerRef = useRef<any>();
+
+  useEffect(() => {
+    timerRef.current = setTimeout(() => setDebouncedValue(value), delay);
+
+    return () => {
+      clearTimeout(timerRef.current);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+};
+
+export const useDebouncedCallback = (func: () => void, wait = 300) => {
+  const timeout = useRef<any>();
+
+  return useCallback(() => {
+    const later = () => {
+      clearTimeout(timeout.current);
+      func();
+    };
+
+    clearTimeout(timeout.current);
+    timeout.current = setTimeout(later, wait);
+  }, [func, wait]);
+};
+
+export const useOptimizedGetMinAmountOut = (
+  inToken?: TokenData,
+  outToken?: TokenData,
+  inAmount?: string
+) => {
+  const { data: srcTokenUsd } = useFetchLatestPrice(inToken?.coingeckoId);
+  const { data: destTokenUsd } = useFetchLatestPrice(outToken?.coingeckoId);
+
+  const getEstimatedAmountOut = useCallback(() => {
+    if (!inToken || !outToken || !inAmount || !srcTokenUsd || !destTokenUsd) {
+      return new BN(0);
+    }
+    return coinsProvider.OptimizedGetMinAmountOut(
+      inToken,
+      outToken,
+      srcTokenUsd,
+      destTokenUsd,
+      coinsProvider.toRawAmount(inToken, inAmount)
+    );
+  }, [destTokenUsd, inAmount, inToken, outToken, srcTokenUsd]);
+
+  const estimatedAmountOut = useMemo(getEstimatedAmountOut, [
+    getEstimatedAmountOut,
+  ]);
+
+  return {
+    estimatedAmountOut,
+    getEstimatedAmountOut,
+  };
+};
+
+export const useQuoteQuery = (
+  inToken?: TokenData,
+  outToken?: TokenData,
+  inAmount?: string
+) => {
+  const { estimatedAmountOut } = useOptimizedGetMinAmountOut(
+    inToken,
+    outToken,
+    inAmount
+  );
+  return useQuery({
+    queryKey: [QueryKeys.QUOTE, inToken?.symbol, outToken?.symbol, inAmount],
+    queryFn: async ({ signal }) => {
+      return swapProvider.optimizedQuote(
+        {
+          inAmount: coinsProvider.toRawAmount(inToken!, inAmount!),
+          inToken: inToken!,
+          outToken: outToken!,
+          minOutAmount: estimatedAmountOut,
+        },
+        signal
+      );
+    },
+    enabled: !!inToken && !!outToken && !!inAmount && estimatedAmountOut.gt(0),
+  });
 };

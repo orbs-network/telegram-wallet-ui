@@ -15,7 +15,7 @@ const useVariants = () => {
 
     return {
       enter: {
-        x: 0,
+        transform: 'translateX(0)',
         transition,
         transitionEnd: {
           // after animation has finished, reset the position to static
@@ -33,7 +33,7 @@ const useVariants = () => {
           : {}),
       },
       initial: {
-        x: isPush ? '100%' : '-25%',
+        transform: `translateX(${isPush ? '100%' : '-25%'})`,
         transition,
         // keep top "layer" of animation as a fixed position
         ...(isPush
@@ -48,7 +48,7 @@ const useVariants = () => {
       },
 
       exit: {
-        x: isPop ? '100%' : '-10%',
+        transform: `translateX(${isPop ? '100%' : '-10%'})`,
         zIndex: isPop ? 1 : -1,
         transition: {
           ...transition,

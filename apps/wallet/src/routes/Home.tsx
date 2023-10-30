@@ -15,7 +15,7 @@ const TODO_TEMP_ERC20_REPLACE = isMumbai
 // TODO(sukh) - 
 // 1. set this in the deposit flow
 // 2. call this for the inToken in the trade confirmation screen
-permit2Provider.addErc20(TODO_TEMP_ERC20_REPLACE);
+// permit2Provider.addErc20(TODO_TEMP_ERC20_REPLACE);
 
 // Checks periodically for non-permit2-approved erc20s and issues TXNs for approval as needed
 permit2Provider.pollPermit2Approvals();

@@ -20,10 +20,16 @@ const styles = css`
   animation: ${bounce} 1s linear infinite;
 `;
 
-export function WalletSpinner() {
+export function WalletSpinner({width, height}:{width?: string, height?: string}) {
   return (
     <AbsoluteCenter>
-      <Icon css={styles} as={BiWallet} fontSize="9xl" />
+      <Icon
+        css={styles}
+        width={width}
+        height={height}
+        as={BiWallet}
+        fontSize="9xl"
+      />
     </AbsoluteCenter>
   );
 }
