@@ -29,8 +29,6 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
   const events = useEventsProvider();
   const { data: userData } = useUserData();
 
-  console.log('events', events);
-
   const transactions = useMemo(() => {
     const filteredTxs = tokenFilter
       ? events.filter((tx) => {
@@ -74,8 +72,6 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
           }
         })
       : events;
-
-    console.log('filteredTxs', filteredTxs);
 
     const sortedTxs = filteredTxs.sort(
       (a, b) => b.date.getTime() - a.date.getTime()
@@ -220,7 +216,6 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
               outToken: TokenData | undefined;
             };
 
-            console.log('tradeTx', tradeTx);
             StartIcon = (
               <Avatar
                 icon={<Icon as={MdSwapHorizontalCircle} />}
