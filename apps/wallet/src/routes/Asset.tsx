@@ -2,13 +2,14 @@ import { Avatar, Container, HStack, VStack } from '@chakra-ui/react';
 import { Balance, IconButtonWithLabel } from '@telegram-wallet-ui/twa-ui-kit';
 import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
 import { MdSwapHorizontalCircle } from 'react-icons/md';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Page, WalletSpinner } from '../components';
 import { CryptoAsset } from '../config';
 import { useFormatNumber, useUserData } from '../hooks';
 import { ROUTES } from '../router/routes';
 import { useMainButtonContext } from '../context/MainButtonContext';
 import { useEffect } from 'react';
+import { Transactions } from '../components/Transactions';
 
 function Loader() {
   return (
@@ -84,6 +85,7 @@ export function Asset() {
               />
             </Link>
           </HStack>
+          <Transactions tokenFilter={tokenData.symbol} />
         </VStack>
       </Container>
     </Page>

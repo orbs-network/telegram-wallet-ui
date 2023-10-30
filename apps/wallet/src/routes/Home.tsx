@@ -6,7 +6,7 @@ import { Page, TokenBalances } from '../components';
 import { useFormatNumber, usePortfolioUsdValue } from '../hooks';
 import { faucetProvider, isMumbai, permit2Provider } from '../config';
 import { MdSwapVerticalCircle } from 'react-icons/md';
-import { Transactions2 } from '../components/Transactions2';
+import { Transactions } from '../components/Transactions';
 
 // Temp - USDC
 const TODO_TEMP_ERC20_REPLACE = isMumbai
@@ -64,7 +64,7 @@ export function Home() {
             </Link>
           </HStack>
           <TokenBalances />
-          <Transactions2 />
+          <Transactions />
         </VStack>
       </Container>
     </Page>
