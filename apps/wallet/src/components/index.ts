@@ -9,3 +9,4 @@ export * from './Countdown';
 export * from './SelectToken';
 export * from './CryptoAmountInput';
 export * from './ReviewTx';
+export * from './SuccessPage';

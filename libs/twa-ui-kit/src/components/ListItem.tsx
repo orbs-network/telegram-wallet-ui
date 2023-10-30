@@ -5,13 +5,11 @@ import { BiCheck } from 'react-icons/bi';
 
 import { tgColors } from '../theme';
 
-
-
-
 const styles = css`
- padding: 10px 12px 8px 10px;
-  
-    &:last-child:after {
+  width: 100%;
+  padding: 10px 12px 8px 10px;
+
+  &:last-child:after {
     display: none;
   }
 `;

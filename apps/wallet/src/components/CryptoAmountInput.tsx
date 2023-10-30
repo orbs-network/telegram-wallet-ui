@@ -75,7 +75,7 @@ export function CryptoAmountInput({
 }: CryptoAmountInputProps) {
   const token = useGetTokenFromList(tokenSymbol);
 
-  const usdPrice = useMultiplyPriceByAmount(
+  const calculatedPrice = useMultiplyPriceByAmount(
     token?.coingeckoId || 'ethereum',
     Number(value)
   );
@@ -84,7 +84,7 @@ export function CryptoAmountInput({
   const formattedPriceCompare = useFormatNumber({ value: priceCompare, decimalScale: 6 });
   const formattedAmount = useFormatNumber({ value, decimalScale: 18 });
   const formattedUsdPrice = useFormatNumber({
-    value: usdPrice,
+    value: calculatedPrice,
     prefix: '$',
     decimalScale: 2,
   });
@@ -116,7 +116,6 @@ export function CryptoAmountInput({
   }, [formattedAmount]);
 
 
-
   return (
     <VStack alignItems="flex-start" gap="0px">
       <Flex
@@ -136,6 +135,7 @@ export function CryptoAmountInput({
             pointerEvents: editable ? 'auto' : 'none',
             color: error && ERROR_COLOR,
           }}
+          readOnly={!editable}
         />
         {!hideSymbol && (
           <Text

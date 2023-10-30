@@ -16,6 +16,8 @@ import {
   OptimizedTrade,
   TradeReview,
   TradeSuccess,
+  Review,
+  Success,
 } from '../routes';
 import { RouteObject } from 'react-router-dom';
 import { ROUTES } from './routes';
@@ -87,6 +89,14 @@ const routes: RouteObject[] = [
     path: ROUTES.tradeSuccess,
     element: <TradeSuccess />,
   },
+  // {
+  //   path: ROUTES.tradeReview,
+  //   element: <Review />,
+  // },
+  // {
+  //   path: ROUTES.tradeSuccess,
+  //   element: <Success />,
+  // },
 ];
 
 export const MainRouter = () => {

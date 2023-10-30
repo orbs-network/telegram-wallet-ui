@@ -114,7 +114,6 @@ export class SwapProvider {
     // eslint-disable-next-line no-constant-condition
     while (true) {
       if (this.permit2Provider.isApproved(quote.inToken)) break;
-      console.log('waiting for approval');
 
       debug(`Token ${quote.inToken} is not approved, sleeping`);
       await sleep(this.SLEEP_INTERVAL);

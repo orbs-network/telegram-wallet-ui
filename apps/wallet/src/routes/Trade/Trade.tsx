@@ -55,7 +55,7 @@ export function Trade() {
             navigate(-1);
           }}
         />
-        <TradeForm defaultValues={defaultValues} tokens={userData?.tokens} />
+        {/* <TradeForm defaultValues={defaultValues} tokens={userData?.tokens} /> */}
       </Container>
     </StyledPage>
   );

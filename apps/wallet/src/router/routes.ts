@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 export const ROUTES = {
   root: '/',
   deposit: '/deposit',
