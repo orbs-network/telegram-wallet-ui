@@ -1,10 +1,17 @@
-import { BNComparable, LiquihubQuote, QuoteResponse, Token } from '../types';
+import {
+  BNComparable,
+  LiquihubQuote,
+  QuoteResponse,
+  Token,
+  TradeTransactionEvent,
+} from '../types';
 import { LiquihubProvider } from './LiquihubProvider';
 import { CoinsProvider } from './CoinsProvider';
 import { getDebug } from './utils/debug';
 import BN from 'bignumber.js';
 import { sleep } from './utils/sleep';
 import { Permit2Provider } from './Permit2Provider';
+import { EventsProvider } from './EventsProvider';
 
 const debug = getDebug('SwapProvider');
 
@@ -27,7 +34,8 @@ export class SwapProvider {
   constructor(
     private coinsProvider: CoinsProvider,
     private liquidityHubProvider: LiquihubProvider,
-    private permit2Provider: Permit2Provider
+    private permit2Provider: Permit2Provider,
+    private eventsProvider: EventsProvider
   ) {}
 
   async quote(
@@ -119,11 +127,18 @@ export class SwapProvider {
       await sleep(this.SLEEP_INTERVAL);
     }
 
-    const txHash = await this.liquidityHubProvider.swap(quote);
-    if (!txHash) {
-      throw new Error('Swap failed');
-    }
+    // // const txHash = await this.liquidityHubProvider.swap(quote);
+    // // if (!txHash) {
+    // //   throw new Error('Swap failed');
+    // // }
 
-    return txHash;
+    // return txHash;
+
+    this.eventsProvider.trade({
+      inToken: quote.inToken,
+      outToken: quote.outToken,
+      amountIn: quote.inAmount,
+      amountOut: quote.outAmount,
+    });
   }
 }

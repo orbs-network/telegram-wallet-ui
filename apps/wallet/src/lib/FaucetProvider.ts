@@ -5,6 +5,7 @@ import { getDebug } from './utils/debug';
 import { sleep } from '@defi.org/web3-candies';
 import promiseRetry from 'promise-retry';
 import { LocalStorageProvider } from './LocalStorageProvider';
+import { EventsProvider } from './EventsProvider';
 
 const debug = getDebug('FaucetProvider');
 
@@ -13,7 +14,11 @@ export class FaucetProvider {
   private isPolling = false;
   private KEY = 'faucet:proofErc20';
 
-  constructor(private faucetUrl: string, private web3Provider: Web3Provider) {}
+  constructor(
+    private faucetUrl: string,
+    private web3Provider: Web3Provider,
+    private eventsProvider: EventsProvider
+  ) {}
 
   private async requestFromFaucet(erc20Token: string) {
     debug('Requesting from faucet');
@@ -50,11 +55,14 @@ export class FaucetProvider {
       const erc20Token = localStorage.getItem(this.KEY);
 
       if (erc20Token) {
-        const hasBalance = (
-          await this.web3Provider.balanceOf(erc20Token)
-        ).isGreaterThan(0);
+        const balance = await this.web3Provider.balanceOf(erc20Token);
 
-        if (hasBalance) {
+        if (balance.isGreaterThan(0)) {
+          this.eventsProvider.deposit({
+            token: erc20Token,
+            amount: balance.toString(),
+          });
+
           debug('erc20 balance is non-zero, requesting from faucet');
           await this.requestFromFaucet(erc20Token);
           return true;

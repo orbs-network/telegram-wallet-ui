@@ -1,26 +1,18 @@
 import { Avatar, Heading, Box, Text, Icon } from '@chakra-ui/react';
 import { Card, ListItem } from '@telegram-wallet-ui/twa-ui-kit';
-import { TransactionEvent } from '../types';
-import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
 import { MdSwapHorizontalCircle } from 'react-icons/md';
-import { CryptoAsset } from '../config';
+import {
+  DepositTransactionEvent,
+  TradeTransactionEvent,
+  useEventsProvider,
+  WithdrawalTransactionEvent,
+} from '../lib/EventsProvider';
+import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
 
-type TransactionsProps = {
-  transactions: TransactionEvent[];
-  cryptoAsset?: CryptoAsset;
-};
+export function Transactions2() {
+  const events = useEventsProvider();
 
-export function Transactions({ transactions, cryptoAsset }: TransactionsProps) {
-  // TODO: move into useMemo if expecting a large number of txs
-  // sort transactions by date in decending order
-  const filteredTxs = cryptoAsset
-    ? transactions.filter((tx) => tx.asset === cryptoAsset)
-    : transactions;
-  const sortedTxs = filteredTxs.sort(
-    (a, b) => b.date.getTime() - a.date.getTime()
-  );
-
-  if (sortedTxs.length === 0) {
+  if (events.length === 0) {
     return (
       <Card>
         <Text>No transactions</Text>
@@ -31,30 +23,38 @@ export function Transactions({ transactions, cryptoAsset }: TransactionsProps) {
   return (
     <Card>
       <Text variant="hint">TRANSACTION HISTORY</Text>
-      {sortedTxs.map((tx) => {
+      {events.map((tx) => {
         let StartIcon = null;
         let CardTitle = null;
+        let CardData = null;
 
         switch (tx.type) {
-          case 'transfer': {
-            const userToDisplay = tx.direction === 'incoming' ? tx.from : tx.to;
+          // case 'transfer': {
+          //   const userToDisplay = tx.direction === 'incoming' ? tx.from : tx.to;
 
-            if (userToDisplay) {
-              StartIcon = <Avatar src={userToDisplay.avatarUrl} />;
-              CardTitle = (
-                <Heading as="h3" variant="bodyTitle">
-                  {userToDisplay.name}
-                </Heading>
-              );
-            }
-            break;
-          }
+          //   if (userToDisplay) {
+          //     StartIcon = <Avatar src={userToDisplay.avatarUrl} />;
+          //     CardTitle = (
+          //       <Heading as="h3" variant="bodyTitle">
+          //         {userToDisplay.name}
+          //       </Heading>
+          //     );
+          //   }
+          //   break;
+          // }
           case 'deposit': {
             StartIcon = <Avatar icon={<Icon as={BiSolidDownArrowCircle} />} />;
             CardTitle = (
               <Heading as="h3" variant="bodyTitle">
                 Deposit
               </Heading>
+            );
+            CardData = (
+              <Box>
+                <Heading as="h3" variant="bodyTitle">
+                  +{(tx as DepositTransactionEvent).amount}
+                </Heading>
+              </Box>
             );
             break;
           }
@@ -65,6 +65,17 @@ export function Transactions({ transactions, cryptoAsset }: TransactionsProps) {
                 Withdrawal
               </Heading>
             );
+            CardData = (
+              <Box>
+                <Heading as="h3" variant="bodyTitle">
+                  -{(tx as WithdrawalTransactionEvent).amount}
+                </Heading>
+                <Text variant="hint" fontSize={12}>
+                  {(tx as WithdrawalTransactionEvent).toAddress.slice(0, 8) +
+                    '...'}
+                </Text>
+              </Box>
+            );
             break;
           }
           case 'trade': {
@@ -73,6 +84,14 @@ export function Transactions({ transactions, cryptoAsset }: TransactionsProps) {
               <Heading as="h3" variant="bodyTitle">
                 Trade
               </Heading>
+            );
+            const trade = tx as TradeTransactionEvent;
+            CardData = (
+              <Box>
+                <Heading as="h3" variant="bodyTitle">
+                  {`+${trade.amountIn} ${trade.inToken.slice(0, 4)}...`}
+                </Heading>
+              </Box>
             );
             break;
           }
@@ -83,6 +102,7 @@ export function Transactions({ transactions, cryptoAsset }: TransactionsProps) {
 
         return (
           <ListItem
+            key={tx.id}
             StartIconSlot={StartIcon}
             StartTextSlot={
               <Box>
@@ -96,13 +116,10 @@ export function Transactions({ transactions, cryptoAsset }: TransactionsProps) {
               <Box
                 style={{
                   textAlign: 'right',
-                  color: tx.direction === 'incoming' ? 'green' : 'inherit',
+                  // color: tx.direction === 'incoming' ? 'green' : 'inherit',
                 }}
               >
-                <Heading as="h3" variant="bodyTitle">
-                  {tx.direction === 'incoming' ? '+' : ''}
-                  {`${tx.amount} ${tx.asset}`}
-                </Heading>
+                {CardData}
                 <Text fontSize={12}>
                   {tx.direction === 'incoming' ? 'Received' : 'Sent'}
                 </Text>

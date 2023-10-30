@@ -1,4 +1,3 @@
-
 export class LocalStorageProvider {
   private keyPrefix = '';
 
@@ -11,20 +10,30 @@ export class LocalStorageProvider {
   }
 
   storeProp(key: string, property: string, value: any) {
-    const currValue = this.read(key);
+    const currValue = this.read(key) as any;
     currValue[property] = value;
     this.storeObject(key, currValue);
   }
-  storeObject(key: string, object: any) {
+  storeObject<T>(key: string, object: T) {
     localStorage.setItem(this.toKey(key), JSON.stringify(object));
   }
 
-  read(key: string): Record<string, any | undefined> {
+  read<T>(key: string): T {
     return JSON.parse(localStorage.getItem(this.toKey(key)) ?? '{}');
+  }
+
+  readAll<T>(): Record<string, T> {
+    return Object.fromEntries(this.keys().map((k) => [k, this.read<T>(k)]));
   }
 
   delete(key: string) {
     localStorage.removeItem(this.toKey(key));
+  }
+
+  clear() {
+    for (const key of this.keys()) {
+      this.delete(key);
+    }
   }
 
   keys() {
