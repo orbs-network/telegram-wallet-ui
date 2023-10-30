@@ -16,7 +16,7 @@ import { BiSolidChevronRight } from 'react-icons/bi';
 import { CryptoAmountInput, SelectToken } from '../../components';
 import { useFormatNumber, useUserData } from '../../hooks';
 import { TokenData } from '../../types';
-import {IoClose} from 'react-icons/io5';
+import { IoClose } from 'react-icons/io5';
 const flash = keyframes`
   0% {
     opacity: 1;
@@ -62,8 +62,8 @@ const styles = {
     border: none;
   `,
   drawerContent: css`
-  padding-top: 20px;
-  `
+    padding-top: 20px;
+  `,
 };
 
 const TokenPanelHeader = ({
@@ -228,17 +228,16 @@ const StyledTokenList = styled(SelectToken)({
   overflowY: 'auto',
 });
 
-
 const StyledClose = styled('button')({
   position: 'relative',
 
   zIndex: 1,
   outline: 'none',
   padding: 0,
-  marginRight:20,
+  marginRight: 20,
   marginLeft: 'auto',
   svg: {
     width: '24px',
     height: '24px',
-  }
-})
+  },
+});

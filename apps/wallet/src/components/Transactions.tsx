@@ -6,7 +6,7 @@ import {
   Icon,
   SkeletonText,
 } from '@chakra-ui/react';
-import { Card, ListItem } from '@telegram-wallet-ui/twa-ui-kit';
+import { Card, ListItem, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
 import { MdSwapHorizontalCircle } from 'react-icons/md';
 import {
@@ -20,6 +20,7 @@ import { amountUi } from '../utils/conversion';
 import BN from 'bignumber.js';
 import { useUserData } from '../hooks';
 import { TokenData } from '../types';
+import { Link } from 'react-router-dom';
 
 type TransactionsProps = {
   tokenFilter?: string;
@@ -253,18 +254,24 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
         }
 
         return (
-          <ListItem
-            StartIconSlot={StartIcon}
-            StartTextSlot={
-              <Box>
-                {CardTitle}
-                <Text variant="hint" fontSize={12}>
-                  {tx.date.toLocaleString()}
-                </Text>
-              </Box>
-            }
-            EndTextSlot={CardData}
-          />
+          <Link
+            key={tx.id}
+            to={`/transaction/${tx.id}`}
+            style={{ color: colors.text_color }}
+          >
+            <ListItem
+              StartIconSlot={StartIcon}
+              StartTextSlot={
+                <Box>
+                  {CardTitle}
+                  <Text variant="hint" fontSize={12}>
+                    {tx.date.toLocaleString()}
+                  </Text>
+                </Box>
+              }
+              EndTextSlot={CardData}
+            />
+          </Link>
         );
       })}
     </Card>

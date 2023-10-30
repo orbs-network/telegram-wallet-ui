@@ -16,12 +16,10 @@ import {
   Trade,
   TradeReview,
   TradeSuccess,
-
 } from '../routes';
 import { RouteObject } from 'react-router-dom';
 import { ROUTES } from './routes';
-
-
+import { Transaction } from '../routes/Transaction';
 
 const routes: RouteObject[] = [
   {
@@ -87,6 +85,10 @@ const routes: RouteObject[] = [
   {
     path: ROUTES.tradeSuccess,
     element: <TradeSuccess />,
+  },
+  {
+    path: ROUTES.transaction,
+    element: <Transaction />,
   },
 ];
 
