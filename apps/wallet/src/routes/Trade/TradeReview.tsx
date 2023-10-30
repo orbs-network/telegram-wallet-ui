@@ -3,24 +3,26 @@ import React, { useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Page, ReviewTx } from '../../components';
 import {
+  QueryKeys,
   useExchangeRate,
   useFormatNumber,
   useGetTokenFromList,
   useQuoteQuery,
-  useUserData,
 } from '../../hooks';
 import { URLParams, SwapSuccesss, TokenData } from '../../types';
 import { amountUi } from '../../utils/conversion';
 import BN from 'bignumber.js';
 import { useMainButtonContext } from '../../context/MainButtonContext';
 import { useNavigation } from '../../router/hooks';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { permit2Provider, swapProvider } from '../../config';
 
 const useSwap = () => {
   const tradeSuccess = useNavigation().tradeSuccess;
   const { outToken: outTokenSymbol } = useParams<URLParams>();
-  const { refetch: refetchUserData } = useUserData();
+
+
+  const queryClient = useQueryClient();
 
   const { quote, amountOut } = useQuote();
   return useMutation({
@@ -28,10 +30,11 @@ const useSwap = () => {
       const result = await swapProvider.swap({
         ...quote!.quote,
       });
-      await refetchUserData();
+
       return (result as SwapSuccesss).txHash;
     },
     onSuccess: (txHash) => {
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.USER_DATA] });
       tradeSuccess(outTokenSymbol!, amountOut, txHash);
     },
   });

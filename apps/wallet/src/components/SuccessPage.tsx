@@ -16,9 +16,15 @@ const styles = {
   `,
 };
 
-export function SuccessPage({ children }: { children: React.ReactNode }) {
+export function SuccessPage({
+  children,
+  className = '',
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <StyledPage>
+    <StyledPage className={className}>
       <Container css={styles.container} size="sm" pt={4}>
         <VStack spacing={4}>
           <LottieContainer>

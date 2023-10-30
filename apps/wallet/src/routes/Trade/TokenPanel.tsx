@@ -13,9 +13,9 @@ import { css, keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useMemo, useRef, useState } from 'react';
 import { BiSolidChevronRight } from 'react-icons/bi';
-import { CryptoAmountInput, SelectToken } from '../../../components';
-import { useFormatNumber, useUserData } from '../../../hooks';
-import { TokenData } from '../../../types';
+import { CryptoAmountInput, SelectToken } from '../../components';
+import { useFormatNumber, useUserData } from '../../hooks';
+import { TokenData } from '../../types';
 import {IoClose} from 'react-icons/io5';
 const flash = keyframes`
   0% {

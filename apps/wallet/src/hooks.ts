@@ -26,7 +26,7 @@ import { ROUTES } from './router/routes';
 import _ from 'lodash';
 import { useNumericFormat } from 'react-number-format';
 
-enum QueryKeys {
+export enum QueryKeys {
   FETCH_LAST_PRICE = 'useFetchLatestPrice',
   COINS_LIST = 'useCoinsList',
   USER_DATA = 'useUserData',

@@ -13,12 +13,10 @@ import {
   WithdrawSuccess,
   WithdrawSummary,
   DepositSelectToken,
-  OptimizedTrade,
+  Trade,
   TradeReview,
   TradeSuccess,
-  Review,
-  Success,
-  Trade,
+
 } from '../routes';
 import { RouteObject } from 'react-router-dom';
 import { ROUTES } from './routes';
@@ -80,7 +78,7 @@ const routes: RouteObject[] = [
   },
   {
     path: ROUTES.trade,
-    element: <OptimizedTrade />,
+    element: <Trade />,
   },
   {
     path: ROUTES.tradeReview,
@@ -90,14 +88,6 @@ const routes: RouteObject[] = [
     path: ROUTES.tradeSuccess,
     element: <TradeSuccess />,
   },
-  // {
-  //   path: ROUTES.tradeReview,
-  //   element: <Review />,
-  // },
-  // {
-  //   path: ROUTES.tradeSuccess,
-  //   element: <Success />,
-  // },
 ];
 
 export const MainRouter = () => {

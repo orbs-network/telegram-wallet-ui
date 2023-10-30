@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { Page } from "../../../components";
+import { Page } from "../../components";
 
 export const styles = {
   switchTokensContainer: css`

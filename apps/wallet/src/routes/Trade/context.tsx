@@ -4,7 +4,7 @@ import {
   useOptimizedGetMinAmountOut,
   useQuoteQuery,
   useUserData,
-} from '../../../hooks';
+} from '../../hooks';
 import {
   createContext,
   ReactNode,
@@ -16,8 +16,8 @@ import {
 import { StringParam, useQueryParam } from 'use-query-params';
 import BN from 'bignumber.js';
 import _ from 'lodash';
-import { amountUi } from '../../../utils/conversion';
-import { TokenData } from '../../../types';
+import { amountUi } from '../../utils/conversion';
+import { TokenData } from '../../types';
 interface TradeContext {
   inAmount: string;
   setInAmount: (amount: string) => void;
