@@ -1,49 +1,13 @@
 import { Box, Container, Flex, useToast, VStack } from '@chakra-ui/react';
-import styled from '@emotion/styled';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Page } from '../../../components';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDebouncedCallback } from '../../../hooks';
 import { TokenPanel } from './TokenPanel';
 import BN from 'bignumber.js';
 import { useMainButtonContext } from '../../../context/MainButtonContext';
 import { HiOutlineSwitchVertical } from 'react-icons/hi';
-import { css } from '@emotion/react';
 import { TradeContextProvider, useTradeContext } from './context';
 import { useNavigation } from '../../../router/hooks';
-
-const styles = {
-  switchTokensContainer: css`
-    justify-content: flex-end;
-    width: 100%;
-    position: relative;
-    &:after {
-      content: '';
-      position: absolute;
-      width: calc(100% + 32px);
-      height: 1px;
-      background-color: #e5e5e5;
-      top: 50%;
-      transform: translate(-50%);
-      left: 50%;
-    }
-  `,
-  switchTokensButton: css`
-    position: relative;
-    z-index: 1;
-    padding: 10px;
-    background-color: #417fc6;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-
-    svg {
-      color: white;
-      width: 30px;
-      height: 30px;
-    }
-  `,
-};
+import { StyledPage, styles } from './styles';
 
 export function OptimizedTrade() {
   return (
@@ -67,14 +31,14 @@ const useSubmitButton = () => {
 
   useEffect(() => {
     onSetButton({
-      text: 'Review trade',
+      text: quotePending ? 'Quote pending...' :  'Review trade',
       disabled:
         !inAmount || !inToken || !outToken || !amountOut || quotePending,
       onClick: () => {
-        const error = validate();
         if (!inToken || !outToken) {
           return;
         }
+        const error = validate();
         if (error) {
           toast({
             status: 'error',
@@ -163,10 +127,6 @@ const SrcTokenPanel = () => {
 
   const onUpdateInAmount = useDebouncedCallback(() => setInAmount(value));
 
-  const error = useMemo(() => {
-    return validations.inAmount(value);
-  }, [validations, value]);
-
   useEffect(() => {
     onUpdateInAmount();
   }, [onUpdateInAmount]);
@@ -178,7 +138,7 @@ const SrcTokenPanel = () => {
       value={value}
       onChange={setValue}
       isInToken={true}
-      error={error}
+      error={validations.inAmount(value)}
       otherTokenSymbol={outToken?.symbol}
     />
   );
@@ -197,7 +157,3 @@ const DstTokenPanel = () => {
     />
   );
 };
-
-const StyledPage = styled(Page)({
-  background: 'white',
-});

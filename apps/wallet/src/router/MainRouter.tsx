@@ -80,7 +80,7 @@ const routes: RouteObject[] = [
   },
   {
     path: ROUTES.trade,
-    element: <Trade />,
+    element: <OptimizedTrade />,
   },
   {
     path: ROUTES.tradeReview,
