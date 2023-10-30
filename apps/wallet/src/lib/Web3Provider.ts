@@ -1,31 +1,47 @@
-import BN from 'bignumber.js';
 import {
-  permit2Address,
+  Abi,
+  Contract,
+  contract,
   erc20,
   maxUint256,
+  permit2Address,
   setWeb3Instance,
 } from '@defi.org/web3-candies';
+import BN from 'bignumber.js';
 
-import { Multicall, ContractCallResults } from 'ethereum-multicall';
+import { ContractCallResults, Multicall } from 'ethereum-multicall';
+import {
+  EstimateGasCostOptions,
+  EstimateGasCostResult,
+  GetPastEventsOptions,
+  SignAndSendParamsNonPayable,
+  SignAndSendParamsPayable,
+} from './Web3Provider.types';
 
 import { _TypedDataEncoder } from '@ethersproject/hash';
 
+import { isAddress } from 'web3-validator';
+
 import {
-  signTypedData,
+  MessageTypes,
   SignTypedDataVersion,
   TypedMessage,
-  MessageTypes,
+  signTypedData,
 } from '@metamask/eth-sig-util';
 
 import { PermitData } from '@uniswap/permit2-sdk/dist/domain';
 
-import type { NonPayableTransactionObject } from '@defi.org/web3-candies/dist/abi/types';
-import Web3 from 'web3';
-import { estimateGasPrice } from '../utils/estimate';
-import { BNComparable } from '../types';
-import { getDebug } from './utils/debug';
+import {
+  NonPayableTransactionObject,
+  PayableTransactionObject,
+} from '@defi.org/web3-candies/dist/abi/types';
+import Web3, { Bytes } from 'web3';
 import { Web3Account } from 'web3-eth-accounts';
 import promiseRetry from 'promise-retry';
+import { BNComparable } from '../types';
+import { estimateGasPrice } from '../utils/estimate';
+import { getDebug } from './utils/debug';
+import { EventData, PastEventOptions } from 'web3-eth-contract';
 
 const debug = getDebug('Web3Provider');
 
@@ -38,54 +54,46 @@ export class Web3Provider {
   }
 
   private wrapToken(token: string) {
-    return erc20('token', token);
+    return erc20('token', token, undefined, [], this.web3 as any);
   }
 
-  private async signAndSend<T = unknown>(
-    txn: NonPayableTransactionObject<T>,
-    to: string
-  ) {
-    const [nonce, price] = await Promise.all([
+  async signAndSend<T = unknown>({
+    txn,
+    to,
+    value,
+  }:
+    | SignAndSendParamsPayable<T>
+    | SignAndSendParamsNonPayable<T>): Promise<Bytes> {
+    const [nonce, estimatedGasCost] = await Promise.all([
       this.web3.eth.getTransactionCount(this.account.address),
-      estimateGasPrice(this.web3),
+      this.estimateGasCost(txn),
     ]);
 
-    debug(await txn.estimateGas({ from: this.account.address }));
-
-    const gas = (
-      Number(await txn.estimateGas({ from: this.account.address })) * 1.2
-    ).toFixed(0);
-
-    const gasMode = 'fast'; // TODO change to med
-
-    const maxFeePerGas = price[gasMode].max.toString();
-    const maxPriorityFeePerGas = price[gasMode].tip.toString();
-
     debug(
-      `maxFeePerGas ${maxFeePerGas}, maxPriorityFeePerGas ${maxPriorityFeePerGas}`
+      `maxFeePerGas ${estimatedGasCost.maxFeePerGas}, maxPriorityFeePerGas ${estimatedGasCost.maxPriorityFeePerGas}`
     );
 
     const signed = await this.account.signTransaction({
-      gas,
-      maxFeePerGas: price[gasMode].max.toString(),
-      maxPriorityFeePerGas: price[gasMode].tip.toString(),
+      gas: estimatedGasCost.gas.toString(),
+      maxFeePerGas: estimatedGasCost.maxFeePerGas.toString(),
+      maxPriorityFeePerGas: estimatedGasCost.maxPriorityFeePerGas.toString(),
       nonce: parseInt(nonce.toString()),
       from: this.account.address,
       to,
       data: txn.encodeABI(),
+      value: value ? value.toString() : undefined,
+      chainId: await this.web3.eth.getChainId(),
     });
 
-    debug(`Sending signed tx`);
     const { transactionHash } = await this.web3.eth.sendSignedTransaction(
       signed.rawTransaction!
     );
-
     return String(transactionHash);
   }
 
   async transfer(token: string, to: string, amount: BNComparable) {
     const txn = this.wrapToken(token).methods.transfer(to, amount);
-    return this.signAndSend(txn, token);
+    return this.signAndSend({ txn, to: token });
   }
 
   async approvePermit2(token: string) {
@@ -94,7 +102,7 @@ export class Web3Provider {
       permit2Address,
       maxUint256
     );
-    return this.signAndSend(txn, token);
+    return this.signAndSend({ txn, to: token });
   }
 
   async getPermit2AllowanceFor(token: string) {
@@ -212,5 +220,81 @@ export class Web3Provider {
       debug(`txn ${txHash} not found`);
       return false;
     });
+  }
+
+  /**
+   * Returns a contract instance for the given address and ABI
+   * @param address Contract address
+   * @param abi Contract ABI
+   * @returns Contract instance
+   */
+  toContract(address: string, abi: Abi): Contract {
+    if (!isAddress(address)) {
+      throw new Error('Invalid Ethereum address');
+    }
+    return contract(abi, address, {}, this.web3 as any);
+  }
+
+  /**
+   * Estimate gas cost for a transaction
+   * @param txn Transaction object
+   * @param buffer Buffer multiplier (to ensure sufficient gas)
+   * @returns Estimated gas cost
+   */
+  async estimateGasCost<T>(
+    txn: PayableTransactionObject<T> | NonPayableTransactionObject<T>,
+    { buffer = 1.2, gasMode = 'med' }: EstimateGasCostOptions = {}
+  ): Promise<EstimateGasCostResult> {
+    const [gas, price] = await Promise.all([
+      txn.estimateGas({ from: this.account.address }),
+      estimateGasPrice(this.web3),
+    ]);
+
+    const gasPlusBuffer = (Number(gas) * buffer).toFixed(0); // `gas` is a BigInt, not a number
+
+    return {
+      gas: BN(gasPlusBuffer),
+      cost: BN(gasPlusBuffer).times(
+        price[gasMode].max.plus(price[gasMode].tip)
+      ),
+      maxFeePerGas: price[gasMode].max,
+      maxPriorityFeePerGas: price[gasMode].tip,
+    };
+  }
+
+  /**
+   * Get past events for a contract.    
+   * Use this to query past or current events
+   * @param contract Contract instance
+   * @param eventName Event name (e.g. 'Transfer')
+   * @param options Specify fromBlock and toBlock, or leave undefined to get the last 50 events.   
+                    Specify filter options, or leave undefined to get all events
+   * @returns List of events
+   */
+  async getPastEvents(
+    contract: Contract,
+    eventName: string,
+    { blocks, filter }: GetPastEventsOptions = {}
+  ): Promise<EventData[]> {
+    const options: PastEventOptions = {};
+
+    if (!blocks) {
+      const latestBlockNumber = await this.web3.eth.getBlockNumber();
+      const from = latestBlockNumber - BigInt(10);
+      options.fromBlock = Number(from);
+      options.toBlock = Number(latestBlockNumber);
+    } else {
+      options.fromBlock = filter?.fromBlock;
+      options.toBlock = filter?.toBlock;
+    }
+
+    if (filter) options.filter = filter;
+
+    console.log(
+      `Getting past "${eventName}" events.\nOptions are: ${JSON.stringify(
+        options
+      )}`
+    );
+    return contract.getPastEvents(eventName, options);
   }
 }
