@@ -155,11 +155,13 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
 
         switch (tx.type) {
           case 'deposit': {
-            const dTx = tx as DepositTransactionEvent;
+            const dTx = tx as DepositTransactionEvent & {
+              token: TokenData | undefined;
+            };
             StartIcon = (
               <Avatar
                 icon={<Icon as={BiSolidDownArrowCircle} />}
-                colorScheme="telegram"
+                backgroundColor="telegram.500"
               />
             );
             CardTitle = (
@@ -175,7 +177,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
                 }}
               >
                 <Heading as="h3" variant="bodyTitle">
-                  +{BN(dTx.amount).toFixed(5)} {dTx.token.toUpperCase()}
+                  +{BN(dTx.amount).toFixed(5)} {dTx.token.symbol.toUpperCase()}
                 </Heading>
                 <Text fontSize={12}>Received</Text>
               </Box>
@@ -183,13 +185,10 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
             break;
           }
           case 'withdrawal': {
-            const wTx = tx as WithdrawalTransactionEvent;
-            StartIcon = (
-              <Avatar
-                icon={<Icon as={BiSolidUpArrowCircle} />}
-                colorScheme="telegram"
-              />
-            );
+            const wTx = tx as WithdrawalTransactionEvent & {
+              token: TokenData;
+            };
+            StartIcon = <Avatar icon={<Icon as={BiSolidUpArrowCircle} />} />;
             CardTitle = (
               <Heading as="h3" variant="bodyTitle">
                 Withdrawal to {wTx.toAddress.slice(0, 8) + '...'}
@@ -202,7 +201,8 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
                 }}
               >
                 <Heading as="h3" variant="bodyTitle">
-                  {BN(wTx.amount).toFixed(5)} {wTx.token.toUpperCase()}
+                  {/* TODO: seems the amount on withdrawal is not the same format as trade */}
+                  {BN(wTx.amount).toFixed(5)} {wTx.token.symbol.toUpperCase()}
                 </Heading>
                 <Text fontSize={12}>Sent</Text>
               </Box>
