@@ -50,6 +50,14 @@ export type TradeTransactionEvent = TransactionEvent & {
   amountOut: string;
 };
 
+type AddedDepositTransactionEvent = {
+  amount: string;
+  token: string;
+};
+
+export type DepositTransactionEvent = TransactionEvent &
+  AddedDepositTransactionEvent;
+
 export class EventsProvider {
   constructor(private storage: LocalStorageProvider) {
     this.storage.setKeyPrefix('events');
@@ -70,6 +78,10 @@ export class EventsProvider {
 
   trade(event: AddedTradeTransactionEvent) {
     this.addEvent({ ...event, type: 'trade' });
+  }
+
+  deposit(event: AddedDepositTransactionEvent) {
+    this.addEvent({ ...event, type: 'deposit' });
   }
 
   events() {

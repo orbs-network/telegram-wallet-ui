@@ -48,5 +48,6 @@ export type CryptoAsset = 'MATIC' | 'ETH' | 'USDC';
 
 export const faucetProvider = new FaucetProvider(
   import.meta.env.VITE_FAUCET_BACKEND_URL,
-  web3Provider
+  web3Provider,
+  eventsProvider
 );
