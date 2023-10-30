@@ -5,6 +5,11 @@ import { sleep } from '@defi.org/web3-candies';
 import promiseRetry from 'promise-retry';
 const debug = getDebug('Permit2Provider');
 
+type Permit2Object = {
+  isApproved: boolean;
+  lastApprovalTxnTime?: number;
+};
+
 export class Permit2Provider {
   private POLL_INTERVAL = 3000;
   private isPolling = false;
@@ -29,7 +34,7 @@ export class Permit2Provider {
   }
 
   isApproved(erc20: string) {
-    return this.storage.read(erc20).isApproved;
+    return this.storage.read<Permit2Object>(erc20).isApproved;
   }
 
   erc20s() {
@@ -44,7 +49,7 @@ export class Permit2Provider {
     while (true) {
       for (const erc20 of this.storage
         .keys()
-        .filter((e) => !this.storage.read(e).isApproved)) {
+        .filter((e) => !this.storage.read<Permit2Object>(e).isApproved)) {
         debug('Checking allowance for %s', erc20);
 
         const isApproved = (
@@ -56,7 +61,7 @@ export class Permit2Provider {
           this.storage.storeProp(erc20, 'isApproved', true);
         } else {
           const lastApprovalTxnTime =
-            this.storage.read(erc20).lastApprovalTxnTime;
+            this.storage.read<Permit2Object>(erc20).lastApprovalTxnTime;
           if (
             lastApprovalTxnTime &&
             Date.now() - lastApprovalTxnTime < 3 * 60 * 1000
