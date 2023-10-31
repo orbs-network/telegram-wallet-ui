@@ -95,7 +95,8 @@ export function Transaction() {
             <Box>
               <Text variant="hint">Exchange Rate</Text>
               <Text>
-                1 {inToken?.symbol.toUpperCase()} ≈ {tTx.exchangeRate}{' '}
+                1 {inToken?.symbol.toUpperCase()} ≈{' '}
+                {BN(tTx.exchangeRate).toFixed(5)}{' '}
                 {outToken?.symbol.toUpperCase()}
               </Text>
             </Box>
