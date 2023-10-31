@@ -2,15 +2,16 @@ import { Container, Text, VStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { useMutation } from '@tanstack/react-query';
 import { Card } from '@telegram-wallet-ui/twa-ui-kit';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Page } from '../../components';
-import { eventsProvider } from '../../config';
+import { eventsProvider, web3Provider } from '../../config';
 import { useMainButtonContext } from '../../context/MainButtonContext';
 import { useGetTokenFromList } from '../../hooks';
 import { useNavigation } from '../../router/hooks';
 import { URLParams } from '../../types';
 import { Recipient } from './Components';
+import { amountBN } from '../../utils/conversion';
 
 const useTransferTx = () => {
   const { recipient, amount, assetId } = useParams<URLParams>();
@@ -30,17 +31,17 @@ const useTransferTx = () => {
         throw new Error('Amount not found');
       }
 
-      // return web3Provider.transfer(
-      //   token.address,
-      //   recipient,
-      //   amountBN(token, amount).toString(),
-      // );
-
       eventsProvider.withdrawal({
-        amount: amount,
+        amount: amountBN(token, amount).toString(),
         token: token.address,
         toAddress: recipient,
       });
+
+      return web3Provider.transfer(
+        token.address,
+        recipient,
+        amountBN(token, amount).toString()
+      );
     },
     onSuccess: () => {
       withdrawSuccess(assetId!, recipient!, amount!);
