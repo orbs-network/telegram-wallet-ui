@@ -1,6 +1,7 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
-import { Page } from "../../components";
+import { css } from '@emotion/react';
+import styled from '@emotion/styled';
+import { Page } from '../../components';
+import { tgColors, twaMode } from '@telegram-wallet-ui/twa-ui-kit';
 
 export const styles = {
   switchTokensContainer: css`
@@ -37,5 +38,8 @@ export const styles = {
 };
 
 export const StyledPage = styled(Page)({
-  background: 'white',
+  background: twaMode(
+    tgColors.light.bg_color,
+    tgColors.dark.secondary_bg_color
+  ),
 });

@@ -37,10 +37,15 @@ export const tgColors = {
   },
 };
 
+export function twaMode(light: string, dark: string) {
+  if (!Twa.colorScheme) return undefined;
+  return Twa.colorScheme === 'light' ? light : dark;
+}
+
 export const colors = {
   bg_color:
     Twa.themeParams.bg_color ||
-    twaMode(tgColors.light.secondary_bg_color, tgColors.dark.bg_color),
+    twaMode(tgColors.light.bg_color, tgColors.dark.bg_color),
   button_color:
     Twa.themeParams.button_color ||
     twaMode(tgColors.light.button_color, tgColors.dark.button_color),
@@ -68,13 +73,6 @@ const config: ThemeConfig = {
   initialColorMode: Twa.colorScheme,
   useSystemColorMode: false,
 };
-
-console.log('config', config);
-
-export function twaMode(light: string, dark: string) {
-  if (!Twa.colorScheme) return undefined;
-  return Twa.colorScheme === 'light' ? light : dark;
-}
 
 export const theme = extendTheme({
   config,
