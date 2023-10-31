@@ -1,6 +1,6 @@
 import { Box, Container, Flex, useToast, VStack } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDebouncedCallback } from '../../hooks';
+import { useCoinsLastPrice, useDebouncedCallback } from '../../hooks';
 import { TokenPanel } from './TokenPanel';
 import BN from 'bignumber.js';
 import { useMainButtonContext } from '../..//context/MainButtonContext';

@@ -33,41 +33,6 @@ export class SwapProvider {
     private eventsProvider: EventsProvider
   ) {}
 
-  async quote(
-    quoteRequest: QuoteRequest
-  ): Promise<
-    { quote: LiquihubQuote & QuoteResponse } & { isAboveMin: boolean }
-  > {
-    // TODO cache
-    const fetchCoins = await this.coinsProvider.fetchCoins();
-
-    const minOutAmount = await this.coinsProvider.getMinAmountOut(
-      fetchCoins.find((c: Token) => c.address === quoteRequest.inToken)!,
-      fetchCoins.find((c: Token) => c.address === quoteRequest.outToken)!,
-      quoteRequest.inAmount
-    );
-
-    // TODO - what if this fails? (ui handling)
-    const quoteResp = await this.liquidityHubProvider.quote({
-      ...quoteRequest,
-      outAmount: minOutAmount,
-    });
-
-    const isAboveMin = BN(quoteResp.outAmount).gte(minOutAmount);
-
-    debug(
-      `Got quote from LiquidityHub: ${
-        quoteResp.outAmount
-      }, min amount ${minOutAmount}, delta ${BN(quoteResp.outAmount).dividedBy(
-        minOutAmount
-      )} isAboveMin: ${isAboveMin} `
-    );
-
-    return {
-      quote: quoteResp,
-      isAboveMin,
-    };
-  }
 
   async optimizedQuote(
     quoteRequest: OptimizedQuoteRequest,

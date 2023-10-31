@@ -94,15 +94,24 @@ export const Page = ({
     </motion.main>
   );
 };
-const AnimatedRouteContainer = styled('div')({
-  backgroundColor: twaMode(
-    Telegram.themeParams.secondary_bg_color,
-    Telegram.themeParams.bg_color
-  ),
-  overflowY: 'auto',
-  display: 'flex',
-  flexDirection: 'column',
-  height: '100%',
-  overflowX: 'hidden',
-  paddingBottom: !Telegram.initData ? 60 : 0,
+const AnimatedRouteContainer = styled('div')(() => {
+
+  // const background  =  twaMode(
+  //     Telegram.themeParams.bg_color,
+  //     Telegram.themeParams.bg_color
+  //   )
+
+  const background = '#efeff3';
+
+    console.log(Telegram.themeParams);
+    
+  return {
+    background,
+    overflowY: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    overflowX: 'hidden',
+    paddingBottom: !Telegram.initData ? 60 : 0,
+  };
 });

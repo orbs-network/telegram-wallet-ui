@@ -3,7 +3,6 @@ import { BNComparable, Token, TokenListResponse } from '../types';
 import { Fetcher } from '../utils/fetcher';
 import { amountBN, amountUi, dstAmount } from '../utils/conversion';
 import BN, { BigNumber } from 'bignumber.js';
-import { fetchLatestPrice } from '../utils/fetchLatestPrice';
 import { getDebug } from './utils/debug';
 import { TTLCache } from './TTLCache';
 import fallbackTokenList from './res/polygon';
@@ -79,40 +78,6 @@ export class CoinsProvider {
     dstCoinLatestPrice: number,
     quantity: BNComparable
   ) {
-    const _dstAmount = dstAmount(
-      srcCoin,
-      dstCoin,
-      quantity,
-      new BN(srcCoinLatestPrice!),
-      new BN(dstCoinLatestPrice!)
-    )
-      .dividedBy(1.05)
-      .integerValue(BigNumber.ROUND_DOWN); // 5% price difference. TODO: this can be more competitive
-
-    debug(
-      `srcCoinLatestPrice: ${srcCoinLatestPrice}, dstCoinLatestPrice: ${dstCoinLatestPrice}, _dstAmount: ${_dstAmount} for quantity: ${quantity}, src decimals ${srcCoin.decimals}, dst decimals ${dstCoin.decimals}`
-    );
-
-    return _dstAmount;
-  }
-
-  async getMinAmountOut(
-    srcCoin: Token,
-    dstCoin: Token,
-    quantity: BNComparable
-  ) {
-    const srcCoinLatestPrice = await this.ttlCache.execute(
-      srcCoin.coingeckoId,
-      () => fetchLatestPrice(srcCoin.coingeckoId),
-      60 * 1000
-    );
-
-    const dstCoinLatestPrice = await this.ttlCache.execute(
-      dstCoin.coingeckoId,
-      () => fetchLatestPrice(dstCoin.coingeckoId),
-      60 * 1000
-    );
-
     const _dstAmount = dstAmount(
       srcCoin,
       dstCoin,

@@ -26,6 +26,7 @@
     "react-qr-code": "^2.0.12",
     "react-router-dom": "^6.16.0",
     "use-query-params": "^2.2.1",
+    "uuid": "^9.0.1",
     "vite-plugin-node-polyfills": "^0.15.0",
     "web3": "^4.2.0",
     "zustand": "^4.4.4"

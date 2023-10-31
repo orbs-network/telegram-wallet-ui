@@ -93,6 +93,7 @@ const StyledListItem = styled(ListItem)({
 
 const USD = ({ token }: { token: TokenData }) => {
   const value = useMultiplyPriceByAmount(token.coingeckoId, token.balance);
+  
   const formattedAmount = useFormatNumber({
     value: value || '0',
     decimalScale: 2,
