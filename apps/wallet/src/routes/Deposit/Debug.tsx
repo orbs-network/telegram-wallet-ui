@@ -130,6 +130,19 @@ export const Debug = () => {
       >
         Clear events
       </Button>
+      <Button
+        onClick={() => {
+          if (
+            window.confirm(
+              'Are you sure? you will lose the account and all funds'
+            )
+          ) {
+            localStorage.clear();
+          }
+        }}
+      >
+        Reset app state (delete account)
+      </Button>
     </Container>
   );
 };
