@@ -182,14 +182,12 @@ export const useUserData = () => {
   return useQuery({
     queryKey: [QueryKeys.USER_DATA],
     enabled: coins.length > 0,
-    staleTime: 20_000,
+    refetchInterval: 20_000,
     queryFn: async () => {
       try {
         if (!account) throw new Error('updateBalances: No account');
 
         console.log('Refreshing balances...');
-
-        // const nativeTokenBalance = await web3Provider.balance();
 
         const _userData: UserData = {
           account,
@@ -198,26 +196,16 @@ export const useUserData = () => {
 
         if (coins.length === 0) return _userData;
 
-        await web3Provider.balancesOf(coins.map((c) => c.address));
-        return;
+        const balances = await web3Provider.balancesOf(
+          coins.map((c) => c.address)
+        );
 
-        const balancePromises = coins
-          .filter((token) => token.symbol !== networks.poly.native.symbol)
-          .map(async (token) => {
-            const balance = await web3Provider.balanceOf(token.address);
-            return {
-              ...token,
-              symbol: token.symbol.toLowerCase(),
-              balanceBN: balance,
-              balance: amountUi(token, balance) || '0',
-            };
-          });
-
-        const tokens = await Promise.all(balancePromises);
-
-        tokens.forEach((token) => {
+        coins.forEach((token, index) => {
           _userData.tokens[token.symbol] = {
             ...token,
+            symbol: token.symbol.toLowerCase(),
+            balanceBN: balances[token.address],
+            balance: amountUi(token, balances[token.address]) || '0',
           };
         });
 

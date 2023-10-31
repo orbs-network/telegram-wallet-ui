@@ -13,6 +13,7 @@ export interface Token extends CandiesTokenData {
 
 export type TokenData = {
   balance: string;
+  balanceBN: BN;
 } & Token;
 
 export type UserData = {
