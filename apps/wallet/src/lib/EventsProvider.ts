@@ -17,6 +17,7 @@ type AddedTradeTransactionEvent = {
   outToken: string;
   amountIn: string;
   amountOut: string;
+  exchangeRate: string;
 };
 
 export type TransactionEventDirection = 'incoming' | 'outgoing';
@@ -49,6 +50,7 @@ export type TradeTransactionEvent = TransactionEvent & {
   outToken: string;
   amountIn: string;
   amountOut: string;
+  exchangeRate: string;
 };
 
 type AddedDepositTransactionEvent = {

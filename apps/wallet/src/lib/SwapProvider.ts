@@ -6,6 +6,7 @@ import BN from 'bignumber.js';
 import { sleep } from './utils/sleep';
 import { Permit2Provider } from './Permit2Provider';
 import { EventsProvider } from './EventsProvider';
+import { amountUi } from '../utils/conversion';
 
 const debug = getDebug('SwapProvider');
 
@@ -126,11 +127,20 @@ export class SwapProvider {
       throw new Error('Swap failed');
     }
 
+    const tokens = await this.coinsProvider.fetchCoins();
+
+    const tokenIn = tokens.find((t) => t.address === quote.inToken);
+    const tokenOut = tokens.find((t) => t.address === quote.outToken);
+    const amountIn = amountUi(tokenIn, BN(quote.inAmount));
+    const amountOut = amountUi(tokenOut, BN(quote.outAmount));
+    const exchangeRate = BN(amountOut).dividedBy(amountIn).toString();
+
     this.eventsProvider.trade({
       inToken: quote.inToken,
       outToken: quote.outToken,
       amountIn: quote.inAmount,
       amountOut: quote.outAmount,
+      exchangeRate,
     });
 
     return txHash;

@@ -5,6 +5,8 @@ import {
   Text,
   HStack,
   Heading,
+  Divider,
+  Box,
 } from '@chakra-ui/react';
 import { Page, WalletSpinner } from '../components';
 import {
@@ -81,11 +83,23 @@ export function Transaction() {
       txAmount = `+${amountUi(txToken, BN(tTx.amountOut), 5)}`;
       TxDetails = (
         <Card>
-          <Text variant="hint">Paid</Text>
-          <Text>
-            {amountUi(inToken, BN(tTx.amountIn))}{' '}
-            {inToken?.symbol.toUpperCase()}
-          </Text>
+          <VStack alignItems="flex-start">
+            <Box>
+              <Text variant="hint">Paid</Text>
+              <Text>
+                {amountUi(inToken, BN(tTx.amountIn))}{' '}
+                {inToken?.symbol.toUpperCase()}
+              </Text>
+            </Box>
+            <Divider />
+            <Box>
+              <Text variant="hint">Exchange Rate</Text>
+              <Text>
+                1 {inToken?.symbol.toUpperCase()} ≈ {tTx.exchangeRate}{' '}
+                {outToken?.symbol.toUpperCase()}
+              </Text>
+            </Box>
+          </VStack>
         </Card>
       );
       break;
