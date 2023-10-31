@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import React, { ReactNode, useMemo } from 'react';
-import { colors } from '@telegram-wallet-ui/twa-ui-kit';
+import { twaMode } from '@telegram-wallet-ui/twa-ui-kit';
 import { useAnimatedRouterContext } from '../router/AnimatedRouter';
 import { motion, Variants } from 'framer-motion';
 import Telegram from '@twa-dev/sdk';
@@ -86,7 +86,7 @@ export const Page = ({
       animate="enter"
       exit="exit"
       variants={childVariants as Variants}
-      style={{flex:1}}
+      style={{ flex: 1 }}
     >
       <AnimatedRouteContainer className={className}>
         {children}
@@ -95,7 +95,10 @@ export const Page = ({
   );
 };
 const AnimatedRouteContainer = styled('div')({
-  backgroundColor: colors.secondary_bg_color,
+  backgroundColor: twaMode(
+    Telegram.themeParams.secondary_bg_color,
+    Telegram.themeParams.bg_color
+  ),
   overflowY: 'auto',
   display: 'flex',
   flexDirection: 'column',

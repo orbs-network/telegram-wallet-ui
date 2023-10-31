@@ -56,7 +56,8 @@ const config: ThemeConfig = {
 
 console.log('config', config);
 
-function twaMode(light: string, dark: string) {
+export function twaMode(light: string, dark: string) {
+  if (!Twa.colorScheme) return undefined;
   return Twa.colorScheme === 'light' ? light : dark;
 }
 
