@@ -1,4 +1,3 @@
-import { Container } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
 import { ErrorPage } from '../../ErrorPage';
 import { TRANSAK_STAGING_API_KEY, account } from '../../config';
@@ -36,9 +35,6 @@ export const Buy = () => {
       const transakIframe = iframeRef.current?.contentWindow;
 
       if (message.source !== transakIframe) return;
-
-      console.log('Event ID: ', message?.data?.event_id);
-      console.log('Data: ', message?.data?.data);
 
       if (
         message?.data?.event_id === Transak.Events.TRANSAK_ORDER_CREATED &&

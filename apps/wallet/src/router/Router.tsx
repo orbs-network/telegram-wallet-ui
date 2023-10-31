@@ -1,12 +1,11 @@
-import React from 'react';
-import { usePersistedStore } from '../store/persisted-store';
+// import { usePersistedStore } from '../store/persisted-store';
 import { MainRouter } from './MainRouter';
-import { OnboardingRouter } from './OnboardingRouter';
+// import { OnboardingRouter } from './OnboardingRouter';
 
 function Router() {
-  const { showOnboarding } = usePersistedStore();
-  return showOnboarding ? <OnboardingRouter /> : <MainRouter />;
+  // const { showOnboarding } = usePersistedStore();
+  // return showOnboarding ? <OnboardingRouter /> : <MainRouter />;
+  return <MainRouter />;
 }
-
 
 export default Router;

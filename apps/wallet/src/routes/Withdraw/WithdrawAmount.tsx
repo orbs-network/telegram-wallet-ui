@@ -10,7 +10,7 @@ import { useMainButtonContext } from '../../context/MainButtonContext';
 import { Recipient } from './Components';
 import { useNavigation } from '../../router/hooks';
 import BN from 'bignumber.js';
-import { twaMode } from '@telegram-wallet-ui/twa-ui-kit';
+import { colors } from '@telegram-wallet-ui/twa-ui-kit';
 
 const styles = {
   mainContainer: css`
@@ -41,7 +41,7 @@ const styles = {
       top: 0px;
       left: 50%;
       transform: translateX(-50%);
-      background: ${twaMode('#d9d9d9', '#2d2d2d')};
+      background: ${colors.secondary_bg_color};
       height: 1px;
       width: calc(100% + 32px);
     }
