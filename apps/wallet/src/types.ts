@@ -14,7 +14,6 @@ export interface Token extends CandiesTokenData {
 
 export type TokenData = {
   balance: string;
-  permit2Approval: BN;
 } & Token;
 
 export type UserData = {

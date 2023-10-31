@@ -15,6 +15,7 @@ import BN from 'bignumber.js';
 import {
   account,
   coinsProvider,
+  permit2Provider,
   swapProvider,
   web3Provider,
 } from './config';
@@ -68,9 +69,10 @@ export const useMultiplyPriceByAmount = (
   }, [_amount, price]);
 };
 
-
-export const useExchangeRate = (inTokenSymbol?: string, dstTokenSymbol?: string) => {
-
+export const useExchangeRate = (
+  inTokenSymbol?: string,
+  dstTokenSymbol?: string
+) => {
   const inToken = useGetTokenFromList(inTokenSymbol);
   const dstToken = useGetTokenFromList(dstTokenSymbol);
 
@@ -83,10 +85,9 @@ export const useExchangeRate = (inTokenSymbol?: string, dstTokenSymbol?: string)
     const inTokenPriceBN = new BN(inTokenPrice);
     const dstTokenPriceBN = new BN(dstTokenPrice);
 
-    return inTokenPriceBN.dividedBy(dstTokenPriceBN).toString();  
+    return inTokenPriceBN.dividedBy(dstTokenPriceBN).toString();
   }, [inTokenPrice, dstTokenPrice]);
-
-}
+};
 
 export const useCoinsList = () => {
   return useQuery<Token[]>({
@@ -201,15 +202,11 @@ export const useUserData = () => {
           .filter((token) => token.symbol !== networks.poly.native.symbol)
           .map(async (token) => {
             const balance = await web3Provider.balanceOf(token.address);
-            const permit2Approval = await web3Provider.getAllowanceFor(
-              token.address
-            );
             return {
               ...token,
               symbol: token.symbol.toLowerCase(),
               balanceBN: balance,
               balance: amountUi(token, balance) || '0',
-              permit2Approval,
             };
           });
 
