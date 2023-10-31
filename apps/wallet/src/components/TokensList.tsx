@@ -1,12 +1,15 @@
 import { Avatar, Heading, Skeleton, Text, VStack } from '@chakra-ui/react';
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Card, ListItem } from '@telegram-wallet-ui/twa-ui-kit';
 import _ from 'lodash';
 import { useFormatNumber, useMultiplyPriceByAmount } from '../hooks';
-import {  TokenData, TokensListProps } from '../types';
+import { TokenData, TokensListProps } from '../types';
 
-export function TokensList({ onSelect, className = '', tokens }: TokensListProps) {
+export function TokensList({
+  onSelect,
+  className = '',
+  tokens,
+}: TokensListProps) {
   const isLoading = !tokens || _.isEmpty(tokens);
 
   return (
@@ -36,14 +39,6 @@ const List = styled(VStack)({
   borderRadius: 10,
   overflow: 'hidden',
 });
-
-const styles = {
-  usd: css`
-    color: black;
-    font-size: 16px;
-    font-weight: 500;
-  `,
-};
 
 type TokenListItemProps = {
   token: TokenData;
@@ -114,11 +109,7 @@ const USD = ({ token }: { token: TokenData }) => {
     );
   }
 
-  return (
-    <Text variant="hint" css={styles.usd}>
-      ${formattedAmount}
-    </Text>
-  );
+  return <Text size="sm">${formattedAmount}</Text>;
 };
 
 const Balance = ({ token }: { token: TokenData }) => {
