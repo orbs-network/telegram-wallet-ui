@@ -48,6 +48,10 @@ export class LiquihubProvider {
       { ...quote, signature }
     );
 
+    if ('error' in res) {
+      throw new Error(res.error.error);
+    }
+
     debug('Executed swap on LiquidityHub');
     return res;
   }
