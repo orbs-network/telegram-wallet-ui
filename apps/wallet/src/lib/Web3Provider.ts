@@ -39,6 +39,17 @@ export class Web3Provider {
   constructor(private web3: Web3, public account: Web3Account) {
     setWeb3Instance(this.web3);
     this.multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
+
+    // This hack is for two purposes:
+    // Reduce calls to get the id of the network (why would it change?)
+    // Return the correct format when multicall (otherwise it's bignumber and multicall doesn't handle that)
+    (async () => {
+      const _id = Number(await this.web3.eth.net.getId());
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      this.web3.eth.net.getId = () => _id;
+    })();
   }
 
   private wrapToken(token: string) {
@@ -131,65 +142,54 @@ export class Web3Provider {
   }
 
   async balancesOf(tokens: string[]) {
-    const origGetId = Net.prototype.getId;
-    const _id = Number(await this.web3.eth.net.getId());
+    // const origGetId = Net.prototype.getId;
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    Net.prototype.getId = function () {
-      return _id;
-    };
+    const results: ContractCallResults = await this.multicall.call(
+      tokens.map((token) => {
+        return {
+          reference: token,
+          contractAddress: token,
+          abi: [
+            {
+              constant: true,
+              inputs: [
+                {
+                  name: '_owner',
+                  type: 'address',
+                },
+              ],
+              name: 'balanceOf',
+              outputs: [
+                {
+                  name: 'balance',
+                  type: 'uint256',
+                },
+              ],
+              payable: false,
+              stateMutability: 'view',
+              type: 'function',
+            },
+          ],
+          calls: [
+            {
+              reference: 'balanceOf',
+              methodName: 'balanceOf',
+              methodParameters: [this.account.address],
+              // methodParameters: ['0xE3682CCecefBb3C3fe524BbFF1598B2BBaC0d6E3'],
+            },
+          ],
+        };
+      })
+    );
 
-    try {
-      const results: ContractCallResults = await this.multicall.call(
-        tokens.map((token) => {
-          return {
-            reference: token,
-            contractAddress: token,
-            abi: [
-              {
-                constant: true,
-                inputs: [
-                  {
-                    name: '_owner',
-                    type: 'address',
-                  },
-                ],
-                name: 'balanceOf',
-                outputs: [
-                  {
-                    name: 'balance',
-                    type: 'uint256',
-                  },
-                ],
-                payable: false,
-                stateMutability: 'view',
-                type: 'function',
-              },
-            ],
-            calls: [
-              {
-                reference: 'balanceOf',
-                methodName: 'balanceOf',
-                // methodParameters: [this.account.address],
-                methodParameters: ["0xE3682CCecefBb3C3fe524BbFF1598B2BBaC0d6E3"],
-              },
-            ],
-          };
-        })
-      );
-
-      return Object.fromEntries(
-        Object.entries(results.results).map(([token, result]) => {
-          return [
-            token,
-            BN(result.callsReturnContext[0].returnValues[0]?.hex ?? 0),
-          ];
-        })
-      );
-    } finally {
-      Net.prototype.getId = origGetId;
-    }
+    return Object.fromEntries(
+      Object.entries(results.results).map(([token, result]) => {
+        return [
+          token,
+          BN(result.callsReturnContext[0].returnValues[0]?.hex ?? 0),
+        ];
+      })
+    );
   }
 
   async balance() {
