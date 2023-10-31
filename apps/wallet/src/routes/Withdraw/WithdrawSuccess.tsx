@@ -48,13 +48,13 @@ export function WithdrawSuccess() {
   return (
     <SuccessPage>
       <VStack>
-        <Text css={styles.title}>{symbol} Sent</Text>
+        <Text css={styles.title}>{symbol.toUpperCase()} Sent</Text>
         <Text css={styles.text}>
           Your transaction has been sent to the network and will be proccessed
           in a few seconds
         </Text>
         <Text css={styles.smallTitle}>
-          {amount} {symbol} has been sent to{' '}
+          {amount} {symbol.toUpperCase()} has been sent to{' '}
         </Text>
         <Text css={styles.recipient} style={{ wordBreak: 'break-all' }}>
           {recipient}

@@ -10,7 +10,7 @@ import { useMainButtonContext } from '../../context/MainButtonContext';
 import { Recipient } from './Components';
 import { useNavigation } from '../../router/hooks';
 import BN from 'bignumber.js';
-import { colors } from '@telegram-wallet-ui/twa-ui-kit';
+import { colors, tgColors, twaMode } from '@telegram-wallet-ui/twa-ui-kit';
 
 const styles = {
   mainContainer: css`
@@ -125,5 +125,8 @@ const Balance = ({ balance }: { balance?: string }) => {
 };
 
 const StyledPage = styled(Page)({
-  background: 'white',
+  background: twaMode(
+    tgColors.light.bg_color,
+    tgColors.dark.secondary_bg_color
+  ),
 });
