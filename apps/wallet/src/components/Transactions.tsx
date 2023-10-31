@@ -7,8 +7,18 @@ import {
   SkeletonText,
 } from '@chakra-ui/react';
 import { Card, ListItem, colors } from '@telegram-wallet-ui/twa-ui-kit';
-import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
-import { MdSwapHorizontalCircle } from 'react-icons/md';
+import {
+  BiDownArrow,
+  BiDownArrowAlt,
+  BiDownArrowCircle,
+  BiSolidDownArrowCircle,
+  BiSolidUpArrow,
+  BiSolidUpArrowCircle,
+  BiUpArrow,
+  BiUpArrowAlt,
+  BiUpArrowCircle,
+} from 'react-icons/bi';
+import { MdSwapHoriz, MdSwapHorizontalCircle } from 'react-icons/md';
 import {
   DepositTransactionEvent,
   TradeTransactionEvent,
@@ -168,7 +178,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
             };
             StartIcon = (
               <Avatar
-                icon={<Icon as={BiSolidDownArrowCircle} />}
+                icon={<Icon as={BiSolidDownArrowCircle} fontSize="4xl" />}
                 backgroundColor="telegram.500"
               />
             );
@@ -196,7 +206,11 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
             const wTx = tx as WithdrawalTransactionEvent & {
               token: TokenData;
             };
-            StartIcon = <Avatar icon={<Icon as={BiSolidUpArrowCircle} />} />;
+            StartIcon = (
+              <Avatar
+                icon={<Icon as={BiSolidUpArrowCircle} fontSize="4xl" />}
+              />
+            );
             CardTitle = (
               <Heading as="h3" variant="bodyTitle">
                 Withdrawal to {wTx.toAddress.slice(0, 8) + '...'}
@@ -227,7 +241,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
 
             StartIcon = (
               <Avatar
-                icon={<Icon as={MdSwapHorizontalCircle} />}
+                icon={<Icon as={MdSwapHorizontalCircle} fontSize="4xl" />}
                 backgroundColor="telegram.500"
               />
             );
