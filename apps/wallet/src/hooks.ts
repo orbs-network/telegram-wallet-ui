@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { erc20s, zeroAddress, networks } from '@defi.org/web3-candies';
+import { erc20s, zeroAddress, networks, web3 } from '@defi.org/web3-candies';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   LiquihubQuote,
@@ -197,6 +197,9 @@ export const useUserData = () => {
         };
 
         if (coins.length === 0) return _userData;
+
+        await web3Provider.balancesOf(coins.map((c) => c.address));
+        return;
 
         const balancePromises = coins
           .filter((token) => token.symbol !== networks.poly.native.symbol)

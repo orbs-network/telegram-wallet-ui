@@ -6,6 +6,12 @@ import {
   setWeb3Instance,
 } from '@defi.org/web3-candies';
 
+import {
+  Multicall,
+  ContractCallResults,
+  ContractCallContext,
+} from 'ethereum-multicall';
+
 import { _TypedDataEncoder } from '@ethersproject/hash';
 
 import {
@@ -27,8 +33,11 @@ import { Web3Account } from 'web3-eth-accounts';
 const debug = getDebug('Web3Provider');
 
 export class Web3Provider {
+  multicall: Multicall;
+
   constructor(private web3: Web3, public account: Web3Account) {
     setWeb3Instance(this.web3);
+    this.multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
   }
 
   private wrapToken(token: string) {
@@ -118,6 +127,49 @@ export class Web3Provider {
     return BN(
       await this.wrapToken(token).methods.balanceOf(this.account.address).call()
     );
+  }
+
+  async balancesOf(tokens: string[]) {
+    throw await this.web3.eth.net.getId();
+
+    const results: ContractCallResults = await this.multicall.call(
+      tokens.map((token) => {
+        return {
+          reference: token,
+          contractAddress: token,
+          abi: [
+            {
+              constant: true,
+              inputs: [
+                {
+                  name: '_owner',
+                  type: 'address',
+                },
+              ],
+              name: 'balanceOf',
+              outputs: [
+                {
+                  name: 'balance',
+                  type: 'uint256',
+                },
+              ],
+              payable: false,
+              stateMutability: 'view',
+              type: 'function',
+            },
+          ],
+          calls: [
+            {
+              reference: 'balanceOf',
+              methodName: 'balanceOf',
+              methodParameters: [this.account.address],
+            },
+          ],
+        };
+      })
+    );
+
+    console.log(results, 'shahar');
   }
 
   async balance() {
