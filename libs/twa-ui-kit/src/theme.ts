@@ -38,15 +38,30 @@ export const tgColors = {
 };
 
 export const colors = {
-  bg_color: Twa.themeParams.bg_color || tgColors.light.bg_color,
-  button_color: Twa.themeParams.button_color || tgColors.light.button_color,
+  bg_color:
+    Twa.themeParams.bg_color ||
+    twaMode(tgColors.light.secondary_bg_color, tgColors.dark.bg_color),
+  button_color:
+    Twa.themeParams.button_color ||
+    twaMode(tgColors.light.button_color, tgColors.dark.button_color),
   button_text_color:
-    Twa.themeParams.button_text_color || tgColors.light.button_text_color,
-  hint_color: Twa.themeParams.hint_color || tgColors.light.hint_color,
-  link_color: Twa.themeParams.link_color || tgColors.light.link_color,
+    Twa.themeParams.button_text_color ||
+    twaMode(tgColors.light.button_text_color, tgColors.dark.button_text_color),
+  hint_color:
+    Twa.themeParams.hint_color ||
+    twaMode(tgColors.light.hint_color, tgColors.dark.hint_color),
+  link_color:
+    Twa.themeParams.link_color ||
+    twaMode(tgColors.light.link_color, tgColors.dark.link_color),
   secondary_bg_color:
-    Twa.themeParams.secondary_bg_color || tgColors.light.secondary_bg_color,
-  text_color: Twa.themeParams.text_color || tgColors.light.text_color,
+    Twa.themeParams.secondary_bg_color ||
+    twaMode(
+      tgColors.light.secondary_bg_color,
+      tgColors.dark.secondary_bg_color
+    ),
+  text_color:
+    Twa.themeParams.text_color ||
+    twaMode(tgColors.light.text_color, tgColors.dark.text_color),
 };
 
 const config: ThemeConfig = {

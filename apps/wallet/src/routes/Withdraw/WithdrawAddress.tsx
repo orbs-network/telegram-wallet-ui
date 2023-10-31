@@ -26,16 +26,16 @@ import { URLParams } from '../../types';
 import { useCurrentPath } from '../../hooks';
 
 const styles = {
-    container: css`
-        flex:1
-    `
-}
+  container: css`
+    flex: 1;
+  `,
+};
 
 export function WithdrawAddress() {
   const [address, setAddress] = useState('');
   const { withdrawAmount } = useNavigation();
   const { onSetButton } = useMainButtonContext();
-  const {assetId} = useParams<URLParams>()
+  const { assetId } = useParams<URLParams>();
 
   useCurrentPath();
 
@@ -66,8 +66,6 @@ export function WithdrawAddress() {
     </Page>
   );
 }
-
-
 
 const AddressInput = ({
   address,
