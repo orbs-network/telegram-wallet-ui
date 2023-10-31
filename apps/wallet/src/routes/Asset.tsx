@@ -27,7 +27,7 @@ export function Asset() {
   }, [resetButton]);
 
   const { data: userData } = useUserData();
-  const tokenData = assetId && userData?.tokens[assetId];
+  const tokenData = assetId && userData?.tokens[assetId.toUpperCase()];
 
   const balance = useFormatNumber({
     value: tokenData?.balance,
