@@ -16,7 +16,7 @@ import {
   useEventsProvider,
 } from '../lib/EventsProvider';
 import { useMemo } from 'react';
-import { amountUi } from '../utils/conversion';
+import { amountUi, toUiDisplay } from '../utils/conversion';
 import BN from 'bignumber.js';
 import { useUserData } from '../hooks';
 import { TokenData } from '../types';
@@ -177,7 +177,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
                 }}
               >
                 <Heading as="h3" variant="bodyTitle">
-                  +{BN(dTx.amount).toFixed(5)} {dTx.token.symbol.toUpperCase()}
+                  +{toUiDisplay(dTx.amount)} {dTx.token.symbol.toUpperCase()}
                 </Heading>
                 <Text fontSize={12}>Received</Text>
               </Box>
@@ -202,7 +202,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
               >
                 <Heading as="h3" variant="bodyTitle">
                   {/* TODO: seems the amount on withdrawal is not the same format as trade */}
-                  {BN(wTx.amount).toFixed(5)} {wTx.token.symbol.toUpperCase()}
+                  {toUiDisplay(wTx.amount)} {wTx.token.symbol.toUpperCase()}
                 </Heading>
                 <Text fontSize={12}>Sent</Text>
               </Box>
@@ -241,7 +241,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
               >
                 <Heading as="h3" variant="bodyTitle">
                   {!isIn && '+'}
-                  {BN(amount).toFixed(5)} {token.symbol.toUpperCase()}
+                  {toUiDisplay(amount)} {token.symbol.toUpperCase()}
                 </Heading>
                 <Text fontSize={12}>{!isIn ? 'Received' : 'Traded'}</Text>
               </Box>

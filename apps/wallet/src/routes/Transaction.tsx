@@ -16,7 +16,7 @@ import {
   useEventsProvider,
 } from '../lib/EventsProvider';
 import { useUserData } from '../hooks';
-import { amountUi } from '../utils/conversion';
+import { amountUi, toUiDisplay } from '../utils/conversion';
 import BN from 'bignumber.js';
 import { useParams } from 'react-router-dom';
 import { Card } from '@telegram-wallet-ui/twa-ui-kit';
@@ -96,8 +96,7 @@ export function Transaction() {
               <Text variant="hint">Exchange Rate</Text>
               <Text>
                 1 {inToken?.symbol.toUpperCase()} ≈{' '}
-                {BN(tTx.exchangeRate).toFixed(5)}{' '}
-                {outToken?.symbol.toUpperCase()}
+                {toUiDisplay(tTx.exchangeRate)} {outToken?.symbol.toUpperCase()}
               </Text>
             </Box>
           </VStack>

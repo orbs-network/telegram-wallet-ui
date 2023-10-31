@@ -15,7 +15,9 @@ export const amountUi = (
 
   const output = amount.times(percision).idiv(percision).div(percision);
 
-  return maxDecimals ? output.toFixed(maxDecimals) : output.toFormat();
+  return maxDecimals
+    ? toUiDisplay(output.toFormat(), maxDecimals)
+    : output.toFormat();
 };
 
 export const dstAmount = (
@@ -30,3 +32,7 @@ export const dstAmount = (
     srcToken.decimals,
     dstToken.decimals
   ).integerValue(BN.ROUND_FLOOR);
+
+export const toUiDisplay = (amount: string, decimals = 5) => {
+  return Number(BN(amount).toFixed(decimals)).toString();
+};
