@@ -56,6 +56,10 @@ const config: ThemeConfig = {
 
 console.log('config', config);
 
+function twaMode(light: string, dark: string) {
+  return Twa.colorScheme === 'light' ? light : dark;
+}
+
 export const theme = extendTheme({
   config,
   fonts: {
@@ -69,9 +73,10 @@ export const theme = extendTheme({
           Twa.themeParams.text_color ||
           mode(tgColors.light.text_color, tgColors.dark.text_color)(props),
         backgroundColor:
-          (Twa.colorScheme
-            ? Twa.themeParams.secondary_bg_color
-            : Twa.themeParams.bg_color) ||
+          twaMode(
+            Twa.themeParams.secondary_bg_color,
+            Twa.themeParams.bg_color
+          ) ||
           mode(
             tgColors.light.secondary_bg_color,
             tgColors.dark.bg_color
@@ -96,7 +101,10 @@ export const theme = extendTheme({
     Card: defineStyleConfig({
       baseStyle: {
         backgroundColor: (props) =>
-          Twa.themeParams.bg_color ||
+          twaMode(
+            Twa.themeParams.bg_color,
+            Twa.themeParams.secondary_bg_color
+          ) ||
           mode(
             tgColors.light.bg_color,
             tgColors.dark.secondary_bg_color
