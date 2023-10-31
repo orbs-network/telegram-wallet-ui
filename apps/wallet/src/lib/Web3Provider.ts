@@ -6,6 +6,12 @@ import {
   setWeb3Instance,
 } from '@defi.org/web3-candies';
 
+import {
+  Multicall,
+  ContractCallResults,
+  ContractCallContext,
+} from 'ethereum-multicall';
+
 import { _TypedDataEncoder } from '@ethersproject/hash';
 
 import {
@@ -18,17 +24,32 @@ import {
 import { PermitData } from '@uniswap/permit2-sdk/dist/domain';
 
 import type { NonPayableTransactionObject } from '@defi.org/web3-candies/dist/abi/types';
-import Web3 from 'web3';
+import Web3, { FMT_BYTES, FMT_NUMBER, Net } from 'web3';
 import { estimateGasPrice } from '../utils/estimate';
 import { BNComparable } from '../types';
 import { getDebug } from './utils/debug';
 import { Web3Account } from 'web3-eth-accounts';
+import { web3 } from '@defi.org/web3-candies';
 
 const debug = getDebug('Web3Provider');
 
 export class Web3Provider {
+  multicall: Multicall;
+
   constructor(private web3: Web3, public account: Web3Account) {
     setWeb3Instance(this.web3);
+    this.multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
+
+    // This hack is for two purposes:
+    // Reduce calls to get the id of the network (why would it change?)
+    // Return the correct format when multicall (otherwise it's bignumber and multicall doesn't handle that)
+    (async () => {
+      const _id = Number(await this.web3.eth.net.getId());
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      this.web3.eth.net.getId = () => _id;
+    })();
   }
 
   private wrapToken(token: string) {
@@ -117,6 +138,57 @@ export class Web3Provider {
   async balanceOf(token: string) {
     return BN(
       await this.wrapToken(token).methods.balanceOf(this.account.address).call()
+    );
+  }
+
+  async balancesOf(tokens: string[]) {
+    // const origGetId = Net.prototype.getId;
+
+    const results: ContractCallResults = await this.multicall.call(
+      tokens.map((token) => {
+        return {
+          reference: token,
+          contractAddress: token,
+          abi: [
+            {
+              constant: true,
+              inputs: [
+                {
+                  name: '_owner',
+                  type: 'address',
+                },
+              ],
+              name: 'balanceOf',
+              outputs: [
+                {
+                  name: 'balance',
+                  type: 'uint256',
+                },
+              ],
+              payable: false,
+              stateMutability: 'view',
+              type: 'function',
+            },
+          ],
+          calls: [
+            {
+              reference: 'balanceOf',
+              methodName: 'balanceOf',
+              methodParameters: [this.account.address],
+              // methodParameters: ['0xE3682CCecefBb3C3fe524BbFF1598B2BBaC0d6E3'],
+            },
+          ],
+        };
+      })
+    );
+
+    return Object.fromEntries(
+      Object.entries(results.results).map(([token, result]) => {
+        return [
+          token,
+          BN(result.callsReturnContext[0].returnValues[0]?.hex ?? 0),
+        ];
+      })
     );
   }
 

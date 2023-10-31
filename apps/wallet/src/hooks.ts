@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { erc20s, zeroAddress, networks } from '@defi.org/web3-candies';
+import { erc20s, zeroAddress, networks, web3 } from '@defi.org/web3-candies';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   LiquihubQuote,
@@ -15,6 +15,7 @@ import BN from 'bignumber.js';
 import {
   account,
   coinsProvider,
+  permit2Provider,
   swapProvider,
   web3Provider,
 } from './config';
@@ -68,9 +69,10 @@ export const useMultiplyPriceByAmount = (
   }, [_amount, price]);
 };
 
-
-export const useExchangeRate = (inTokenSymbol?: string, dstTokenSymbol?: string) => {
-
+export const useExchangeRate = (
+  inTokenSymbol?: string,
+  dstTokenSymbol?: string
+) => {
   const inToken = useGetTokenFromList(inTokenSymbol);
   const dstToken = useGetTokenFromList(dstTokenSymbol);
 
@@ -83,10 +85,9 @@ export const useExchangeRate = (inTokenSymbol?: string, dstTokenSymbol?: string)
     const inTokenPriceBN = new BN(inTokenPrice);
     const dstTokenPriceBN = new BN(dstTokenPrice);
 
-    return inTokenPriceBN.dividedBy(dstTokenPriceBN).toString();  
+    return inTokenPriceBN.dividedBy(dstTokenPriceBN).toString();
   }, [inTokenPrice, dstTokenPrice]);
-
-}
+};
 
 export const useCoinsList = () => {
   return useQuery<Token[]>({
@@ -181,14 +182,12 @@ export const useUserData = () => {
   return useQuery({
     queryKey: [QueryKeys.USER_DATA],
     enabled: coins.length > 0,
-    staleTime: 20_000,
+    refetchInterval: 20_000,
     queryFn: async () => {
       try {
         if (!account) throw new Error('updateBalances: No account');
 
         console.log('Refreshing balances...');
-
-        // const nativeTokenBalance = await web3Provider.balance();
 
         const _userData: UserData = {
           account,
@@ -197,27 +196,16 @@ export const useUserData = () => {
 
         if (coins.length === 0) return _userData;
 
-        const balancePromises = coins
-          .filter((token) => token.symbol !== networks.poly.native.symbol)
-          .map(async (token) => {
-            const balance = await web3Provider.balanceOf(token.address);
-            const permit2Approval = await web3Provider.getAllowanceFor(
-              token.address
-            );
-            return {
-              ...token,
-              symbol: token.symbol.toLowerCase(),
-              balanceBN: balance,
-              balance: amountUi(token, balance) || '0',
-              permit2Approval,
-            };
-          });
+        const balances = await web3Provider.balancesOf(
+          coins.map((c) => c.address)
+        );
 
-        const tokens = await Promise.all(balancePromises);
-
-        tokens.forEach((token) => {
+        coins.forEach((token, index) => {
           _userData.tokens[token.symbol] = {
             ...token,
+            symbol: token.symbol.toLowerCase(),
+            balanceBN: balances[token.address],
+            balance: amountUi(token, balances[token.address]) || '0',
           };
         });
 
