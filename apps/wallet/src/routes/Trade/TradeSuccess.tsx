@@ -1,13 +1,12 @@
-import {  Link, Text } from '@chakra-ui/react';
+import { Link, Text } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import styled from '@emotion/styled';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import {  SuccessPage } from '../../components';
 import { POLYGON_EXPLORER } from '../../consts';
 import { useMainButtonContext } from '../../context/MainButtonContext';
 import { useFormatNumber } from '../../hooks';
 import { URLParams } from '../../types';
+import { StyledPage } from './styles';
 
 const styles = {
   container: css`
@@ -61,7 +60,3 @@ export function TradeSuccess() {
     </StyledPage>
   );
 }
-
-const StyledPage = styled(SuccessPage)({
-  background: 'white',
-});

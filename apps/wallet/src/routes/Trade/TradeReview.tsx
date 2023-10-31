@@ -1,5 +1,5 @@
 import { Container } from '@chakra-ui/react';
-import React, { useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Page, ReviewTx } from '../../components';
 import {
@@ -9,7 +9,7 @@ import {
   useGetTokenFromList,
   useQuoteQuery,
 } from '../../hooks';
-import { URLParams, SwapSuccesss, TokenData } from '../../types';
+import { URLParams, SwapSuccesss } from '../../types';
 import { amountUi } from '../../utils/conversion';
 import BN from 'bignumber.js';
 import { useMainButtonContext } from '../../context/MainButtonContext';
@@ -21,15 +21,18 @@ const useSwap = () => {
   const tradeSuccess = useNavigation().tradeSuccess;
   const { outToken: outTokenSymbol } = useParams<URLParams>();
 
-
   const queryClient = useQueryClient();
 
   const { quote, amountOut } = useQuote();
   return useMutation({
-    mutationFn: async (inToken: TokenData) => {
+    mutationFn: async () => {
       const result = await swapProvider.swap({
         ...quote!.quote,
       });
+
+      if ('error' in result) {
+        throw new Error(result.error.error);
+      }
 
       return (result as SwapSuccesss).txHash;
     },
@@ -58,7 +61,7 @@ const useMainButton = () => {
       text: 'Confirm and swap',
       progress: isPending,
       disabled: !amountOut || !inToken,
-      onClick: () => mutate(inToken!),
+      onClick: () => mutate(),
     });
   }, [onSetButton, mutate, isPending, inToken, amountOut, resetButton]);
 };
