@@ -95,16 +95,15 @@ export const Page = ({
   );
 };
 const AnimatedRouteContainer = styled('div')(() => {
+  const background = twaMode(
+    Telegram.themeParams.bg_color,
+    Telegram.themeParams.bg_color
+  );
 
-  // const background  =  twaMode(
-  //     Telegram.themeParams.bg_color,
-  //     Telegram.themeParams.bg_color
-  //   )
+  // const background = '#efeff3';
 
-  const background = '#efeff3';
+  //   console.log(Telegram.themeParams);
 
-    console.log(Telegram.themeParams);
-    
   return {
     background,
     overflowY: 'auto',
