@@ -54,6 +54,8 @@ const config: ThemeConfig = {
   useSystemColorMode: false,
 };
 
+console.log('config', config);
+
 export const theme = extendTheme({
   config,
   fonts: {
@@ -67,10 +69,12 @@ export const theme = extendTheme({
           Twa.themeParams.text_color ||
           mode(tgColors.light.text_color, tgColors.dark.text_color)(props),
         backgroundColor:
-          Twa.themeParams.secondary_bg_color ||
+          (Twa.colorScheme
+            ? Twa.themeParams.secondary_bg_color
+            : Twa.themeParams.bg_color) ||
           mode(
             tgColors.light.secondary_bg_color,
-            tgColors.dark.secondary_bg_color
+            tgColors.dark.bg_color
           )(props),
       },
       a: {
@@ -93,7 +97,10 @@ export const theme = extendTheme({
       baseStyle: {
         backgroundColor: (props) =>
           Twa.themeParams.bg_color ||
-          mode(tgColors.light.bg_color, tgColors.dark.bg_color)(props),
+          mode(
+            tgColors.light.bg_color,
+            tgColors.dark.secondary_bg_color
+          )(props),
       },
     }),
     Text: defineStyleConfig({
