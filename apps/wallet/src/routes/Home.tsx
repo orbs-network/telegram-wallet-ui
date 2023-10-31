@@ -1,5 +1,9 @@
-import { Container, HStack, VStack } from '@chakra-ui/react';
-import { Balance, IconButtonWithLabel } from '@telegram-wallet-ui/twa-ui-kit';
+import { Container, HStack, VStack, useColorMode } from '@chakra-ui/react';
+import {
+  Balance,
+  Button,
+  IconButtonWithLabel,
+} from '@telegram-wallet-ui/twa-ui-kit';
 import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
 import { Link } from 'react-router-dom';
 import { Page, TokenBalances } from '../components';
@@ -41,6 +45,10 @@ const TotalUSDAmount = () => {
 };
 
 export function Home() {
+  const { toggleColorMode, colorMode } = useColorMode();
+
+  console.log('colorMode', colorMode);
+
   return (
     <Page>
       <Container size="sm" pt={4}>
@@ -65,6 +73,7 @@ export function Home() {
           </HStack>
           <TokenBalances />
           <Transactions />
+          <Button onClick={toggleColorMode}>Toggle color mode</Button>
         </VStack>
       </Container>
     </Page>
