@@ -38,7 +38,7 @@ export const tgColors = {
 };
 
 export function twaMode(light: string, dark: string) {
-  if (!Twa.colorScheme) return undefined;
+  if (!Twa.colorScheme) return light;
   return Twa.colorScheme === 'light' ? light : dark;
 }
 
