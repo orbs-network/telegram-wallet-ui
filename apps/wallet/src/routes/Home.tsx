@@ -4,19 +4,9 @@ import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
 import { Link } from 'react-router-dom';
 import { Page, TokenBalances } from '../components';
 import { useFormatNumber, usePortfolioUsdValue } from '../hooks';
-import { faucetProvider, isMumbai, permit2Provider } from '../config';
+import { faucetProvider, permit2Provider } from '../config';
 import { MdSwapVerticalCircle } from 'react-icons/md';
 import { Transactions } from '../components/Transactions';
-
-// Temp - USDC
-const TODO_TEMP_ERC20_REPLACE = isMumbai
-  ? '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23'
-  : '0x2791bca1f2de4661ed88a30c99a7a9449aa84174';
-
-// TODO(sukh) -
-// 1. set this in the deposit flow
-// 2. call this for the inToken in the trade confirmation screen
-// permit2Provider.addErc20(TODO_TEMP_ERC20_REPLACE);
 
 // Checks periodically for non-permit2-approved erc20s and issues TXNs for approval as needed
 permit2Provider.pollPermit2Approvals();
@@ -28,7 +18,7 @@ const TotalUSDAmount = () => {
   const usdValue = usePortfolioUsdValue();
 
   const primaryAmount = useFormatNumber({
-    value: usdValue.data,
+    value: usdValue,
   });
 
   return (

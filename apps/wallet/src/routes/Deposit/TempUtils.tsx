@@ -45,18 +45,18 @@ const Swapper = () => {
   const [isLoading, setLoading] = useState(false);
 
   const debounced = useDebounce(async (value: string) => {
-    return swapProvider.quote({
-      inAmount: bn6(value),
-      inToken: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-      outToken: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
-    });
+    // return swapProvider.quote({
+    //   inAmount: bn6(value),
+    //   inToken: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+    //   outToken: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
+    // });
   }, 300);
 
   return (
     <div>
       <h1>Swapper</h1>
       <label>amount in (USD)</label>
-      <input
+      {/* <input
         type="number"
         style={{ padding: 8, width: 500 }}
         onChange={async (e) => {
@@ -71,7 +71,7 @@ const Swapper = () => {
             setLoading(false);
           }
         }}
-      />
+      /> */}
       <br />
       <label>amount out (ETH)</label>
       <div>

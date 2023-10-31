@@ -26,3 +26,25 @@ export async function fetchLatestPrice(
     return 1;
   }
 }
+
+export async function fetchLatestPrices(
+  coin: string,
+  vsCurrencies = 'usd'
+): Promise<
+  Record<
+    string,
+    {usd: number}
+  > | undefined
+> {
+  try {
+    const data = await Fetcher.get<Record<string, { usd: number }>>(
+      `${API_URL}?ids=${coin}&vs_currencies=${vsCurrencies}`
+    );
+
+    return data;
+  } catch (e) {
+    // TODO this will allow the app to continue working even if the price fetch fails, but the prices would seem strange
+    // discuss with sukh
+    return undefined;
+  }
+}
