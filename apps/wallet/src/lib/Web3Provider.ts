@@ -6,11 +6,7 @@ import {
   setWeb3Instance,
 } from '@defi.org/web3-candies';
 
-import {
-  Multicall,
-  ContractCallResults,
-  ContractCallContext,
-} from 'ethereum-multicall';
+import { Multicall, ContractCallResults } from 'ethereum-multicall';
 
 import { _TypedDataEncoder } from '@ethersproject/hash';
 
@@ -24,12 +20,11 @@ import {
 import { PermitData } from '@uniswap/permit2-sdk/dist/domain';
 
 import type { NonPayableTransactionObject } from '@defi.org/web3-candies/dist/abi/types';
-import Web3, { FMT_BYTES, FMT_NUMBER, Net } from 'web3';
+import Web3 from 'web3';
 import { estimateGasPrice } from '../utils/estimate';
 import { BNComparable } from '../types';
 import { getDebug } from './utils/debug';
 import { Web3Account } from 'web3-eth-accounts';
-import { web3 } from '@defi.org/web3-candies';
 
 const debug = getDebug('Web3Provider');
 
@@ -39,17 +34,6 @@ export class Web3Provider {
   constructor(private web3: Web3, public account: Web3Account) {
     setWeb3Instance(this.web3);
     this.multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
-
-    // This hack is for two purposes:
-    // Reduce calls to get the id of the network (why would it change?)
-    // Return the correct format when multicall (otherwise it's bignumber and multicall doesn't handle that)
-    (async () => {
-      const _id = Number(await this.web3.eth.net.getId());
-
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      this.web3.eth.net.getId = () => _id;
-    })();
   }
 
   private wrapToken(token: string) {
@@ -141,8 +125,19 @@ export class Web3Provider {
     );
   }
 
+  private _id: number | null = null;
+
   async balancesOf(tokens: string[]) {
-    // const origGetId = Net.prototype.getId;
+    // This hack is for two purposes:
+    // Reduce calls to get the id of the network (why would it change?)
+    // Return the correct format when multicall (otherwise it's bignumber and multicall doesn't handle that)
+    if (this._id === null) {
+      this._id = Number(await this.web3.eth.net.getId());
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      this.web3.eth.net.getId = () => this._id;
+    }
 
     const results: ContractCallResults = await this.multicall.call(
       tokens.map((token) => {

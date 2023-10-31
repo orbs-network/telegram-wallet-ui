@@ -3,7 +3,7 @@ import { AuthenticatedTelegramFetcher } from '../utils/fetcher';
 import { getDebug } from './utils/debug';
 import { sleep } from '@defi.org/web3-candies';
 import promiseRetry from 'promise-retry';
-import { EventsProvider } from './EventsProvider';
+import { DepositTransactionEvent, EventsProvider } from './EventsProvider';
 
 const debug = getDebug('FaucetProvider');
 
@@ -56,10 +56,20 @@ export class FaucetProvider {
         const balance = await this.web3Provider.balanceOf(erc20Token);
 
         if (balance.isGreaterThan(0)) {
-          this.eventsProvider.deposit({
-            token: erc20Token,
-            amount: balance.toString(),
-          });
+          if (
+            this.eventsProvider
+              .events()
+              .find(
+                (e) =>
+                  e.type === 'deposit' &&
+                  (e as DepositTransactionEvent).token === erc20Token
+              )
+          ) {
+            this.eventsProvider.deposit({
+              token: erc20Token,
+              amount: balance.toString(),
+            });
+          }
 
           debug('erc20 balance is non-zero, requesting from faucet');
           await this.requestFromFaucet(erc20Token);

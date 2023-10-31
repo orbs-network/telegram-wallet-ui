@@ -72,7 +72,7 @@ export class EventsProvider {
       date: Date.now(),
       status: 'completed',
     });
-    window.dispatchEvent(new Event('events-provider-update'));
+    this.onUpdate();
   }
 
   withdrawal(event: AddedWithdrawalTransactionEvent) {
@@ -112,6 +112,11 @@ export class EventsProvider {
 
   clear() {
     this.storage.clear();
+    this.onUpdate();
+  }
+
+  private onUpdate() {
+    window.dispatchEvent(new Event('events-provider-update'));
   }
 }
 

@@ -1,6 +1,11 @@
 import { Button, Container, Text } from '@chakra-ui/react';
 import { getDebug } from '../../lib/utils/debug';
-import { accountProvider, permit2Provider, web3Provider } from '../../config';
+import {
+  accountProvider,
+  eventsProvider,
+  permit2Provider,
+  web3Provider,
+} from '../../config';
 import { useQuery } from '@tanstack/react-query';
 import { erc20s } from '@defi.org/web3-candies';
 import { Fetcher } from '../../utils/fetcher';
@@ -117,6 +122,13 @@ export const Debug = () => {
         }}
       >
         Replace private key
+      </Button>
+      <Button
+        onClick={() => {
+          eventsProvider.clear();
+        }}
+      >
+        Clear events
       </Button>
     </Container>
   );
