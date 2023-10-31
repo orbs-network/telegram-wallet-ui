@@ -131,10 +131,9 @@ export class SwapProvider {
 
     const tokenIn = tokens.find((t) => t.address === quote.inToken);
     const tokenOut = tokens.find((t) => t.address === quote.outToken);
-
     const amountIn = amountUi(tokenIn, BN(quote.inAmount));
     const amountOut = amountUi(tokenOut, BN(quote.outAmount));
-    const exchangeRate = BN(amountIn).dividedBy(amountOut).toString();
+    const exchangeRate = BN(amountOut).dividedBy(amountIn).toString();
 
     this.eventsProvider.trade({
       inToken: quote.inToken,
