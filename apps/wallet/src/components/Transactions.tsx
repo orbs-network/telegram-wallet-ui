@@ -7,18 +7,8 @@ import {
   SkeletonText,
 } from '@chakra-ui/react';
 import { Card, ListItem, colors } from '@telegram-wallet-ui/twa-ui-kit';
-import {
-  BiDownArrow,
-  BiDownArrowAlt,
-  BiDownArrowCircle,
-  BiSolidDownArrowCircle,
-  BiSolidUpArrow,
-  BiSolidUpArrowCircle,
-  BiUpArrow,
-  BiUpArrowAlt,
-  BiUpArrowCircle,
-} from 'react-icons/bi';
-import { MdSwapHoriz, MdSwapHorizontalCircle } from 'react-icons/md';
+import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
+import { MdSwapHorizontalCircle } from 'react-icons/md';
 import {
   DepositTransactionEvent,
   TradeTransactionEvent,
