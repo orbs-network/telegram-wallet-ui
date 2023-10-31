@@ -2,14 +2,14 @@ import { Avatar, Container, HStack, VStack } from '@chakra-ui/react';
 import { Balance, IconButtonWithLabel } from '@telegram-wallet-ui/twa-ui-kit';
 import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
 import { MdSwapHorizontalCircle } from 'react-icons/md';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Page, Transactions, WalletSpinner } from '../components';
-import { mockTransactions } from '../mocks/transactions';
+import { Link, useParams } from 'react-router-dom';
+import { Page, WalletSpinner } from '../components';
 import { CryptoAsset } from '../config';
 import { useFormatNumber, useUserData } from '../hooks';
 import { ROUTES } from '../router/routes';
 import { useMainButtonContext } from '../context/MainButtonContext';
 import { useEffect } from 'react';
+import { Transactions } from '../components/Transactions';
 
 function Loader() {
   return (
@@ -21,21 +21,22 @@ function Loader() {
 
 export function Asset() {
   const { assetId } = useParams<{ assetId: CryptoAsset }>();
-  const {resetButton} = useMainButtonContext()
+  const { resetButton } = useMainButtonContext();
   useEffect(() => {
-  resetButton();
+    resetButton();
   }, [resetButton]);
-  
 
   const { data: userData } = useUserData();
-  const tokenData = assetId &&  userData?.tokens[assetId];
+  const tokenData = assetId && userData?.tokens[assetId];
 
-  const balance = useFormatNumber({ value: tokenData?.balance, decimalScale: 5 });
+  const balance = useFormatNumber({
+    value: tokenData?.balance,
+    decimalScale: 5,
+  });
 
   if (!assetId) {
     return <Loader />;
   }
-
 
   if (!tokenData) {
     return <Loader />;
@@ -84,7 +85,7 @@ export function Asset() {
               />
             </Link>
           </HStack>
-          <Transactions transactions={mockTransactions} cryptoAsset={assetId} />
+          <Transactions tokenFilter={tokenData.symbol} />
         </VStack>
       </Container>
     </Page>

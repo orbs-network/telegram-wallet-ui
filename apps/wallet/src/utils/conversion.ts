@@ -5,10 +5,17 @@ import { BNComparable } from '../types';
 export const amountBN = (token: TokenData | undefined, amount: BNComparable) =>
   parsebn(amount).times(BN(10).pow(token?.decimals || 0));
 
-export const amountUi = (token: TokenData | undefined, amount: BN) => {
+export const amountUi = (
+  token: TokenData | undefined,
+  amount: BN,
+  maxDecimals?: number
+) => {
   if (!token) return '';
   const percision = BN(10).pow(token?.decimals || 0);
-  return amount.times(percision).idiv(percision).div(percision).toFormat();
+
+  const output = amount.times(percision).idiv(percision).div(percision);
+
+  return maxDecimals ? output.toFixed(maxDecimals) : output.toFormat();
 };
 
 export const dstAmount = (

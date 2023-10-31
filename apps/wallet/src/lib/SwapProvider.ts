@@ -1,10 +1,4 @@
-import {
-  BNComparable,
-  LiquihubQuote,
-  QuoteResponse,
-  Token,
-  TradeTransactionEvent,
-} from '../types';
+import { BNComparable, LiquihubQuote, QuoteResponse, Token } from '../types';
 import { LiquihubProvider } from './LiquihubProvider';
 import { CoinsProvider } from './CoinsProvider';
 import { getDebug } from './utils/debug';
@@ -127,12 +121,10 @@ export class SwapProvider {
       await sleep(this.SLEEP_INTERVAL);
     }
 
-    // // const txHash = await this.liquidityHubProvider.swap(quote);
-    // // if (!txHash) {
-    // //   throw new Error('Swap failed');
-    // // }
-
-    // return txHash;
+    const txHash = await this.liquidityHubProvider.swap(quote);
+    if (!txHash) {
+      throw new Error('Swap failed');
+    }
 
     this.eventsProvider.trade({
       inToken: quote.inToken,
@@ -140,5 +132,7 @@ export class SwapProvider {
       amountIn: quote.inAmount,
       amountOut: quote.outAmount,
     });
+
+    return txHash;
   }
 }

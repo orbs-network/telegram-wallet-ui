@@ -2,12 +2,11 @@ import { Container, HStack, VStack } from '@chakra-ui/react';
 import { Balance, IconButtonWithLabel } from '@telegram-wallet-ui/twa-ui-kit';
 import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
 import { Link } from 'react-router-dom';
-import { Page, TokenBalances, Transactions } from '../components';
+import { Page, TokenBalances } from '../components';
 import { useFormatNumber, usePortfolioUsdValue } from '../hooks';
 import { faucetProvider, isMumbai, permit2Provider } from '../config';
 import { MdSwapVerticalCircle } from 'react-icons/md';
-import { mockTransactions } from '../mocks/transactions';
-import { Transactions2 } from '../components/Transactions2';
+import { Transactions } from '../components/Transactions';
 
 // Temp - USDC
 const TODO_TEMP_ERC20_REPLACE = isMumbai
@@ -65,7 +64,7 @@ export function Home() {
             </Link>
           </HStack>
           <TokenBalances />
-          <Transactions2 />
+          <Transactions />
         </VStack>
       </Container>
     </Page>

@@ -16,4 +16,5 @@ export const ROUTES = {
   trade: '/trade',
   tradeReview: '/trade/:inToken/:outToken/:inAmount/review',
   tradeSuccess: '/trade/:outToken/:outAmount/:txHash/success',
+  transaction: '/transaction/:txId',
 };
