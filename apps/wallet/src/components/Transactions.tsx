@@ -21,6 +21,14 @@ import BN from 'bignumber.js';
 import { useUserData } from '../hooks';
 import { TokenData } from '../types';
 import { Link } from 'react-router-dom';
+import styled from '@emotion/styled';
+
+const StyledCard = styled(Card)({
+  '.chakra-card__body': {
+    paddingLeft: '16px',
+    paddingRight: '20px',
+  },
+});
 
 type TransactionsProps = {
   tokenFilter?: string;
@@ -131,22 +139,22 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
 
   if (!userData) {
     return (
-      <Card>
+      <StyledCard>
         <SkeletonText />
-      </Card>
+      </StyledCard>
     );
   }
 
   if (transactions.length === 0) {
     return (
-      <Card>
+      <StyledCard>
         <Text variant="hint">NO TRANSACTIONS</Text>
-      </Card>
+      </StyledCard>
     );
   }
 
   return (
-    <Card>
+    <StyledCard>
       <Text variant="hint">TRANSACTION HISTORY</Text>
       {transactions.map((tx) => {
         let StartIcon = null;
@@ -264,7 +272,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
               StartTextSlot={
                 <Box>
                   {CardTitle}
-                  <Text variant="hint" fontSize={12}>
+                  <Text variant="hint" fontSize="xs">
                     {tx.date.toLocaleString()}
                   </Text>
                 </Box>
@@ -274,6 +282,6 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
           </Link>
         );
       })}
-    </Card>
+    </StyledCard>
   );
 }
