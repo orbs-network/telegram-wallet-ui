@@ -50,6 +50,7 @@ const StyledNumericFormat = styled(NumericFormat)({
   caretColor: '#417fc6',
   width: '100%',
   overflow: 'hidden',
+  backgroundColor: 'transparent',
 });
 
 type CryptoAmountInputProps = {
@@ -81,7 +82,10 @@ export function CryptoAmountInput({
   );
 
   const priceCompare = useExchangeRate(tokenSymbol, otherTokenSymbol);
-  const formattedPriceCompare = useFormatNumber({ value: priceCompare, decimalScale: 6 });
+  const formattedPriceCompare = useFormatNumber({
+    value: priceCompare,
+    decimalScale: 6,
+  });
   const formattedAmount = useFormatNumber({ value, decimalScale: 18 });
   const formattedUsdPrice = useFormatNumber({
     value: calculatedPrice,
@@ -102,9 +106,15 @@ export function CryptoAmountInput({
       );
     }
 
-
     return <Text css={styles.usd}>≈ {formattedUsdPrice}</Text>;
-  }, [error, value, formattedUsdPrice, tokenSymbol, formattedPriceCompare, otherTokenSymbol]);
+  }, [
+    error,
+    value,
+    formattedUsdPrice,
+    tokenSymbol,
+    formattedPriceCompare,
+    otherTokenSymbol,
+  ]);
 
   const textSizePX = useMemo(() => {
     const size = getTextSizeInPixels({
@@ -114,7 +124,6 @@ export function CryptoAmountInput({
     });
     return size < window.innerWidth ? size : window.innerWidth;
   }, [formattedAmount]);
-
 
   return (
     <VStack alignItems="flex-start" gap="0px">
@@ -152,6 +161,3 @@ export function CryptoAmountInput({
     </VStack>
   );
 }
-
-
-
