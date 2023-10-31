@@ -129,10 +129,6 @@ export function Transaction() {
             </Text>
           </Heading>
           <Text variant="hint">{tx.date.toLocaleString()}</Text>
-          <Card>
-            <Text variant="hint">Status</Text>
-            <Text>{tx.status.toUpperCase()}</Text>
-          </Card>
           {TxDetails}
         </VStack>
       </Container>

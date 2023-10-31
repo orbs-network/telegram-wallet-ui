@@ -1,4 +1,4 @@
-import { Container, HStack, VStack } from '@chakra-ui/react';
+import { Container, HStack, LinkBox, VStack } from '@chakra-ui/react';
 import { Balance, IconButtonWithLabel } from '@telegram-wallet-ui/twa-ui-kit';
 import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
 import { Link } from 'react-router-dom';
@@ -32,11 +32,17 @@ const TotalUSDAmount = () => {
   });
 
   return (
-    <Balance
-      primaryCurrencySymbol="$"
-      primaryAmount={primaryAmount || '0'}
-      label="Total balance"
-    />
+    <LinkBox
+      onDoubleClick={() => {
+        window.location.href = '/debug';
+      }}
+    >
+      <Balance
+        primaryCurrencySymbol="$"
+        primaryAmount={primaryAmount || '0'}
+        label="Total balance"
+      />
+    </LinkBox>
   );
 };
 
