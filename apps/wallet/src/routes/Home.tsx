@@ -1,4 +1,4 @@
-import { Container, HStack, VStack } from '@chakra-ui/react';
+import { Container, HStack, VStack, Box } from '@chakra-ui/react';
 import {
   IconButtonWithLabel,
   TotalBalance,
@@ -82,9 +82,11 @@ export function Home() {
             </Link>
           </HStack>
           <TokenBalances />
-          <Transactions />
         </VStack>
       </Container>
+      <Box mt={4}>
+        <Transactions />
+      </Box>
     </Page>
   );
 }

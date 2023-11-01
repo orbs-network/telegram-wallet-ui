@@ -1,4 +1,4 @@
-import { Avatar, Container, HStack, VStack } from '@chakra-ui/react';
+import { Avatar, Box, Container, HStack, VStack } from '@chakra-ui/react';
 import { Balance, IconButtonWithLabel } from '@telegram-wallet-ui/twa-ui-kit';
 import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
 import { MdSwapHorizontalCircle } from 'react-icons/md';
@@ -93,9 +93,11 @@ export function Asset() {
               />
             </Link>
           </HStack>
-          <Transactions tokenFilter={tokenData.symbol} />
         </VStack>
       </Container>
+      <Box mt={4}>
+        <Transactions tokenFilter={tokenData.symbol} />
+      </Box>
     </Page>
   );
 }
