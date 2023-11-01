@@ -53,7 +53,7 @@ export function WithdrawAmount() {
   const [amount, setAmount] = useState('');
   const { assetId, recipient } = useParams<URLParams>();
   const { withdrawSummary: navigateToWithdrawSummary } = useNavigation();
-  const formattedAmount = useFormatNumber({ value: amount });
+
   const token = useGetTokenFromList(assetId);
 
   const formattedBalance = useFormatNumber({
@@ -76,7 +76,7 @@ export function WithdrawAmount() {
   useUpdateMainButton({
     text: !isValidAmount
       ? 'Send'
-      : `Send ${formattedAmount} ${token?.symbol.toUpperCase()}`,
+      : `Send ${amount} ${token?.symbol.toUpperCase()}`,
     disabled: !isValidAmount || amount === '' || BN(amount).isZero(),
     onClick: onSubmit,
   });
