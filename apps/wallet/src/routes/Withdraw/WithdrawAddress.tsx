@@ -118,8 +118,12 @@ const AddressInput = ({
         placeholder="Enter Polygon address"
       />
 
-      <InputRightElement onClick={onClick} pr={8} color={colors.link_color}>
-        {address !== '' ? 'Paste' : <Icon as={AiFillCloseCircle} />}
+      <InputRightElement
+        onClick={onClick}
+        pr={address === '' ? 8 : 0}
+        color={colors.link_color}
+      >
+        {address === '' ? 'Paste' : <Icon as={AiFillCloseCircle} />}
       </InputRightElement>
     </InputGroup>
   );
