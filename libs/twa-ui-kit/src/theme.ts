@@ -1,5 +1,5 @@
 import {
-  // ThemeConfig,
+  ThemeConfig,
   defineStyle,
   defineStyleConfig,
   extendTheme,
@@ -81,13 +81,13 @@ export const colors = {
   success: twaMode('#38A169', '#4cd964'),
 };
 
-// const config: ThemeConfig = {
-//   initialColorMode: Twa.colorScheme,
-//   useSystemColorMode: false,
-// };
+const config: ThemeConfig = {
+  initialColorMode: Twa.colorScheme,
+  useSystemColorMode: false,
+};
 
 export const theme = extendTheme({
-  // config,
+  config,
   fonts: {
     heading: `'ui-rounded', 'Inter', sans-serif`,
     body: `'ui-rounded', 'Inter', sans-serif`,
