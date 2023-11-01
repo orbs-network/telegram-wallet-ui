@@ -86,7 +86,7 @@ export function WithdrawAmount() {
     if (!isValidAmount) {
       animate(
         '#withdrawalAmount',
-        { x: 10 },
+        { x: [0, 10, 0] },
         {
           duration: 0.05,
           repeat: 2,
