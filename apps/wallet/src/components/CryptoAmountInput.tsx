@@ -150,6 +150,7 @@ export function CryptoAmountInput({
           <Text
             style={{
               left: !value ? 50 : textSizePX + 12,
+              color: error && ERROR_COLOR,
             }}
             css={styles.inputSymbol}
           >
