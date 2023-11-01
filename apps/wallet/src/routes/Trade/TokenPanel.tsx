@@ -107,7 +107,7 @@ export const TokenPanel = ({
   value,
   onChange,
   onTokenSelect,
-  filterToken,
+  filterTokenSymbol: filterTokenSymbol,
   token,
   isInToken,
   error,
@@ -116,7 +116,7 @@ export const TokenPanel = ({
   value: string;
   onChange?: (value: string) => void;
   onTokenSelect: (token: TokenData) => void;
-  filterToken?: string;
+  filterTokenSymbol?: string;
   quotePending?: boolean;
   token?: TokenData;
   isInToken?: boolean;
@@ -145,7 +145,7 @@ export const TokenPanel = ({
         </Box>
 
         <TokenSelectDrawer
-          filterToken={filterToken}
+          filterTokenSymbol={filterTokenSymbol}
           onSelect={onTokenSelect}
           token={token}
         />
@@ -156,11 +156,11 @@ export const TokenPanel = ({
 
 const TokenSelectDrawer = ({
   onSelect,
-  filterToken,
+  filterTokenSymbol,
   token,
 }: {
   onSelect: (token: TokenData) => void;
-  filterToken?: string;
+  filterTokenSymbol?: string;
   token?: TokenData;
 }) => {
   const { data, dataUpdatedAt } = useUserData();
@@ -170,11 +170,11 @@ const TokenSelectDrawer = ({
   const tokens = useMemo(() => {
     if (!data) return [];
     return Object.values(data.tokens).filter(
-      (token) => token.symbol !== filterToken
+      (token) => token.symbol !== filterTokenSymbol
     );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterToken, dataUpdatedAt]);
+  }, [filterTokenSymbol, dataUpdatedAt]);
 
   return (
     <Flex alignItems="center">
