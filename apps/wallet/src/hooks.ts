@@ -12,6 +12,7 @@ import { matchRoutes, useLocation } from 'react-router-dom';
 import { ROUTES } from './router/routes';
 import _ from 'lodash';
 import { useNumericFormat } from 'react-number-format';
+import { create } from 'zustand';
 
 export enum QueryKeys {
   FETCH_LAST_PRICE = 'useFetchLatestPrice',
@@ -292,6 +293,13 @@ export const useOptimizedGetMinAmountOut = (
   };
 };
 
+export const useSwapInProgress = create<any>((set: any) => ({
+  inProgress: false,
+  setProgress(value: boolean) {
+    set({ inProgress: value });
+  },
+}));
+
 export const useQuoteQuery = (
   inToken?: TokenData,
   outToken?: TokenData,
@@ -302,8 +310,23 @@ export const useQuoteQuery = (
     outToken,
     inAmount
   );
+
+  const { inProgress: isSwapInProgress } = useSwapInProgress();
+  const client = useQueryClient();
+
+  const queryKey = [
+    QueryKeys.QUOTE,
+    inToken?.symbol,
+    outToken?.symbol,
+    inAmount,
+  ];
+
+  if (isSwapInProgress) {
+    client.cancelQueries({ queryKey: queryKey });
+  }
+
   return useQuery({
-    queryKey: [QueryKeys.QUOTE, inToken?.symbol, outToken?.symbol, inAmount],
+    queryKey: queryKey,
     queryFn: async ({ signal }) => {
       return swapProvider.optimizedQuote(
         {
@@ -315,6 +338,12 @@ export const useQuoteQuery = (
         signal
       );
     },
-    enabled: !!inToken && !!outToken && !!inAmount && estimatedAmountOut.gt(0),
+    enabled:
+      !!inToken &&
+      !!outToken &&
+      !!inAmount &&
+      estimatedAmountOut.gt(0) &&
+      !isSwapInProgress,
+    refetchInterval: 5_000,
   });
 };

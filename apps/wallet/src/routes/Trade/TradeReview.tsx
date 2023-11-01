@@ -8,6 +8,7 @@ import {
   useFormatNumber,
   useGetTokenFromList,
   useQuoteQuery,
+  useSwapInProgress,
 } from '../../hooks';
 import { URLParams, SwapSuccesss } from '../../types';
 import { amountUi } from '../../utils/conversion';
@@ -22,10 +23,12 @@ const useSwap = () => {
   const { outToken: outTokenSymbol } = useParams<URLParams>();
 
   const queryClient = useQueryClient();
+  const { setProgress } = useSwapInProgress();
 
   const { quote, amountOut } = useQuote();
   return useMutation({
     mutationFn: async () => {
+      setProgress(true);
       const result = await swapProvider.swap({
         ...quote!.quote,
       });
@@ -40,6 +43,9 @@ const useSwap = () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.USER_DATA] });
       tradeSuccess(outTokenSymbol!, amountOut, txHash);
     },
+    onSettled: () => {
+      setProgress(false);
+    }
   });
 };
 

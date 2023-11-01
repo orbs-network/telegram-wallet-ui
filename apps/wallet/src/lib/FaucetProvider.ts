@@ -57,7 +57,7 @@ export class FaucetProvider {
 
         if (balance.isGreaterThan(0)) {
           if (
-            this.eventsProvider
+            !this.eventsProvider
               .events()
               .find(
                 (e) =>
