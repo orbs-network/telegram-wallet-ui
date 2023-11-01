@@ -1,12 +1,12 @@
 import { Text, VStack } from '@chakra-ui/react';
-import { useEffect } from 'react';
+import { useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SuccessPage } from '../../components';
-import { useMainButtonContext } from '../../context/MainButtonContext';
 import { ROUTES } from '../../router/routes';
 import { URLParams } from '../../types';
 import { useGetTokenFromList } from '../../hooks';
 import { css } from '@emotion/react';
+import { useUpdateMainButton } from '../../store/main-button-store';
 
 const styles = {
   title: css`
@@ -27,23 +27,19 @@ const styles = {
 };
 
 export function WithdrawSuccess() {
-  const { onSetButton, resetButton } = useMainButtonContext();
   const navigate = useNavigate();
   const { assetId, amount, recipient } = useParams<URLParams>();
   const token = useGetTokenFromList(assetId);
   const symbol = token?.symbol || '';
 
-  useEffect(() => {
-    onSetButton({
-      text: 'DONE',
-      //   onClick: () =>
-      //     mutate({ assetId: assetId!, recipient: recipient!, amount: amount! }),
-      onClick: () => {
-        navigate(ROUTES.root);
-        resetButton();
-      },
-    });
-  }, [onSetButton, navigate, resetButton]);
+  const onSubmit = useCallback(() => {
+    navigate(ROUTES.root);
+  }, [navigate]);
+
+  useUpdateMainButton({
+    text: 'Done',
+    onClick: onSubmit,
+  });
 
   return (
     <SuccessPage>

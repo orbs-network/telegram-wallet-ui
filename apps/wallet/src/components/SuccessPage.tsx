@@ -19,15 +19,17 @@ const styles = {
 export function SuccessPage({
   children,
   className = '',
+  secondaryBackground = false
 }: {
   children: React.ReactNode;
   className?: string;
+  secondaryBackground?: boolean;
 }) {
   return (
-    <StyledPage className={className}>
+    <Page className={className} secondaryBackground={secondaryBackground}>
       <Container css={styles.container} size="sm" pt={4}>
         <VStack spacing={4}>
-          <LottieContainer>
+        <LottieContainer>
             <Lottie
               animationData={SuccessLottie}
               loop={true}
@@ -38,7 +40,7 @@ export function SuccessPage({
           {children}
         </VStack>
       </Container>
-    </StyledPage>
+    </Page>
   );
 }
 

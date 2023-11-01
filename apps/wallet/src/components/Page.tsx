@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { ReactNode, useMemo } from 'react';
-import { colors, twaMode } from '@telegram-wallet-ui/twa-ui-kit';
+import { tgColors, twaMode } from '@telegram-wallet-ui/twa-ui-kit';
 import { useAnimatedRouterContext } from '../router/AnimatedRouter';
 import { motion, Variants } from 'framer-motion';
 import Telegram from '@twa-dev/sdk';
@@ -74,9 +74,11 @@ const useVariants = () => {
 export const Page = ({
   children,
   className = '',
+  secondaryBackground = false,
 }: {
   children: ReactNode;
   className?: string;
+  secondaryBackground?: boolean;
 }) => {
   const childVariants = useVariants();
 
@@ -88,25 +90,35 @@ export const Page = ({
       variants={childVariants as Variants}
       style={{ flex: 1 }}
     >
-      <AnimatedRouteContainer className={className}>
+      <AnimatedRouteContainer
+        $secondaryBackground={secondaryBackground}
+        className={className}
+      >
         {children}
       </AnimatedRouteContainer>
     </motion.main>
   );
 };
-const AnimatedRouteContainer = styled('div')(() => {
-  const background = twaMode(
-    Telegram.themeParams.secondary_bg_color,
-    Telegram.themeParams.bg_color
-  );
+const AnimatedRouteContainer = styled('div')<{ $secondaryBackground: boolean }>(
+  ({ $secondaryBackground }) => {
+    const first = !$secondaryBackground
+      ? tgColors.light.secondary_bg_color
+      : tgColors.light.bg_color;
 
-  return {
-    background,
-    overflowY: 'auto',
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100%',
-    overflowX: 'hidden',
-    paddingBottom: !Telegram.initData ? 60 : 0,
-  };
-});
+    const second = !$secondaryBackground
+      ? tgColors.dark.secondary_bg_color
+      : tgColors.dark.bg_color;
+
+    const background = twaMode(first, second);
+
+    return {
+      background,
+      overflowY: 'auto',
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
+      overflowX: 'hidden',
+      paddingBottom: !Telegram.initData ? 60 : 0,
+    };
+  }
+);

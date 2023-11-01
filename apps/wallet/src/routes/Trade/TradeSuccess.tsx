@@ -1,12 +1,14 @@
 import { Link, Text } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import { useEffect } from 'react';
+import { useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { SuccessPage } from '../../components';
 import { POLYGON_EXPLORER } from '../../consts';
-import { useMainButtonContext } from '../../context/MainButtonContext';
 import { useFormatNumber } from '../../hooks';
+import {
+  useUpdateMainButton,
+} from '../../store/main-button-store';
 import { URLParams } from '../../types';
-import { StyledPage } from './styles';
 
 const styles = {
   container: css`
@@ -31,18 +33,21 @@ const styles = {
 export function TradeSuccess() {
   const { outToken, outAmount, txHash } = useParams<URLParams>();
   const formattedOutAmount = useFormatNumber({ value: outAmount });
-  const { onSetButton } = useMainButtonContext();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    onSetButton({
-      text: 'Done',
-      onClick: () => navigate('/'),
-    });
-  }, [onSetButton, navigate]);
+  const onClick = useCallback(() => {
+    navigate('/');
+  }, [navigate]);
+  
+
+  useUpdateMainButton({
+    text: 'Done',
+    onClick,
+  });
+
 
   return (
-    <StyledPage>
+    <SuccessPage secondaryBackground>
       <Text css={styles.title}>Exchange completed</Text>
       <Text>
         <strong>
@@ -57,6 +62,6 @@ export function TradeSuccess() {
       >
         View transaction
       </Link>
-    </StyledPage>
+    </SuccessPage>
   );
 }

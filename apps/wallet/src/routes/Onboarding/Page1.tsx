@@ -1,20 +1,23 @@
 import { Container } from '@chakra-ui/react';
-import React, { useEffect } from 'react'
-import {Link, useNavigate} from 'react-router-dom'
+import React, { useCallback } from 'react'
+import { useNavigate} from 'react-router-dom'
 import { Page } from '../../components';
-import { useMainButtonContext } from '../../context/MainButtonContext';
 import { ROUTES } from '../../router/routes';
+import { useUpdateMainButton } from '../../store/main-button-store';
 export function Page1() {
 
-  const {onSetButton} = useMainButtonContext()
   const navigate = useNavigate();
 
-  useEffect(() => {
-    onSetButton({
-      text: 'Next',
-      onClick: () => navigate(ROUTES.onboardingPage1),
-    });
-  }, [onSetButton, navigate]);
+  const onClick = useCallback(() => {
+    navigate(ROUTES.onboardingPage1);
+  }, [navigate]);
+  
+
+  useUpdateMainButton({
+    text: 'Next',
+    onClick,
+  });
+
   
   return (
     <Page>

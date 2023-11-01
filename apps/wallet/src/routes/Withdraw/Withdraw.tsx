@@ -2,19 +2,17 @@ import { Container, Heading, VStack } from '@chakra-ui/react';
 import { Page, SelectToken } from '../../components';
 import { useNavigation } from '../../router/hooks';
 import { useUserData } from '../../hooks';
-import { useMainButtonContext } from '../../context/MainButtonContext';
+import { useMainButtonStore } from '../../store/main-button-store';
 import { useEffect } from 'react';
-
 export function Withdraw() {
   const { withdrawAddress } = useNavigation();
   const { data } = useUserData();
-  const { resetButton } = useMainButtonContext();
 
+  const { resetButton } = useMainButtonStore();
 
   useEffect(() => {
     resetButton();
   }, [resetButton]);
-
 
   return (
     <Page>
@@ -32,4 +30,3 @@ export function Withdraw() {
     </Page>
   );
 }
-

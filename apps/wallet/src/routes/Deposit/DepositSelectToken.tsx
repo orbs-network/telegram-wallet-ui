@@ -1,22 +1,21 @@
 import { Container, Heading, VStack } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { Page, SelectToken } from '../../components';
-import { useMainButtonContext } from '../../context/MainButtonContext';
 import { useUserData } from '../../hooks';
 import { useNavigation } from '../../router/hooks';
+import { useMainButtonStore } from '../../store/main-button-store';
 import { TokenData } from '../../types';
 
 export function DepositSelectToken() {
   const { data } = useUserData();
   const { depositSelectMethod } = useNavigation();
-  const { resetButton } = useMainButtonContext();
+
+  const onSelect = (token: TokenData) => depositSelectMethod(token.symbol);
+  const { resetButton } = useMainButtonStore();
 
   useEffect(() => {
     resetButton();
   }, [resetButton]);
-
-  const onSelect = (token: TokenData) => depositSelectMethod(token.symbol);
-
   return (
     <Page>
       <Container size="sm" pt={4}>

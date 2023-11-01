@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Page } from '../../components';
+import { Page, SuccessPage } from '../../components';
 import { tgColors, twaMode } from '@telegram-wallet-ui/twa-ui-kit';
 
 export const styles = {
@@ -36,10 +36,3 @@ export const styles = {
     }
   `,
 };
-
-export const StyledPage = styled(Page)({
-  background: twaMode(
-    tgColors.light.bg_color,
-    tgColors.dark.secondary_bg_color
-  ),
-});

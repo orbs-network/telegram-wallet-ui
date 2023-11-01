@@ -7,6 +7,8 @@ import { useFormatNumber, usePortfolioUsdValue } from '../hooks';
 import { faucetProvider, permit2Provider } from '../config';
 import { MdSwapVerticalCircle } from 'react-icons/md';
 import { Transactions } from '../components/Transactions';
+import { useMainButtonStore } from '../store/main-button-store';
+import { useEffect } from 'react';
 
 // Checks periodically for non-permit2-approved erc20s and issues TXNs for approval as needed
 permit2Provider.pollPermit2Approvals();
@@ -31,6 +33,13 @@ const TotalUSDAmount = () => {
 };
 
 export function Home() {
+    const { resetButton } = useMainButtonStore();
+
+    useEffect(() => {
+     resetButton();
+    }, [resetButton]);
+    
+
   return (
     <Page>
       <Container size="sm" pt={4}>
