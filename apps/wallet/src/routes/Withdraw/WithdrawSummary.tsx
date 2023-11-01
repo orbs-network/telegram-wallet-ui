@@ -1,7 +1,7 @@
 import { Container, Text, VStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { useMutation } from '@tanstack/react-query';
-import { Card } from '@telegram-wallet-ui/twa-ui-kit';
+import { Card, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import { useParams } from 'react-router-dom';
 import { Page } from '../../components';
 import { eventsProvider, web3Provider } from '../../config';
@@ -83,7 +83,7 @@ export function WithdrawSummary() {
 
 const styles = {
   container: css`
-    border-bottom: 1px solid #cdcdcd;
+    border-bottom: 1px solid ${colors.border_color};
     width: 100%;
     padding-bottom: 5px;
     &:last-child {
@@ -93,7 +93,7 @@ const styles = {
   `,
   sectionTitle: css`
     font-size: 14px;
-    color: #9d9d9d;
+    color: #${colors.hint_color};
   `,
   sectionValue: css`
     font-size: 14px;

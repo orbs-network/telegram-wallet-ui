@@ -1,10 +1,11 @@
 import { Flex, Text } from '@chakra-ui/react';
 import styled from '@emotion/styled';
-import React from 'react'
+import React from 'react';
 import { ImArrowUp } from 'react-icons/im';
 import { useParams } from 'react-router-dom';
 import { URLParams } from '../../types';
 import { makeElipsisAddress } from '../../utils/utils';
+import { colors } from '@telegram-wallet-ui/twa-ui-kit';
 
 export const Recipient = () => {
   const { recipient } = useParams<URLParams>();
@@ -21,7 +22,6 @@ export const Recipient = () => {
   );
 };
 
-
 const RecipientIcon = styled('div')({
   display: 'flex',
   justifyContent: 'center',
@@ -29,7 +29,7 @@ const RecipientIcon = styled('div')({
   width: '40px',
   height: '40px',
   borderRadius: '50%',
-  background: '#417fc6',
+  background: colors.button_color,
   position: 'relative',
   '&:after': {
     content: '""',
@@ -37,7 +37,7 @@ const RecipientIcon = styled('div')({
     width: '20px',
     height: '20px',
     borderRadius: '50%',
-    background: '#417fc6',
+    background: colors.button_color,
     left: '50%',
     top: '50%',
     transform: 'translate(-50%, -50%)',

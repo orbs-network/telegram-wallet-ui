@@ -1,6 +1,6 @@
 import { Avatar, Box, Flex, Skeleton, Text, VStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import { Card } from '@telegram-wallet-ui/twa-ui-kit';
+import { Card, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import React, { ReactNode } from 'react';
 import { useFormatNumber, useGetTokenFromList } from '../hooks';
 import { BsArrowDownShort } from 'react-icons/bs';
@@ -14,7 +14,7 @@ const styles = {
   tokenDisplayContainerArrow: css`
     padding: 1px;
     border-radius: 50%;
-    background-color: #417fc6;
+    background-color: ${colors.button_color};
     position: absolute;
     z-index: 1;
     top: 50%;
@@ -31,7 +31,7 @@ const styles = {
     align-items: flex-start;
     gap: 0px;
     .review-tx-section {
-      border-bottom: 1px solid #e5e5e5;
+      border-bottom: 1px solid ${colors.border_color};
       padding-bottom: 10px;
       &:last-child {
         border-bottom: none;
@@ -40,7 +40,7 @@ const styles = {
     }
   `,
   categoryTitle: css`
-    color: #b8b8b8;
+    color: ${colors.hint_color};
     font-size: 14px;
     font-weight: 500;
     padding-left: 18px;
@@ -56,7 +56,7 @@ const styles = {
     font-size: 15px;
   `,
   sectionTitle: css`
-    color: #b8b8b8;
+    color: ${colors.hint_color};
     font-size: 14px;
     width: 100%;
   `,
@@ -75,7 +75,6 @@ const styles = {
     width: 80px;
     height: 18px;
     border-radius: 10px;
-
   `,
   tokenDisplayAmount: css`
     position: relative;

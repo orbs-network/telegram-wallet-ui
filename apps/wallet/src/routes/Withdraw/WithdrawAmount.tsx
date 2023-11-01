@@ -23,7 +23,7 @@ const styles = {
     height: 40px;
   `,
   balanceTitle: css`
-    color: #a1a1a1;
+    color: ${colors.hint_color};
     font-size: 14px;
   `,
   balanceValue: css`

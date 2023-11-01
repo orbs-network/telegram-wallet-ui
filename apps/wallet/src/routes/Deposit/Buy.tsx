@@ -3,12 +3,13 @@ import { ErrorPage } from '../../ErrorPage';
 import { TRANSAK_STAGING_API_KEY, account } from '../../config';
 import { Transak } from './transak/constants';
 import { MainButton } from '@twa-dev/sdk/react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Page } from '../../components';
+import { URLParams } from '../../types';
 
 const walletAddress = account?.address;
 
-const constructSrcUrl = (walletAddress: string) => {
+const constructSrcUrl = (walletAddress: string, tokenSymbol: string) => {
   const params = new URLSearchParams({
     network: 'polygon',
     fiatCurrency: 'USD',
@@ -16,7 +17,7 @@ const constructSrcUrl = (walletAddress: string) => {
     hideMenu: 'true',
     disableWalletAddressForm: 'true',
     walletAddress,
-    defaultCryptoCurrency: 'USDC',
+    defaultCryptoCurrency: tokenSymbol,
   });
 
   return `https://global-stg.transak.com/?apiKey=${TRANSAK_STAGING_API_KEY}&${params.toString()}`;
@@ -26,6 +27,7 @@ export const Buy = () => {
   const [showDoneButton, setShowDoneButton] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const navigate = useNavigate();
+  const { assetId } = useParams<URLParams>();
 
   useEffect(() => {
     const handleMessage = (message: {
@@ -67,7 +69,7 @@ export const Buy = () => {
 
   if (!walletAddress) return <ErrorPage message="Wallet not created." />;
 
-  const src = constructSrcUrl(walletAddress);
+  const src = constructSrcUrl(walletAddress, assetId?.toUpperCase() || 'USDC');
 
   return (
     <Page>

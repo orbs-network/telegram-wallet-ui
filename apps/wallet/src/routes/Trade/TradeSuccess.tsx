@@ -5,10 +5,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { SuccessPage } from '../../components';
 import { POLYGON_EXPLORER } from '../../consts';
 import { useFormatNumber } from '../../hooks';
-import {
-  useUpdateMainButton,
-} from '../../store/main-button-store';
+import { useUpdateMainButton } from '../../store/main-button-store';
 import { URLParams } from '../../types';
+import { colors } from '@telegram-wallet-ui/twa-ui-kit';
 
 const styles = {
   container: css`
@@ -24,7 +23,7 @@ const styles = {
     font-weight: 600;
   `,
   link: css`
-    color: #00a3ff;
+    color: ${colors.link_color};
     margin-top: 16px;
     text-decoration: unset;
   `,
@@ -38,13 +37,11 @@ export function TradeSuccess() {
   const onClick = useCallback(() => {
     navigate('/');
   }, [navigate]);
-  
 
   useUpdateMainButton({
     text: 'Done',
     onClick,
   });
-
 
   return (
     <SuccessPage secondaryBackground>

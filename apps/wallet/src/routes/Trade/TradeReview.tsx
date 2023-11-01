@@ -1,5 +1,5 @@
 import { Container } from '@chakra-ui/react';
-import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Page, ReviewTx } from '../../components';
 import {
@@ -15,9 +15,7 @@ import BN from 'bignumber.js';
 import { useNavigation } from '../../router/hooks';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { permit2Provider, swapProvider } from '../../config';
-import {
-  useUpdateMainButton,
-} from '../../store/main-button-store';
+import { useUpdateMainButton } from '../../store/main-button-store';
 
 const useSwap = () => {
   const tradeSuccess = useNavigation().tradeSuccess;
@@ -56,7 +54,6 @@ const useMainButton = () => {
       permit2Provider.addErc20(inToken.address);
     }
   }, [inToken]);
-
 
   useUpdateMainButton({
     text: 'Confirm and swap',

@@ -17,6 +17,7 @@ import { CryptoAmountInput, SelectToken } from '../../components';
 import { useFormatNumber, useUserData } from '../../hooks';
 import { TokenData } from '../../types';
 import { IoClose } from 'react-icons/io5';
+import { colors } from '@telegram-wallet-ui/twa-ui-kit';
 const flash = keyframes`
   0% {
     opacity: 1;
@@ -46,14 +47,14 @@ const styles = {
     width: 100%;
   `,
   max: css`
-    color: #00a3ff;
+    color: ${colors.link_color};
   `,
   balance: css`
     font-size: 14px;
     align-items: center;
     gap: 4px;
     p {
-      color: #9d9d9d;
+      color: ${colors.hint_color};
     }
   `,
   closeButton: css`
@@ -214,12 +215,12 @@ const TokenSelectButton = styled(Box)({
   position: 'relative',
   top: '-10px',
   '& p': {
-    color: '#9D9D9D',
+    color: colors.hint_color,
     fontSize: '26px',
     fontWeight: 700,
   },
   svg: {
-    color: '#9D9D9D',
+    color: colors.hint_color,
     fontSize: '26px',
   },
 });
