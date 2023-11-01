@@ -1,5 +1,5 @@
 import { VStack, Flex, Text, Box } from '@chakra-ui/react';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import {
   useMultiplyPriceByAmount,
   useFormatNumber,
@@ -10,6 +10,7 @@ import { getTextSizeInPixels } from '../utils/utils';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { NumericFormat } from 'react-number-format';
+import { useAnimate } from 'framer-motion';
 
 const ERROR_COLOR = '#ff3333';
 
@@ -125,12 +126,28 @@ export function CryptoAmountInput({
     return size < window.innerWidth ? size : window.innerWidth;
   }, [formattedAmount]);
 
+  const [scope, animate] = useAnimate();
+  useEffect(() => {
+    if (error) {
+      animate(
+        '#withdrawalAmount',
+        { x: [0, 10, 0] },
+        {
+          duration: 0.05,
+          repeat: 2,
+          ease: 'easeIn',
+        }
+      );
+    }
+  }, [animate, error]);
+
   return (
     <VStack alignItems="flex-start" gap="0px">
       <Flex
         css={styles.inputContainer}
         alignItems="flex-end"
         justifyContent="flex-start"
+        ref={scope}
       >
         <StyledNumericFormat
           id={name}

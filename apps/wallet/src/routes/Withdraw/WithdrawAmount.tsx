@@ -1,5 +1,5 @@
 import { VStack, Text, Flex, Avatar, Container } from '@chakra-ui/react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { URLParams } from '../../types';
 import { css } from '@emotion/react';
@@ -11,7 +11,6 @@ import { useNavigation } from '../../router/hooks';
 import BN from 'bignumber.js';
 import { colors, tgColors, twaMode } from '@telegram-wallet-ui/twa-ui-kit';
 import { useUpdateMainButton } from '../../store/main-button-store';
-import { useAnimate } from 'framer-motion';
 
 const styles = {
   mainContainer: css`
@@ -81,36 +80,19 @@ export function WithdrawAmount() {
     onClick: onSubmit,
   });
 
-  const [scope, animate] = useAnimate();
-  useEffect(() => {
-    if (!isValidAmount) {
-      animate(
-        '#withdrawalAmount',
-        { x: [0, 10, 0] },
-        {
-          duration: 0.05,
-          repeat: 2,
-          ease: 'easeIn',
-        }
-      );
-    }
-  }, [animate, isValidAmount]);
-
   return (
     <StyledPage>
       <Container size="sm" pt={4} css={styles.mainContainer}>
         <VStack alignItems="stretch" style={{ flex: 1 }}>
           <Recipient />
           {/* TODO: handle undefined assetId better */}
-          <div ref={scope}>
-            <CryptoAmountInput
-              name="withdrawalAmount"
-              value={amount}
-              onChange={setAmount}
-              tokenSymbol={assetId || ''}
-              error={isValidAmount ? undefined : 'Not enough coins'}
-            />
-          </div>
+          <CryptoAmountInput
+            name="withdrawalAmount"
+            value={amount}
+            onChange={setAmount}
+            tokenSymbol={assetId || ''}
+            error={isValidAmount ? undefined : 'Not enough coins'}
+          />
           <Balance balance={formattedBalance} />
         </VStack>
       </Container>
