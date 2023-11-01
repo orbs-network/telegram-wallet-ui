@@ -1,10 +1,9 @@
 import styled from '@emotion/styled';
-import { ReactNode, useEffect, useMemo, useRef } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { tgColors, twaMode } from '@telegram-wallet-ui/twa-ui-kit';
 import { useAnimatedRouterContext } from '../router/AnimatedRouter';
 import { motion, Variants } from 'framer-motion';
 import Telegram from '@twa-dev/sdk';
-import { useMainButtonStore } from '../store/main-button-store';
 
 const transition = { ease: 'easeInOut', duration: 0.3 };
 
