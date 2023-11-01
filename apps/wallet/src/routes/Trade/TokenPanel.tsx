@@ -107,7 +107,7 @@ export const TokenPanel = ({
   value,
   onChange,
   onTokenSelect,
-  filterTokenSymbol: filterTokenSymbol,
+  filterTokenSymbol,
   token,
   isInToken,
   error,

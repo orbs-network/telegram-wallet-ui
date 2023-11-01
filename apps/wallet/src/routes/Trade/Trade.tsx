@@ -1,4 +1,4 @@
-import { Box, calc, Container, Flex, useToast, VStack } from '@chakra-ui/react';
+import { Box, Container, Flex, useToast, VStack } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDebouncedCallback, useMultiplyPriceByAmount } from '../../hooks';
 import { TokenPanel } from './TokenPanel';

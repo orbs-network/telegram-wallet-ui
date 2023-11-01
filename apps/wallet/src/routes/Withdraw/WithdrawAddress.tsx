@@ -7,12 +7,14 @@ import {
   Icon,
   Container,
   HStack,
+  Heading,
+  Box,
 } from '@chakra-ui/react';
 import { useCallback, useMemo, useState } from 'react';
 import Telegram from '@twa-dev/sdk';
 import Web3 from 'web3';
 import { LuScanLine } from 'react-icons/lu';
-import { colors } from '@telegram-wallet-ui/twa-ui-kit';
+import { ListItem, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import { useNavigation } from '../../router/hooks';
 import { Page } from '../../components';
 import { css } from '@emotion/react';
@@ -20,6 +22,7 @@ import { useParams } from 'react-router-dom';
 import { URLParams } from '../../types';
 import { useCurrentPath } from '../../hooks';
 import { useUpdateMainButton } from '../../store/main-button-store';
+import { AiFillWarning } from 'react-icons/ai';
 
 const styles = {
   container: css`
@@ -34,10 +37,14 @@ export function WithdrawAddress() {
 
   useCurrentPath();
 
-  const isValidAddress = useMemo(
-    () => Web3.utils.isAddress(address),
-    [address]
-  );
+  const isValidAddress = useMemo(() => {
+    try {
+      Web3.utils.toChecksumAddress(address);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }, [address]);
 
   const onSubmit = useCallback(() => {
     withdrawAmount(assetId!, address);
@@ -54,7 +61,23 @@ export function WithdrawAddress() {
       <Container size="sm" pt={4} css={styles.container}>
         <VStack spacing={4} alignItems="stretch" height="100%">
           <AddressInput address={address} setAddress={setAddress} />
-          <ScanQR setAddress={setAddress} />
+          {address !== '' && !isValidAddress ? (
+            <ListItem
+              StartIconSlot={<Icon as={AiFillWarning} />}
+              StartTextSlot={
+                <Box>
+                  <Heading as="h3" variant="bodyTitle">
+                    Invalid Address
+                  </Heading>
+                  <Text variant="hint" fontSize="xs">
+                    Enter a valid Polygon address
+                  </Text>
+                </Box>
+              }
+            />
+          ) : (
+            <ScanQR setAddress={setAddress} />
+          )}
         </VStack>
       </Container>
     </Page>
