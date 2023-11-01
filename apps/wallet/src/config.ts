@@ -17,6 +17,7 @@ export const w3 = new web3(
   }`
 );
 export const TRANSAK_API_KEY = import.meta.env.VITE_TRANSAK_API_KEY;
+export const TRANSAK_URL = import.meta.env.VITE_TRANSAK_URL;
 
 export const accountProvider = new AccountProvider(w3);
 
