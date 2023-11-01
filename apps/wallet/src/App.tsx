@@ -42,7 +42,7 @@ const Fallback = ({ height }: { height: number }) => {
         position: 'relative',
       }}
     >
-      <WalletSpinner width="80px" height="80px" />
+      <WalletSpinner />
     </Container>
   );
 };
