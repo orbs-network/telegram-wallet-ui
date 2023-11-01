@@ -39,8 +39,6 @@ export function Balance({
     <SkeletonText isLoaded={Boolean(primaryAmount)}>
       <Text
         as="span"
-        color={colors.hint_color}
-        fontWeight="normal"
         onDoubleClick={() => {
           console.log('dbl clicked');
           navigate('/debug');
@@ -61,8 +59,6 @@ export function Balance({
         {primaryAmount}{' '}
         <Text
           as="span"
-          color={colors.hint_color}
-          fontWeight="normal"
           onDoubleClick={() => {
             console.log('dbl clicked');
             navigate('/debug');
