@@ -22,7 +22,7 @@ import { useParams } from 'react-router-dom';
 import { URLParams } from '../../types';
 import { useCurrentPath } from '../../hooks';
 import { useUpdateMainButton } from '../../store/main-button-store';
-import { AiFillWarning } from 'react-icons/ai';
+import { AiFillCloseCircle, AiFillWarning } from 'react-icons/ai';
 
 const styles = {
   container: css`
@@ -117,8 +117,9 @@ const AddressInput = ({
         value={address}
         placeholder="Enter Polygon address"
       />
+
       <InputRightElement onClick={onClick} pr={8} color={colors.link_color}>
-        Paste
+        {address !== '' ? 'Paste' : <Icon as={AiFillCloseCircle} />}
       </InputRightElement>
     </InputGroup>
   );
