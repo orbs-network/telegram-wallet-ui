@@ -1,5 +1,9 @@
 import { Container, HStack, VStack } from '@chakra-ui/react';
-import { Balance, IconButtonWithLabel } from '@telegram-wallet-ui/twa-ui-kit';
+import {
+  Balance,
+  IconButtonWithLabel,
+  setTwaHeader,
+} from '@telegram-wallet-ui/twa-ui-kit';
 import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
 import { Link } from 'react-router-dom';
 import { Page, TokenBalances } from '../components';
@@ -34,6 +38,10 @@ const TotalUSDAmount = () => {
 
 export function Home() {
   const { resetButton } = useMainButtonStore();
+
+  useEffect(() => {
+    setTwaHeader(false);
+  }, []);
 
   useEffect(() => {
     resetButton();
