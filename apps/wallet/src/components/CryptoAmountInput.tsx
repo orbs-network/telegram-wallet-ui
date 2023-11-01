@@ -11,6 +11,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { NumericFormat } from 'react-number-format';
 import { useAnimate } from 'framer-motion';
+import { colors } from '@telegram-wallet-ui/twa-ui-kit';
 
 const ERROR_COLOR = '#ff3333';
 
@@ -21,7 +22,7 @@ const styles = {
   inputSymbol: css`
     font-size: 32px;
     font-weight: 700;
-    color: #9d9d9d;
+    color: ${colors.hint_color};
     position: absolute;
     bottom: 10px;
     pointer-events: none;
@@ -37,7 +38,7 @@ const styles = {
     top: -5px;
     position: relative;
     * {
-      color: #b8b8b8;
+      color: ${colors.hint_color};
       font-size: 16px;
       font-weight: 400;
     }
@@ -48,7 +49,7 @@ const StyledNumericFormat = styled(NumericFormat)({
   fontSize: '55px',
   fontWeight: 700,
   outline: 'none',
-  caretColor: '#417fc6',
+  caretColor: colors.button_color,
   width: '100%',
   overflow: 'hidden',
   backgroundColor: 'transparent',
