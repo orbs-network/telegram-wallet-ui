@@ -9,7 +9,7 @@ import { useNavigation } from '../..//router/hooks';
 import { styles } from './styles';
 import { useUpdateMainButton } from '../../store/main-button-store';
 import { Page } from '../../components';
-import { setTwaHeader } from '@telegram-wallet-ui/twa-ui-kit';
+import { setTwaBg } from '@telegram-wallet-ui/twa-ui-kit';
 
 const useValidations = () => {
   const { inAmount, inToken } = useTradeContext();
@@ -143,10 +143,10 @@ const DstTokenPanel = () => {
 
 export function Trade() {
   useEffect(() => {
-    setTwaHeader(true);
+    setTwaBg(true);
 
     return () => {
-      setTwaHeader(false);
+      setTwaBg(false);
     };
   }, []);
 

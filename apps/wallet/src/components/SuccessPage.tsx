@@ -4,7 +4,7 @@ import SuccessLottie from '../assets/lottie/success.json';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Page } from './Page';
-import { setTwaHeader } from '@telegram-wallet-ui/twa-ui-kit';
+import { setTwaBg } from '@telegram-wallet-ui/twa-ui-kit';
 import { useEffect } from 'react';
 
 const styles = {
@@ -28,10 +28,10 @@ export function SuccessPage({
   secondaryBackground?: boolean;
 }) {
   useEffect(() => {
-    setTwaHeader(true);
+    setTwaBg(true);
 
     return () => {
-      setTwaHeader(false);
+      setTwaBg(false);
     };
   }, []);
 

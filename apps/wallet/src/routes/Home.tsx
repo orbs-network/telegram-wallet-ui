@@ -2,7 +2,7 @@ import { Container, HStack, VStack } from '@chakra-ui/react';
 import {
   IconButtonWithLabel,
   TotalBalance,
-  setTwaHeader,
+  setTwaBg,
 } from '@telegram-wallet-ui/twa-ui-kit';
 import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
 import { Link } from 'react-router-dom';
@@ -49,7 +49,7 @@ export function Home() {
   const { resetButton } = useMainButtonStore();
 
   useEffect(() => {
-    setTwaHeader(false);
+    setTwaBg(false);
   }, []);
 
   useEffect(() => {
