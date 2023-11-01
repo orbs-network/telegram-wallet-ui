@@ -120,11 +120,7 @@ export function Transaction() {
             color={tx.direction === 'incoming' ? 'green' : 'inherit'}
           >
             {txAmount}{' '}
-            <Text
-              as="span"
-              fontSize="2rem"
-              color={tx.direction === 'incoming' ? 'green.500' : 'inherit'}
-            >
+            <Text as="span" fontSize="2rem">
               {txToken?.symbol.toUpperCase()}
             </Text>
           </Heading>
