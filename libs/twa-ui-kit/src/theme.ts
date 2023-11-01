@@ -115,6 +115,7 @@ export const theme = extendTheme({
     Card: defineStyleConfig({
       baseStyle: {
         backgroundColor: colors.bg_color,
+        color: colors.text_color,
       },
     }),
     Text: defineStyleConfig({
