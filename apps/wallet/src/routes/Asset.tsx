@@ -5,7 +5,11 @@ import { MdSwapHorizontalCircle } from 'react-icons/md';
 import { Link, useParams } from 'react-router-dom';
 import { Page, WalletSpinner } from '../components';
 import { CryptoAsset } from '../config';
-import { useFormatNumber, useUserData } from '../hooks';
+import {
+  useFormatNumber,
+  useMultiplyPriceByAmount,
+  useUserData,
+} from '../hooks';
 import { ROUTES } from '../router/routes';
 import { Transactions } from '../components/Transactions';
 
@@ -22,6 +26,15 @@ export function Asset() {
 
   const { data: userData } = useUserData();
   const tokenData = assetId && userData?.tokens[assetId.toUpperCase()];
+  const price = useMultiplyPriceByAmount(
+    tokenData?.coingeckoId,
+    tokenData?.balance
+  );
+
+  const fiatAmount = useFormatNumber({
+    value: price || '0',
+    decimalScale: 2,
+  });
 
   const balance = useFormatNumber({
     value: tokenData?.balance,
@@ -47,10 +60,11 @@ export function Asset() {
           />
 
           <Balance
-            primaryCurrencySymbol={tokenData?.symbol.toUpperCase()}
-            primaryAmount={balance || '0'}
+            secondaryCurrencyCode={tokenData?.symbol.toUpperCase()}
+            secondaryAmount={balance || '0'}
+            primaryCurrencySymbol="$"
+            primaryAmount={fiatAmount || '0'}
             label={`${tokenData.name} balance`}
-            isPrimaryCrypto
           />
           <HStack justifyContent="center" alignItems="center" spacing={2}>
             <Link

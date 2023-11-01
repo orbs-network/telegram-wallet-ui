@@ -1,7 +1,7 @@
 import { Container, HStack, VStack } from '@chakra-ui/react';
 import {
-  Balance,
   IconButtonWithLabel,
+  TotalBalance,
   setTwaHeader,
 } from '@telegram-wallet-ui/twa-ui-kit';
 import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
@@ -28,9 +28,9 @@ const TotalUSDAmount = () => {
   });
 
   return (
-    <Balance
-      primaryCurrencySymbol="$"
-      primaryAmount={primaryAmount || '0'}
+    <TotalBalance
+      currencySymbol="$"
+      amount={primaryAmount}
       label="Total balance"
     />
   );
