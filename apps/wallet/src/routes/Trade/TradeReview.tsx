@@ -8,6 +8,7 @@ import {
   useFormatNumber,
   useGetTokenFromList,
   useQuoteQuery,
+  useSwapInProgress,
 } from '../../hooks';
 import { URLParams, SwapSuccesss } from '../../types';
 import { amountUi } from '../../utils/conversion';
@@ -15,19 +16,19 @@ import BN from 'bignumber.js';
 import { useNavigation } from '../../router/hooks';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { permit2Provider, swapProvider } from '../../config';
-import {
-  useUpdateMainButton,
-} from '../../store/main-button-store';
+import { useUpdateMainButton } from '../../store/main-button-store';
 
 const useSwap = () => {
   const tradeSuccess = useNavigation().tradeSuccess;
   const { outToken: outTokenSymbol } = useParams<URLParams>();
 
   const queryClient = useQueryClient();
+  const { setProgress } = useSwapInProgress();
 
   const { quote, amountOut } = useQuote();
   return useMutation({
     mutationFn: async () => {
+      setProgress(true);
       const result = await swapProvider.swap({
         ...quote!.quote,
       });
@@ -42,6 +43,9 @@ const useSwap = () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.USER_DATA] });
       tradeSuccess(outTokenSymbol!, amountOut, txHash);
     },
+    onSettled: () => {
+      setProgress(false);
+    }
   });
 };
 
@@ -56,7 +60,6 @@ const useMainButton = () => {
       permit2Provider.addErc20(inToken.address);
     }
   }, [inToken]);
-
 
   useUpdateMainButton({
     text: 'Confirm and swap',
