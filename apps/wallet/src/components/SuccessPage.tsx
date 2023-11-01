@@ -4,6 +4,8 @@ import SuccessLottie from '../assets/lottie/success.json';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Page } from './Page';
+import { setTwaHeader } from '@telegram-wallet-ui/twa-ui-kit';
+import { useEffect } from 'react';
 
 const styles = {
   container: css`
@@ -19,17 +21,25 @@ const styles = {
 export function SuccessPage({
   children,
   className = '',
-  secondaryBackground = false
+  secondaryBackground = false,
 }: {
   children: React.ReactNode;
   className?: string;
   secondaryBackground?: boolean;
 }) {
+  useEffect(() => {
+    setTwaHeader(true);
+
+    return () => {
+      setTwaHeader(false);
+    };
+  }, []);
+
   return (
     <Page className={className} secondaryBackground={secondaryBackground}>
       <Container css={styles.container} size="sm" pt={4}>
         <VStack spacing={4}>
-        <LottieContainer>
+          <LottieContainer>
             <Lottie
               animationData={SuccessLottie}
               loop={true}
@@ -43,10 +53,6 @@ export function SuccessPage({
     </Page>
   );
 }
-
-const StyledPage = styled(Page)({
-  paddingBottom: 40,
-});
 
 const LottieContainer = styled('div')({
   position: 'relative',

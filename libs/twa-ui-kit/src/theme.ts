@@ -42,6 +42,13 @@ export function twaMode(light: string | undefined, dark: string | undefined) {
   return Twa.colorScheme === 'light' ? light : dark;
 }
 
+export function setTwaHeader(isAlt: boolean) {
+  if (!Twa) return;
+  Twa.setHeaderColor(
+    isAlt ? Twa.themeParams.bg_color : Twa.themeParams.secondary_bg_color
+  );
+}
+
 export const colors = {
   bg_color:
     Twa.themeParams.bg_color ||
@@ -77,8 +84,8 @@ const config: ThemeConfig = {
 export const theme = extendTheme({
   config,
   fonts: {
-    heading: `'Inter', sans-serif`,
-    body: `'Inter', sans-serif`,
+    heading: `'ui-rounded', 'Inter', sans-serif`,
+    body: `'ui-rounded', 'Inter', sans-serif`,
   },
   styles: {
     global: (props: StyleFunctionProps) => ({
