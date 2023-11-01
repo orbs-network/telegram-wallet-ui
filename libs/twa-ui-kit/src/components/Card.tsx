@@ -7,7 +7,7 @@ const styles = css`
   min-height: 72px;
   width: 100%;
   box-shadow: unset;
-  background-color: ${colors.secondary_bg_color};
+  background-color: ${colors.bg_color};
 `;
 
 type CardProps = {
