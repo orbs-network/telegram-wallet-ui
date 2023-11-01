@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { Page, TokenBalances } from '../components';
 import { useFormatNumber, usePortfolioUsdValue } from '../hooks';
 import { faucetProvider, permit2Provider } from '../config';
-import { MdSwapVerticalCircle } from 'react-icons/md';
+import { MdSwapHorizontalCircle } from 'react-icons/md';
 import { Transactions } from '../components/Transactions';
 import { useMainButtonStore } from '../store/main-button-store';
 import { useEffect } from 'react';
@@ -33,12 +33,11 @@ const TotalUSDAmount = () => {
 };
 
 export function Home() {
-    const { resetButton } = useMainButtonStore();
+  const { resetButton } = useMainButtonStore();
 
-    useEffect(() => {
-     resetButton();
-    }, [resetButton]);
-    
+  useEffect(() => {
+    resetButton();
+  }, [resetButton]);
 
   return (
     <Page>
@@ -59,7 +58,10 @@ export function Home() {
               />
             </Link>
             <Link to="/trade">
-              <IconButtonWithLabel Icon={MdSwapVerticalCircle} label="Trade" />
+              <IconButtonWithLabel
+                Icon={MdSwapHorizontalCircle}
+                label="Trade"
+              />
             </Link>
           </HStack>
           <TokenBalances />
