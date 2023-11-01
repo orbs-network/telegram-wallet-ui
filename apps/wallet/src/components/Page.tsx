@@ -105,6 +105,8 @@ const AnimatedRouteContainer = styled('div')<{ $secondaryBackground: boolean }>(
       ? colors.secondary_bg_color
       : colors.bg_color;
 
+    Telegram.setHeaderColor(background);
+
     return {
       background,
       overflowY: 'auto',
