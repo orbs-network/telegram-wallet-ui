@@ -84,7 +84,9 @@ export function TotalBalance({
   return (
     <Stat textAlign="center">
       <StatLabel as="label">{label}</StatLabel>
-      <StatNumber fontSize="6xl">{PrimaryAmount}</StatNumber>
+      <StatNumber fontSize="6xl" lineHeight="1.3">
+        {PrimaryAmount}
+      </StatNumber>
     </Stat>
   );
 }

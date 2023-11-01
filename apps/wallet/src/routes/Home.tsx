@@ -60,27 +60,34 @@ export function Home() {
     <Page>
       <Container size="sm" pt={4}>
         <VStack spacing={4} alignItems="stretch">
-          <TotalUSDAmount />
-          <HStack justifyContent="center" alignItems="center" spacing={2}>
-            <Link to="/deposit" onClick={handleClick}>
-              <IconButtonWithLabel
-                Icon={BiSolidDownArrowCircle}
-                label="Deposit"
-              />
-            </Link>
-            <Link to="/withdraw" onClick={handleClick}>
-              <IconButtonWithLabel
-                Icon={BiSolidUpArrowCircle}
-                label="Withdraw"
-              />
-            </Link>
-            <Link to="/trade" onClick={handleClick}>
-              <IconButtonWithLabel
-                Icon={MdSwapHorizontalCircle}
-                label="Trade"
-              />
-            </Link>
-          </HStack>
+          <Box>
+            <TotalUSDAmount />
+            <HStack
+              justifyContent="center"
+              alignItems="center"
+              spacing={2}
+              pt={2}
+            >
+              <Link to="/deposit" onClick={handleClick}>
+                <IconButtonWithLabel
+                  Icon={BiSolidDownArrowCircle}
+                  label="Deposit"
+                />
+              </Link>
+              <Link to="/withdraw" onClick={handleClick}>
+                <IconButtonWithLabel
+                  Icon={BiSolidUpArrowCircle}
+                  label="Withdraw"
+                />
+              </Link>
+              <Link to="/trade" onClick={handleClick}>
+                <IconButtonWithLabel
+                  Icon={MdSwapHorizontalCircle}
+                  label="Trade"
+                />
+              </Link>
+            </HStack>
+          </Box>
           <TokenBalances />
         </VStack>
       </Container>

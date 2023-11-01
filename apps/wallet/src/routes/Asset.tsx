@@ -52,7 +52,7 @@ export function Asset() {
   return (
     <Page>
       <Container size="sm" pt={4}>
-        <VStack spacing={4}>
+        <VStack spacing={2}>
           <Avatar
             name={tokenData.symbol}
             src={tokenData.logoURI}
