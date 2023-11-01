@@ -34,7 +34,6 @@ const styles = {
 export function DepositAddress() {
   const [isCopied, setIsCopied] = useState(false);
   const { data: userData } = useUserData();
-  const toast = useToast();
 
   if (!userData?.account.address) {
     return (
@@ -69,12 +68,7 @@ export function DepositAddress() {
           text: address,
         });
       } catch (err) {
-        toast({
-          title: 'Failed to share',
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-        });
+        // do nothing if user cancels
       }
     }
     void share();
