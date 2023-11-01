@@ -86,8 +86,12 @@ export function WithdrawAmount() {
     if (!isValidAmount) {
       animate(
         '#withdrawalAmount',
-        { x: 3 },
-        { duration: 0.05, repeat: 1, repeatType: 'mirror' }
+        { x: 10 },
+        {
+          duration: 0.05,
+          repeat: 2,
+          ease: 'easeIn',
+        }
       );
     }
   }, [animate, isValidAmount]);
