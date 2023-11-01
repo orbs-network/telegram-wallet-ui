@@ -70,7 +70,7 @@ export function WithdrawSummary() {
   return (
     <Page>
       <Container size="sm" pt={4}>
-        <VStack spacing={4} alignItems="stretch" height="100%">
+        <VStack spacing={8} alignItems="stretch" height="100%">
           <Recipient />
           <Heading as="h2" size="3xl">
             {amount}{' '}
