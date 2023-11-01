@@ -54,6 +54,9 @@ const StyledNumericFormat = styled(NumericFormat)({
   overflow: 'hidden',
   backgroundColor: 'transparent',
   color: colors.text_color,
+  '::placeholder': {
+    color: colors.text_color,
+  },
 });
 
 type CryptoAmountInputProps = {

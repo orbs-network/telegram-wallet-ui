@@ -182,6 +182,9 @@ export const theme = extendTheme({
           field: {
             backgroundColor: colors.bg_color,
             borderRadius: '0.875rem',
+            _placeholder: {
+              color: colors.hint_color,
+            },
             _hover: {
               backgroundColor: adjustBrightness(colors.bg_color, -0.07),
             },
