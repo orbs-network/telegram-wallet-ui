@@ -16,8 +16,7 @@ export const w3 = new web3(
     import.meta.env.VITE_ALCHEMY_API_KEY
   }`
 );
-export const TRANSAK_STAGING_API_KEY = import.meta.env
-  .VITE_TRANSAK_STAGING_API_KEY;
+export const TRANSAK_API_KEY = import.meta.env.VITE_TRANSAK_API_KEY;
 
 export const accountProvider = new AccountProvider(w3);
 
