@@ -8,12 +8,15 @@ import { lazy, Suspense, useState } from 'react';
 import { usePersistedStore } from './store/persisted-store';
 import { WalletSpinner } from './components';
 import { useMainButtonStore } from './store/main-button-store';
+import Twa from '@twa-dev/sdk';
+
 const queryClient = new QueryClient();
 
 const Router = lazy(() => import('./router/Router'));
 
 const App = () => {
   const [height] = useState(window.innerHeight);
+
   return (
     <QueryClientProvider client={queryClient}>
       <ChakraProvider theme={theme}>
@@ -30,7 +33,13 @@ const App = () => {
 
 const Fallback = () => {
   return (
-    <Container size="sm" style={{ height: '100vh', position: 'relative' }}>
+    <Container
+      size="sm"
+      style={{
+        height: Twa.viewportStableHeight || '100vh',
+        position: 'relative',
+      }}
+    >
       <WalletSpinner width="80px" height="80px" />
     </Container>
   );
