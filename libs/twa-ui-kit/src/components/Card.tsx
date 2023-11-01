@@ -8,6 +8,7 @@ const styles = css`
   width: 100%;
   box-shadow: unset;
   background-color: ${colors.bg_color};
+  color: ${colors.text_color};
 `;
 
 type CardProps = {
