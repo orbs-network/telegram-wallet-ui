@@ -1,11 +1,9 @@
 import {
-  StyleFunctionProps,
-  ThemeConfig,
+  // ThemeConfig,
   defineStyle,
   defineStyleConfig,
   extendTheme,
 } from '@chakra-ui/react';
-import { mode } from '@chakra-ui/theme-tools';
 import Twa from '@twa-dev/sdk';
 import { inputAnatomy } from '@chakra-ui/anatomy';
 import { createMultiStyleConfigHelpers } from '@chakra-ui/react';
@@ -83,32 +81,27 @@ export const colors = {
   success: twaMode('#38A169', '#4cd964'),
 };
 
-const config: ThemeConfig = {
-  initialColorMode: Twa.colorScheme,
-  useSystemColorMode: false,
-};
+// const config: ThemeConfig = {
+//   initialColorMode: Twa.colorScheme,
+//   useSystemColorMode: false,
+// };
 
 export const theme = extendTheme({
-  config,
+  // config,
   fonts: {
     heading: `'ui-rounded', 'Inter', sans-serif`,
     body: `'ui-rounded', 'Inter', sans-serif`,
   },
   styles: {
-    global: (props: StyleFunctionProps) => ({
+    global: {
       body: {
         color: colors.text_color,
-        backgroundColor:
-          Twa.themeParams.secondary_bg_color ||
-          mode(
-            tgColors.light.secondary_bg_color,
-            tgColors.dark.secondary_bg_color
-          )(props),
+        backgroundColor: colors.secondary_bg_color,
       },
       a: {
         color: colors.link_color,
       },
-    }),
+    },
   },
   components: {
     Heading: defineStyleConfig({
@@ -142,7 +135,7 @@ export const theme = extendTheme({
         fontSize: '1rem',
       },
       variants: {
-        primary: (props) => ({
+        primary: {
           backgroundColor: colors.button_color,
           color: colors.button_text_color,
           _hover: {
@@ -150,24 +143,24 @@ export const theme = extendTheme({
           },
           // This is ignored for some reason
           fontSize: '1rem',
-        }),
-        secondary: (props) => ({
+        },
+        secondary: {
           backgroundColor: 'transparent',
           fontSize: '1rem',
           color: colors.button_color,
           _hover: {
             color: adjustBrightness(colors.button_color, -0.1),
           },
-        }),
-        tertiary: (props) => ({
+        },
+        tertiary: {
           backgroundColor: '#DEE4EE',
           color: colors.button_color,
           _hover: {
             backgroundColor: adjustBrightness('#DEE4EE', -0.07),
           },
           fontSize: '1rem',
-        }),
-        icon: (props) => ({
+        },
+        icon: {
           padding: '0.5rem',
           width: 'auto',
           height: 'auto',
@@ -176,7 +169,7 @@ export const theme = extendTheme({
           _hover: {
             color: adjustBrightness(colors.button_color, -0.1),
           },
-        }),
+        },
       },
     }),
     Input: defineMultiStyleConfig({
