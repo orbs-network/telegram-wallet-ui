@@ -115,6 +115,10 @@ const ScanQR = ({ setAddress }: { setAddress: (value: string) => void }) => {
     });
   };
 
+  if (!Telegram.initData) {
+    return null;
+  }
+
   return (
     <HStack spacing={2} alignItems="center" onClick={onScan}>
       <Icon as={LuScanLine} color={colors.button_color} />
