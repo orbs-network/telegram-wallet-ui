@@ -9,6 +9,8 @@
     "@defi.org/web3-candies": "^4.20.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@sentry/react": "^7.77.0",
+    "@sentry/vite-plugin": "^2.9.0",
     "@swc/helpers": "~0.5.2",
     "@tanstack/react-query": "^5.0.0",
     "@twa-dev/sdk": "^6.9.0",
