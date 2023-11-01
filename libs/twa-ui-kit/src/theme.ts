@@ -87,13 +87,10 @@ export const theme = extendTheme({
           Twa.themeParams.text_color ||
           mode(tgColors.light.text_color, tgColors.dark.text_color)(props),
         backgroundColor:
-          twaMode(
-            Twa.themeParams.secondary_bg_color,
-            Twa.themeParams.bg_color
-          ) ||
+          Twa.themeParams.secondary_bg_color ||
           mode(
             tgColors.light.secondary_bg_color,
-            tgColors.dark.bg_color
+            tgColors.dark.secondary_bg_color
           )(props),
       },
       a: {
@@ -115,14 +112,8 @@ export const theme = extendTheme({
     Card: defineStyleConfig({
       baseStyle: {
         backgroundColor: (props) =>
-          twaMode(
-            Twa.themeParams.bg_color,
-            Twa.themeParams.secondary_bg_color
-          ) ||
-          mode(
-            tgColors.light.bg_color,
-            tgColors.dark.secondary_bg_color
-          )(props),
+          Twa.themeParams.bg_color ||
+          mode(tgColors.light.bg_color, tgColors.dark.bg_color)(props),
       },
     }),
     Text: defineStyleConfig({
