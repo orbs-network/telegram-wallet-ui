@@ -19,7 +19,7 @@ import { useUserData } from '../hooks';
 import { amountUi, toUiDisplay } from '../utils/conversion';
 import BN from 'bignumber.js';
 import { useParams } from 'react-router-dom';
-import { Card } from '@telegram-wallet-ui/twa-ui-kit';
+import { Card, colors } from '@telegram-wallet-ui/twa-ui-kit';
 
 export function Transaction() {
   const { txId } = useParams<{ txId: string }>();
@@ -117,7 +117,7 @@ export function Transaction() {
           <Heading
             as="h2"
             size="2xl"
-            color={tx.direction === 'incoming' ? 'green' : 'inherit'}
+            color={tx.direction === 'incoming' ? colors.success : 'inherit'}
           >
             {txAmount}{' '}
             <Text as="span" fontSize="2rem">

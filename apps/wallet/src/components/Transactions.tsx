@@ -181,7 +181,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
               <Box
                 style={{
                   textAlign: 'right',
-                  color: 'green',
+                  color: colors.success,
                 }}
               >
                 <Text noOfLines={1}>
@@ -248,7 +248,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
               <Box
                 style={{
                   textAlign: 'right',
-                  color: isIn ? 'inherit' : 'green',
+                  color: isIn ? 'inherit' : colors.success,
                 }}
               >
                 <Text noOfLines={1}>

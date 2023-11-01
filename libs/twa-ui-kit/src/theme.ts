@@ -80,6 +80,7 @@ export const colors = {
     twaMode(tgColors.light.text_color, tgColors.dark.text_color),
   border_color: twaMode('#c8c7cb', '#3d3d3f'),
   button_disabed_color: twaMode('#666666', '#333333'),
+  success: twaMode('#38A169', '#4cd964'),
 };
 
 const config: ThemeConfig = {
@@ -96,9 +97,7 @@ export const theme = extendTheme({
   styles: {
     global: (props: StyleFunctionProps) => ({
       body: {
-        color:
-          Twa.themeParams.text_color ||
-          mode(tgColors.light.text_color, tgColors.dark.text_color)(props),
+        color: colors.text_color,
         backgroundColor:
           Twa.themeParams.secondary_bg_color ||
           mode(
@@ -107,9 +106,7 @@ export const theme = extendTheme({
           )(props),
       },
       a: {
-        color:
-          Twa.themeParams.link_color ||
-          mode(tgColors.light.link_color, tgColors.dark.link_color)(props),
+        color: colors.link_color,
       },
     }),
   },
@@ -124,17 +121,13 @@ export const theme = extendTheme({
     }),
     Card: defineStyleConfig({
       baseStyle: {
-        backgroundColor: (props) =>
-          Twa.themeParams.bg_color ||
-          mode(tgColors.light.bg_color, tgColors.dark.bg_color)(props),
+        backgroundColor: colors.bg_color,
       },
     }),
     Text: defineStyleConfig({
       variants: {
         hint: {
-          color: (props) =>
-            Twa.themeParams.hint_color ||
-            mode(tgColors.light.hint_color, tgColors.dark.hint_color)(props),
+          color: colors.hint_color,
           fontSize: '0.875rem',
         },
       },
@@ -150,27 +143,10 @@ export const theme = extendTheme({
       },
       variants: {
         primary: (props) => ({
-          backgroundColor:
-            Twa.themeParams.button_color ||
-            mode(
-              tgColors.light.button_color,
-              tgColors.dark.button_color
-            )(props),
-          color:
-            Twa.themeParams.button_text_color ||
-            mode(
-              tgColors.light.button_text_color,
-              tgColors.dark.button_text_color
-            )(props),
+          backgroundColor: colors.button_color,
+          color: colors.button_text_color,
           _hover: {
-            backgroundColor: adjustBrightness(
-              Twa.themeParams.button_color ||
-                mode(
-                  tgColors.light.button_color,
-                  tgColors.dark.button_color
-                )(props),
-              -0.07
-            ),
+            backgroundColor: adjustBrightness(colors.button_color, -0.07),
           },
           // This is ignored for some reason
           fontSize: '1rem',
@@ -178,31 +154,14 @@ export const theme = extendTheme({
         secondary: (props) => ({
           backgroundColor: 'transparent',
           fontSize: '1rem',
-          color:
-            Twa.themeParams.button_color ||
-            mode(
-              tgColors.light.button_color,
-              tgColors.dark.button_color
-            )(props),
+          color: colors.button_color,
           _hover: {
-            color: adjustBrightness(
-              Twa.themeParams.button_color ||
-                mode(
-                  tgColors.light.button_color,
-                  tgColors.dark.button_color
-                )(props),
-              -0.1
-            ),
+            color: adjustBrightness(colors.button_color, -0.1),
           },
         }),
         tertiary: (props) => ({
           backgroundColor: '#DEE4EE',
-          color:
-            Twa.themeParams.button_color ||
-            mode(
-              tgColors.light.button_color,
-              tgColors.dark.button_color
-            )(props),
+          color: colors.button_color,
           _hover: {
             backgroundColor: adjustBrightness('#DEE4EE', -0.07),
           },
@@ -213,21 +172,9 @@ export const theme = extendTheme({
           width: 'auto',
           height: 'auto',
           fontSize: '0.875rem',
-          color:
-            Twa.themeParams.button_color ||
-            mode(
-              tgColors.light.button_color,
-              tgColors.dark.button_color
-            )(props),
+          color: colors.button_color,
           _hover: {
-            color: adjustBrightness(
-              Twa.themeParams.button_color ||
-                mode(
-                  tgColors.light.button_color,
-                  tgColors.dark.button_color
-                )(props),
-              -0.1
-            ),
+            color: adjustBrightness(colors.button_color, -0.1),
           },
         }),
       },
@@ -239,18 +186,13 @@ export const theme = extendTheme({
       variants: {
         filled: definePartsStyle({
           field: {
-            backgroundColor:
-              Twa.themeParams.bg_color || tgColors.light.bg_color,
+            backgroundColor: colors.bg_color,
             borderRadius: '0.875rem',
             _hover: {
-              backgroundColor: adjustBrightness(
-                Twa.themeParams.bg_color || tgColors.light.bg_color,
-                -0.07
-              ),
+              backgroundColor: adjustBrightness(colors.bg_color, -0.07),
             },
             _dark: {
-              backgroundColor:
-                Twa.themeParams.bg_color || tgColors.light.bg_color,
+              backgroundColor: colors.bg_color,
             },
           },
         }),
