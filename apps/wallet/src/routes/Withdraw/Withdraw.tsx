@@ -22,7 +22,9 @@ export function Withdraw() {
             Choose asset to withdraw
           </Heading>
           <SelectToken
-            tokens={Object.values(data?.tokens || {})}
+            tokens={Object.values(data?.tokens || {}).filter((t) =>
+              t.balanceBN.gt(0)
+            )}
             onSelect={(token) => withdrawAddress(token.symbol)}
           />
         </VStack>
