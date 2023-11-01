@@ -1,11 +1,4 @@
-import {
-  Code,
-  Container,
-  HStack,
-  Icon,
-  VStack,
-  useToast,
-} from '@chakra-ui/react';
+import { Code, Container, HStack, Icon, VStack } from '@chakra-ui/react';
 import { useUserData } from '../../hooks';
 import { Button, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import QRCode from 'react-qr-code';
