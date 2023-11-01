@@ -2,16 +2,15 @@ import { Container, Text, VStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { useMutation } from '@tanstack/react-query';
 import { Card } from '@telegram-wallet-ui/twa-ui-kit';
-import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Page } from '../../components';
 import { eventsProvider, web3Provider } from '../../config';
-import { useMainButtonContext } from '../../context/MainButtonContext';
 import { useGetTokenFromList } from '../../hooks';
 import { useNavigation } from '../../router/hooks';
 import { URLParams } from '../../types';
 import { Recipient } from './Components';
 import { amountBN } from '../../utils/conversion';
+import { useUpdateMainButton } from '../../store/main-button-store';
 
 const useTransferTx = () => {
   const { recipient, amount, assetId } = useParams<URLParams>();
@@ -53,19 +52,16 @@ const useTransferTx = () => {
 };
 
 export function WithdrawSummary() {
-  const { onSetButton } = useMainButtonContext();
   const { recipient, amount, assetId } = useParams<URLParams>();
   const token = useGetTokenFromList(assetId);
-  const { mutate, isPending } = useTransferTx();
+  const { mutateAsync, isPending } = useTransferTx();
   const symbol = token?.symbol || '';
 
-  useEffect(() => {
-    onSetButton({
-      text: 'CONFIRM AND SEND',
-      progress: isPending,
-      onClick: () => mutate(),
-    });
-  }, [onSetButton, mutate, isPending]);
+  useUpdateMainButton({
+    text: 'CONFIRM AND SEND',
+    onClick: mutateAsync,
+    progress: isPending,
+  });
 
   return (
     <Page>

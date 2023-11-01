@@ -7,8 +7,6 @@ import { Page, WalletSpinner } from '../components';
 import { CryptoAsset } from '../config';
 import { useFormatNumber, useUserData } from '../hooks';
 import { ROUTES } from '../router/routes';
-import { useMainButtonContext } from '../context/MainButtonContext';
-import { useEffect } from 'react';
 import { Transactions } from '../components/Transactions';
 
 function Loader() {
@@ -21,10 +19,6 @@ function Loader() {
 
 export function Asset() {
   const { assetId } = useParams<{ assetId: CryptoAsset }>();
-  const { resetButton } = useMainButtonContext();
-  useEffect(() => {
-    resetButton();
-  }, [resetButton]);
 
   const { data: userData } = useUserData();
   const tokenData = assetId && userData?.tokens[assetId.toUpperCase()];

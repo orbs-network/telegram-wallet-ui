@@ -1,9 +1,10 @@
 import styled from '@emotion/styled';
-import { ReactNode, useMemo } from 'react';
-import { colors } from '@telegram-wallet-ui/twa-ui-kit';
+import { ReactNode, useEffect, useMemo, useRef } from 'react';
+import { tgColors, twaMode } from '@telegram-wallet-ui/twa-ui-kit';
 import { useAnimatedRouterContext } from '../router/AnimatedRouter';
 import { motion, Variants } from 'framer-motion';
 import Telegram from '@twa-dev/sdk';
+import { useMainButtonStore } from '../store/main-button-store';
 
 const transition = { ease: 'easeInOut', duration: 0.3 };
 
@@ -74,9 +75,11 @@ const useVariants = () => {
 export const Page = ({
   children,
   className = '',
+  secondaryBackground = false,
 }: {
   children: ReactNode;
   className?: string;
+  secondaryBackground?: boolean;
 }) => {
   const childVariants = useVariants();
 
@@ -88,20 +91,35 @@ export const Page = ({
       variants={childVariants as Variants}
       style={{ flex: 1 }}
     >
-      <AnimatedRouteContainer className={className}>
+      <AnimatedRouteContainer
+        $secondaryBackground={secondaryBackground}
+        className={className}
+      >
         {children}
       </AnimatedRouteContainer>
     </motion.main>
   );
 };
-const AnimatedRouteContainer = styled('div')(() => {
-  return {
-    background: colors.bg_color,
-    overflowY: 'auto',
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100%',
-    overflowX: 'hidden',
-    paddingBottom: !Telegram.initData ? 60 : 0,
-  };
-});
+const AnimatedRouteContainer = styled('div')<{ $secondaryBackground: boolean }>(
+  ({ $secondaryBackground }) => {
+    const first = !$secondaryBackground
+      ? tgColors.light.secondary_bg_color
+      : tgColors.light.bg_color;
+
+    const second = !$secondaryBackground
+      ? tgColors.dark.secondary_bg_color
+      : tgColors.dark.bg_color;
+
+    const background = twaMode(first, second);
+
+    return {
+      background,
+      overflowY: 'auto',
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
+      overflowX: 'hidden',
+      paddingBottom: !Telegram.initData ? 60 : 0,
+    };
+  }
+);

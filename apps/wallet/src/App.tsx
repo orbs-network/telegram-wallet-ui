@@ -1,37 +1,32 @@
 import { ChakraProvider, Container } from '@chakra-ui/react';
 import { MainButton, theme } from '@telegram-wallet-ui/twa-ui-kit';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import {
-  MainButtonContextProvider,
-  useMainButtonContext,
-} from './context/MainButtonContext';
 import { useLocation } from 'react-router-dom';
 import { ROUTES } from './router/routes';
 import styled from '@emotion/styled';
 import { lazy, Suspense, useState } from 'react';
 import { usePersistedStore } from './store/persisted-store';
 import { WalletSpinner } from './components';
+import { useMainButtonStore } from './store/main-button-store';
 const queryClient = new QueryClient();
 
 const Router = lazy(() => import('./router/Router'));
 
-const App = () =>  {
+const App = () => {
   const [height] = useState(window.innerHeight);
   return (
     <QueryClientProvider client={queryClient}>
       <ChakraProvider theme={theme}>
-        <MainButtonContextProvider>
-          <AppContainer style={{ height }}>
-            <Suspense fallback={<Fallback />}>
-              <Router />
-            </Suspense>
-            <ActionButton />
-          </AppContainer>
-        </MainButtonContextProvider>
+        <AppContainer style={{ height }}>
+          <Suspense fallback={<Fallback />}>
+            <Router />
+          </Suspense>
+          <ActionButton />
+        </AppContainer>
       </ChakraProvider>
     </QueryClientProvider>
   );
-}
+};
 
 const Fallback = () => {
   return (
@@ -41,8 +36,6 @@ const Fallback = () => {
   );
 };
 
-
-
 const AppContainer = styled('div')({
   display: 'flex',
   flexDirection: 'column',
@@ -50,21 +43,20 @@ const AppContainer = styled('div')({
 });
 
 function ActionButton() {
-  const { onClick, text, disabled, progress } = useMainButtonContext();
+  const { onClick, text, disabled, progress } = useMainButtonStore();
   const location = useLocation();
-    const { showOnboarding } = usePersistedStore();
-
+  const { showOnboarding } = usePersistedStore();
 
   if (!showOnboarding && location.pathname === ROUTES.root) return null;
 
-  if(!text) return null;
+  if (!text) return null;
 
   return (
     <ButtonContainer>
       <MainButton
         disabled={disabled}
         progress={progress}
-        onClick={onClick}
+        onClick={onClick || (() => null)}
         text={text}
       />
     </ButtonContainer>
@@ -72,10 +64,9 @@ function ActionButton() {
 }
 
 const ButtonContainer = styled(Container)({
-  position:'absolute',
+  position: 'absolute',
   zIndex: 10,
   bottom: 10,
 });
-
 
 export default App;

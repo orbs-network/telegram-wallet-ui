@@ -9,7 +9,7 @@ import {
   useColorMode,
   Container,
 } from '@chakra-ui/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { MdOutlineContentPaste } from 'react-icons/md';
 import Telegram from '@twa-dev/sdk';
 import Web3 from 'web3';
@@ -19,11 +19,11 @@ import styled from '@emotion/styled';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { useNavigation } from '../../router/hooks';
 import { Page } from '../../components';
-import { useMainButtonContext } from '../../context/MainButtonContext';
 import { css } from '@emotion/react';
 import { useParams } from 'react-router-dom';
 import { URLParams } from '../../types';
 import { useCurrentPath } from '../../hooks';
+import { useUpdateMainButton } from '../../store/main-button-store';
 
 const styles = {
   container: css`
@@ -34,7 +34,6 @@ const styles = {
 export function WithdrawAddress() {
   const [address, setAddress] = useState('');
   const { withdrawAmount } = useNavigation();
-  const { onSetButton } = useMainButtonContext();
   const { assetId } = useParams<URLParams>();
 
   useCurrentPath();
@@ -44,13 +43,16 @@ export function WithdrawAddress() {
     [address]
   );
 
-  useEffect(() => {
-    onSetButton({
-      text: 'Continue',
-      disabled: !isValidAddress,
-      onClick: () => withdrawAmount(assetId!, address),
-    });
-  }, [onSetButton, withdrawAmount, isValidAddress, address, assetId]);
+  const onSubmit = useCallback(() => {
+    withdrawAmount(assetId!, address);
+  }, [withdrawAmount, assetId, address]);
+  
+
+  useUpdateMainButton({
+    text: 'Continue',
+    disabled: !isValidAddress,
+    onClick: onSubmit,
+  })
 
   return (
     <Page>

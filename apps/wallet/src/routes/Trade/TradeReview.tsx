@@ -1,5 +1,5 @@
 import { Container } from '@chakra-ui/react';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Page, ReviewTx } from '../../components';
 import {
@@ -12,10 +12,12 @@ import {
 import { URLParams, SwapSuccesss } from '../../types';
 import { amountUi } from '../../utils/conversion';
 import BN from 'bignumber.js';
-import { useMainButtonContext } from '../../context/MainButtonContext';
 import { useNavigation } from '../../router/hooks';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { permit2Provider, swapProvider } from '../../config';
+import {
+  useUpdateMainButton,
+} from '../../store/main-button-store';
 
 const useSwap = () => {
   const tradeSuccess = useNavigation().tradeSuccess;
@@ -44,10 +46,9 @@ const useSwap = () => {
 };
 
 const useMainButton = () => {
-  const { onSetButton, resetButton } = useMainButtonContext();
   const { amountOut } = useQuote();
   const params = useParams<URLParams>();
-  const { mutate, isPending } = useSwap();
+  const { mutateAsync, isPending } = useSwap();
   const inToken = useGetTokenFromList(params.inToken);
 
   useEffect(() => {
@@ -56,18 +57,18 @@ const useMainButton = () => {
     }
   }, [inToken]);
 
-  useEffect(() => {
-    onSetButton({
-      text: 'Confirm and swap',
-      progress: isPending,
-      disabled: !amountOut || !inToken,
-      onClick: () => mutate(),
-    });
-  }, [onSetButton, mutate, isPending, inToken, amountOut, resetButton]);
+
+  useUpdateMainButton({
+    text: 'Confirm and swap',
+    progress: isPending,
+    disabled: !amountOut || !inToken,
+    onClick: mutateAsync,
+  });
 };
 
 export function TradeReview() {
   useMainButton();
+
   return (
     <Page>
       <Container size="sm" pt={4}>

@@ -1,16 +1,16 @@
 import { VStack, Text, Flex, Avatar, Container } from '@chakra-ui/react';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { URLParams } from '../../types';
 import { css } from '@emotion/react';
 import { useFormatNumber, useGetTokenFromList } from '../../hooks';
 import { CryptoAmountInput, Page } from '../../components';
 import styled from '@emotion/styled';
-import { useMainButtonContext } from '../../context/MainButtonContext';
 import { Recipient } from './Components';
 import { useNavigation } from '../../router/hooks';
 import BN from 'bignumber.js';
 import { colors, tgColors, twaMode } from '@telegram-wallet-ui/twa-ui-kit';
+import { useUpdateMainButton } from '../../store/main-button-store';
 
 const styles = {
   mainContainer: css`
@@ -51,8 +51,6 @@ const styles = {
 export function WithdrawAmount() {
   const [amount, setAmount] = useState('');
   const { assetId, recipient } = useParams<URLParams>();
-
-  const { onSetButton } = useMainButtonContext();
   const { withdrawSummary: navigateToWithdrawSummary } = useNavigation();
   const formattedAmount = useFormatNumber({ value: amount, decimalScale: 2 });
   const token = useGetTokenFromList(assetId);
@@ -69,24 +67,17 @@ export function WithdrawAmount() {
     return balanceBN.gte(amountBN) && !amountBN.isZero();
   }, [amount, token?.balance]);
 
-  useEffect(() => {
-    onSetButton({
-      text: !isValidAmount
-        ? 'Send'
-        : `Send ${formattedAmount} ${token?.symbol.toUpperCase()}`,
-      disabled: !isValidAmount,
-      onClick: () => navigateToWithdrawSummary(assetId!, recipient!, amount),
-    });
-  }, [
-    onSetButton,
-    isValidAmount,
-    formattedAmount,
-    token?.symbol,
-    navigateToWithdrawSummary,
-    assetId,
-    recipient,
-    amount,
-  ]);
+  const onSubmit = useCallback(() => {
+    navigateToWithdrawSummary(assetId!, recipient!, amount);
+  }, [navigateToWithdrawSummary, assetId, recipient, amount]);
+
+  useUpdateMainButton({
+    text: !isValidAmount
+      ? 'Send'
+      : `Send ${formattedAmount} ${token?.symbol.toUpperCase()}`,
+    disabled: !isValidAmount,
+    onClick: onSubmit,
+  });
 
   return (
     <StyledPage>
