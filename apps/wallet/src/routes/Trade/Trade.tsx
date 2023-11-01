@@ -142,7 +142,7 @@ const SrcTokenPanel = () => {
 };
 
 const DstTokenPanel = () => {
-  const { formattedAmount, quotePending, outToken, setOutToken } =
+  const { formattedAmount, quotePending, outToken, setOutToken, inToken } =
     useTradeContext();
 
   return (
@@ -151,6 +151,7 @@ const DstTokenPanel = () => {
       onTokenSelect={(token) => setOutToken(token.symbol)}
       token={outToken}
       value={formattedAmount}
+      filterTokenSymbol={inToken?.symbol}
     />
   );
 };
