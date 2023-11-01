@@ -130,7 +130,7 @@ export function CryptoAmountInput({
   useEffect(() => {
     if (error) {
       animate(
-        '#withdrawalAmount',
+        `#${name}`,
         { x: [0, 10, 0] },
         {
           duration: 0.05,
@@ -139,7 +139,7 @@ export function CryptoAmountInput({
         }
       );
     }
-  }, [animate, error]);
+  }, [animate, error, name]);
 
   return (
     <VStack alignItems="flex-start" gap="0px">

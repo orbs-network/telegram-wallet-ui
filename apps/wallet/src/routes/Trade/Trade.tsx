@@ -137,6 +137,7 @@ const SrcTokenPanel = () => {
       isInToken={true}
       error={validations.inAmount(value)}
       otherTokenSymbol={outToken?.symbol}
+      name="inAmountInput"
     />
   );
 };
@@ -152,6 +153,7 @@ const DstTokenPanel = () => {
       token={outToken}
       value={formattedAmount}
       filterTokenSymbol={inToken?.symbol}
+      name="outAmountInput"
     />
   );
 };

@@ -112,6 +112,7 @@ export const TokenPanel = ({
   isInToken,
   error,
   otherTokenSymbol,
+  name,
 }: {
   value: string;
   onChange?: (value: string) => void;
@@ -122,6 +123,7 @@ export const TokenPanel = ({
   isInToken?: boolean;
   error?: string;
   otherTokenSymbol?: string;
+  name: string;
 }) => {
   return (
     <VStack css={styles.container}>
@@ -139,7 +141,7 @@ export const TokenPanel = ({
             tokenSymbol={token?.symbol}
             onChange={onChange}
             editable={!!isInToken}
-            name=""
+            name={name}
             error={error}
           />
         </Box>
