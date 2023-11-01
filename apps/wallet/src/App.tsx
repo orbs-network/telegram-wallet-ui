@@ -17,11 +17,13 @@ const Router = lazy(() => import('./router/Router'));
 const App = () => {
   const [height] = useState(window.innerHeight);
 
+  console.log('Twa.theme', Twa.themeParams);
+
   return (
     <QueryClientProvider client={queryClient}>
       <ChakraProvider theme={theme}>
         <AppContainer style={{ height }}>
-          <Suspense fallback={<Fallback />}>
+          <Suspense fallback={<Fallback height={height} />}>
             <Router />
           </Suspense>
           <ActionButton />
@@ -31,12 +33,12 @@ const App = () => {
   );
 };
 
-const Fallback = () => {
+const Fallback = ({ height }: { height: number }) => {
   return (
     <Container
       size="sm"
       style={{
-        height: Twa.viewportStableHeight || '100vh',
+        height: Twa.viewportStableHeight || height,
         position: 'relative',
       }}
     >
