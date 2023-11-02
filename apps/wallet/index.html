@@ -89,6 +89,11 @@
       const loader = document.getElementById('loader');
       loader.style.height =
         (window.Telegram.WebApp.viewportHeight || window.innerHeight) + 'px';
+
+      document.addEventListener('resize', () => {
+        loader.style.height =
+          (window.Telegram.WebApp.viewportHeight || window.innerHeight) + 'px';
+      });
     </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
