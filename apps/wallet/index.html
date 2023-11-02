@@ -47,8 +47,6 @@
         width: 100%;
         height: var(--tg-viewport-height);
         overflow: hidden;
-
-        opacity: 0;
       }
       .loader {
         width: 80px;
@@ -96,15 +94,13 @@
     <script>
       window.Telegram.WebApp.ready();
       const loader = document.getElementById('loader');
-      loader.style.height =
-        (window.Telegram.WebApp.viewportHeight || window.innerHeight) + 'px';
+      loader.style.height = window.Telegram.WebApp.viewportHeight + 'px';
 
       const debug = document.getElementById('debug');
       debug.innerText = loader.style.height;
 
       document.addEventListener('resize', () => {
-        loader.style.height =
-          (window.Telegram.WebApp.viewportHeight || window.innerHeight) + 'px';
+        loader.style.height = window.Telegram.WebApp.viewportHeight + 'px';
         debug.innerText += '<br />' + loader.style.height;
       });
     </script>
