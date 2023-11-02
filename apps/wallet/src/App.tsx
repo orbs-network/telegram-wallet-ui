@@ -1,10 +1,10 @@
-import { ChakraProvider, Container } from '@chakra-ui/react';
+import { ChakraProvider, Container, useColorMode } from '@chakra-ui/react';
 import { MainButton, theme } from '@telegram-wallet-ui/twa-ui-kit';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useLocation } from 'react-router-dom';
 import { ROUTES } from './router/routes';
 import styled from '@emotion/styled';
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { usePersistedStore } from './store/persisted-store';
 import { WalletSpinner } from './components';
 import { useMainButtonStore } from './store/main-button-store';
@@ -22,6 +22,7 @@ const App = () => {
       <ChakraProvider theme={theme}>
         <AppContainer style={{ height }}>
           <Suspense fallback={<Fallback height={height} />}>
+            <ColorMode />
             <Router />
           </Suspense>
           <ActionButton />
@@ -29,6 +30,16 @@ const App = () => {
       </ChakraProvider>
     </QueryClientProvider>
   );
+};
+
+const ColorMode = () => {
+  const { setColorMode } = useColorMode();
+
+  useEffect(() => {
+    setColorMode(Twa.colorScheme);
+  }, [setColorMode]);
+
+  return <div />;
 };
 
 const Fallback = ({ height }: { height: number }) => {
