@@ -12,6 +12,7 @@ import styled from '@emotion/styled';
 import { NumericFormat } from 'react-number-format';
 import { useAnimate } from 'framer-motion';
 import { colors } from '@telegram-wallet-ui/twa-ui-kit';
+import Twa from '@twa-dev/sdk';
 
 const ERROR_COLOR = '#ff3333';
 
@@ -143,6 +144,7 @@ export function CryptoAmountInput({
           ease: 'easeIn',
         }
       );
+      Twa.HapticFeedback.notificationOccurred('error');
     }
   }, [animate, error, name]);
 
