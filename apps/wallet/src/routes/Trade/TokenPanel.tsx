@@ -9,7 +9,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { css, keyframes } from '@emotion/react';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useMemo, useRef, useState } from 'react';
 import { BiSolidChevronRight } from 'react-icons/bi';
@@ -18,19 +18,7 @@ import { useFormatNumber, useUserData } from '../../hooks';
 import { TokenData } from '../../types';
 import { IoClose } from 'react-icons/io5';
 import { colors } from '@telegram-wallet-ui/twa-ui-kit';
-const flash = keyframes`
-  0% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.1;
-  }
-
-  100% {
-    opacity: 1;
-  }
-`;
+import { flash } from '../../styles';
 
 const outAmountStyles = css`
   animation: ${flash} 1s linear infinite;

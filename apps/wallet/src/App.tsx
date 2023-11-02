@@ -4,26 +4,25 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useLocation } from 'react-router-dom';
 import { ROUTES } from './router/routes';
 import styled from '@emotion/styled';
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { usePersistedStore } from './store/persisted-store';
 import { WalletSpinner } from './components';
 import { useMainButtonStore } from './store/main-button-store';
 import Twa from '@twa-dev/sdk';
-
+import { useWebApp } from './hooks';
 const queryClient = new QueryClient();
-
 const Router = lazy(() => import('./router/Router'));
 
 document.getElementById('loader')?.remove();
 
 const App = () => {
-  const [height] = useState(window.innerHeight);
+const {height} = useWebApp();
 
   return (
     <QueryClientProvider client={queryClient}>
       <ChakraProvider theme={theme}>
         <AppContainer style={{ height }}>
-          <Suspense fallback={<Fallback height={height} />}>
+          <Suspense fallback={<Fallback />}>
             <ColorMode />
             <Router />
           </Suspense>
@@ -44,12 +43,12 @@ const ColorMode = () => {
   return <div />;
 };
 
-const Fallback = ({ height }: { height: number }) => {
+const Fallback = () => {
   return (
     <Container
       size="sm"
       style={{
-        height: Twa.viewportStableHeight || height,
+        height: '100%',
         position: 'relative',
       }}
     >

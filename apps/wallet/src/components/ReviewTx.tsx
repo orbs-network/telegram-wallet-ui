@@ -4,6 +4,8 @@ import { Card, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import React, { ReactNode } from 'react';
 import { useFormatNumber, useGetTokenFromList } from '../hooks';
 import { BsArrowDownShort } from 'react-icons/bs';
+import { flash } from '../styles';
+import styled from '@emotion/styled';
 const styles = {
   container: css``,
   tokenDisplayContainer: css`
@@ -83,6 +85,9 @@ const styles = {
     font-size: 24px;
     font-weight: 600;
   `,
+  refetching: css`
+    animation: ${flash} 1s linear infinite;
+  `,
 };
 
 export const ReviewTx = ({ children }: { children: ReactNode }) => {
@@ -124,10 +129,12 @@ const TokenDisplay = ({
   symbol,
   amount,
   isInToken,
+  isRefetching,
 }: {
   symbol?: string;
   amount?: string;
   isInToken?: boolean;
+  isRefetching?: boolean;
 }) => {
   const token = useGetTokenFromList(symbol);
   const formattedAmount = useFormatNumber({ value: amount });
@@ -142,8 +149,8 @@ const TokenDisplay = ({
           </Text>
           <Box css={styles.tokenDisplayAmount}>
             {formattedAmount ? (
-              <Text css={styles.tokenAmount}>
-                {formattedAmount} {symbol?.toUpperCase()}
+              <Text css={[styles.tokenAmount]}>
+                <StyledSpan $show={Boolean(isRefetching)}>{formattedAmount}</StyledSpan> {symbol?.toUpperCase()}
               </Text>
             ) : (
               <Flex gap="10px" alignItems="center">
@@ -157,6 +164,10 @@ const TokenDisplay = ({
     </Card>
   );
 };
+
+const StyledSpan = styled('span')<{ $show: boolean }>(({ $show }) => ({
+  animation: $show ? `${flash} 1s linear infinite` : undefined,
+}));
 
 const TokensDisplayContainer = ({ children }: { children: ReactNode }) => {
   return (
