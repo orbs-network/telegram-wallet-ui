@@ -43,6 +43,8 @@ export function TradeSuccess() {
   useUpdateMainButton({
     text: 'Done',
     onClick,
+    disabled: false,
+    progress: false,
   });
 
 
