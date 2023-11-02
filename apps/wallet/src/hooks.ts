@@ -45,7 +45,7 @@ export const useCoinsLastPrice = () => {
       );
     },
     enabled: !!data,
-    refetchInterval: 20_000,
+    refetchInterval: 10_000,
     staleTime: 5_000,
   });
 };
@@ -363,7 +363,7 @@ export const useQuoteQuery = (
       !!inAmount &&
       estimatedAmountOut.gt(0) &&
       !isSwapInProgress,
-    refetchInterval: 5_000,
+    refetchInterval: 10_000,
   });
 };
 
