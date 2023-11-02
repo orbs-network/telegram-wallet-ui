@@ -1,8 +1,6 @@
-import React from 'react';
 import { MainButton as BaseMainButton } from '@twa-dev/sdk/react';
 import Telegram from '@twa-dev/sdk';
-import { useColorMode } from '@chakra-ui/react';
-import { tgColors } from '../theme';
+import { colors } from '../theme';
 import { Button } from './Button';
 
 interface MainButtonProps {
@@ -15,8 +13,6 @@ interface MainButtonProps {
 }
 
 export function MainButton(props: MainButtonProps) {
-  const mode = useColorMode();
-
   // if not webapp
   if (!Telegram.initData) {
     return (
@@ -35,7 +31,7 @@ export function MainButton(props: MainButtonProps) {
   return (
     <BaseMainButton
       {...props}
-      color={props.disabled ? '#CDCDCD' : tgColors[mode.colorMode].button_color}
+      color={props.disabled ? colors.button_disabed_color : colors.button_color}
     />
   );
 }

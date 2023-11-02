@@ -1,22 +1,20 @@
 import {
-  Heading,
   Input,
   InputGroup,
   InputRightElement,
   Text,
   VStack,
   Icon,
-  useColorMode,
   Container,
+  HStack,
+  Heading,
+  Box,
 } from '@chakra-ui/react';
 import { useCallback, useMemo, useState } from 'react';
-import { MdOutlineContentPaste } from 'react-icons/md';
 import Telegram from '@twa-dev/sdk';
 import Web3 from 'web3';
-import { MdQrCodeScanner } from 'react-icons/md';
-import { tgColors } from '@telegram-wallet-ui/twa-ui-kit';
-import styled from '@emotion/styled';
-import { AiOutlineCloseCircle } from 'react-icons/ai';
+import { LuScanLine } from 'react-icons/lu';
+import { ListItem, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import { useNavigation } from '../../router/hooks';
 import { Page } from '../../components';
 import { css } from '@emotion/react';
@@ -24,6 +22,7 @@ import { useParams } from 'react-router-dom';
 import { URLParams } from '../../types';
 import { useCurrentPath } from '../../hooks';
 import { useUpdateMainButton } from '../../store/main-button-store';
+import { AiFillCloseCircle, AiFillWarning } from 'react-icons/ai';
 
 const styles = {
   container: css`
@@ -38,31 +37,47 @@ export function WithdrawAddress() {
 
   useCurrentPath();
 
-  const isValidAddress = useMemo(
-    () => Web3.utils.isAddress(address),
-    [address]
-  );
+  const isValidAddress = useMemo(() => {
+    try {
+      Web3.utils.toChecksumAddress(address);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }, [address]);
 
   const onSubmit = useCallback(() => {
     withdrawAmount(assetId!, address);
   }, [withdrawAmount, assetId, address]);
-  
 
   useUpdateMainButton({
     text: 'Continue',
     disabled: !isValidAddress,
     onClick: onSubmit,
-  })
+  });
 
   return (
     <Page>
       <Container size="sm" pt={4} css={styles.container}>
         <VStack spacing={4} alignItems="stretch" height="100%">
-          <Heading as="h1" size="md" textAlign="center">
-            Enter address
-          </Heading>
           <AddressInput address={address} setAddress={setAddress} />
-          <ScanQR setAddress={setAddress} />
+          {address !== '' && !isValidAddress ? (
+            <ListItem
+              StartIconSlot={<Icon as={AiFillWarning} />}
+              StartTextSlot={
+                <Box>
+                  <Heading as="h3" variant="bodyTitle">
+                    Invalid Address
+                  </Heading>
+                  <Text variant="hint" fontSize="xs">
+                    Enter a valid Polygon address
+                  </Text>
+                </Box>
+              }
+            />
+          ) : (
+            <ScanQR setAddress={setAddress} />
+          )}
         </VStack>
       </Container>
     </Page>
@@ -76,8 +91,6 @@ const AddressInput = ({
   address: string;
   setAddress: (address: string) => void;
 }) => {
-  const mode = useColorMode();
-
   const paste = () => {
     navigator.clipboard
       .readText()
@@ -102,23 +115,21 @@ const AddressInput = ({
       <Input
         onChange={(e) => setAddress(e.target.value)}
         value={address}
-        placeholder="Enter address"
+        placeholder="Enter Polygon address"
       />
-      <InputRightElement onClick={onClick}>
-        <Icon
-          width={'20px'}
-          height={'20px'}
-          as={address ? AiOutlineCloseCircle : MdOutlineContentPaste}
-          color={tgColors[mode.colorMode].button_color}
-        />
+
+      <InputRightElement
+        onClick={onClick}
+        pr={address === '' ? 8 : 0}
+        color={colors.link_color}
+      >
+        {address === '' ? 'Paste' : <Icon as={AiFillCloseCircle} />}
       </InputRightElement>
     </InputGroup>
   );
 };
 
 const ScanQR = ({ setAddress }: { setAddress: (value: string) => void }) => {
-  const mode = useColorMode();
-
   const onScan = () => {
     Telegram.showScanQrPopup({}, (value) => {
       try {
@@ -132,30 +143,14 @@ const ScanQR = ({ setAddress }: { setAddress: (value: string) => void }) => {
     });
   };
 
+  if (!Telegram.initData) {
+    return null;
+  }
+
   return (
-    <StyledQRCode>
-      <VStack spacing={2} alignItems="center" onClick={onScan}>
-        <Icon
-          width={30}
-          height={30}
-          as={MdQrCodeScanner}
-          color={tgColors[mode.colorMode].button_color}
-        />
-        <Text
-          fontWeight={700}
-          fontSize={14}
-          color={tgColors[mode.colorMode].button_color}
-        >
-          Scan QR
-        </Text>
-      </VStack>
-    </StyledQRCode>
+    <HStack spacing={2} alignItems="center" onClick={onScan}>
+      <Icon as={LuScanLine} color={colors.button_color} />
+      <Text color={colors.button_color}>Scan QR Code</Text>
+    </HStack>
   );
 };
-
-const StyledQRCode = styled('div')({
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  flex: 1,
-});

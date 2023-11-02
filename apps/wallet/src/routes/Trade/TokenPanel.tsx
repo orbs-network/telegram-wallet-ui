@@ -17,6 +17,7 @@ import { CryptoAmountInput, SelectToken } from '../../components';
 import { useFormatNumber, useUserData } from '../../hooks';
 import { TokenData } from '../../types';
 import { IoClose } from 'react-icons/io5';
+import { colors } from '@telegram-wallet-ui/twa-ui-kit';
 const flash = keyframes`
   0% {
     opacity: 1;
@@ -46,14 +47,14 @@ const styles = {
     width: 100%;
   `,
   max: css`
-    color: #00a3ff;
+    color: ${colors.link_color};
   `,
   balance: css`
     font-size: 14px;
     align-items: center;
     gap: 4px;
     p {
-      color: #9d9d9d;
+      color: ${colors.hint_color};
     }
   `,
   closeButton: css`
@@ -106,21 +107,23 @@ export const TokenPanel = ({
   value,
   onChange,
   onTokenSelect,
-  filterToken,
+  filterTokenSymbol,
   token,
   isInToken,
   error,
   otherTokenSymbol,
+  name,
 }: {
   value: string;
   onChange?: (value: string) => void;
   onTokenSelect: (token: TokenData) => void;
-  filterToken?: string;
+  filterTokenSymbol?: string;
   quotePending?: boolean;
   token?: TokenData;
   isInToken?: boolean;
   error?: string;
   otherTokenSymbol?: string;
+  name: string;
 }) => {
   return (
     <VStack css={styles.container}>
@@ -138,13 +141,13 @@ export const TokenPanel = ({
             tokenSymbol={token?.symbol}
             onChange={onChange}
             editable={!!isInToken}
-            name=""
+            name={name}
             error={error}
           />
         </Box>
 
         <TokenSelectDrawer
-          filterToken={filterToken}
+          filterTokenSymbol={filterTokenSymbol}
           onSelect={onTokenSelect}
           token={token}
         />
@@ -155,11 +158,11 @@ export const TokenPanel = ({
 
 const TokenSelectDrawer = ({
   onSelect,
-  filterToken,
+  filterTokenSymbol,
   token,
 }: {
   onSelect: (token: TokenData) => void;
-  filterToken?: string;
+  filterTokenSymbol?: string;
   token?: TokenData;
 }) => {
   const { data, dataUpdatedAt } = useUserData();
@@ -169,11 +172,11 @@ const TokenSelectDrawer = ({
   const tokens = useMemo(() => {
     if (!data) return [];
     return Object.values(data.tokens).filter(
-      (token) => token.symbol !== filterToken
+      (token) => token.symbol !== filterTokenSymbol
     );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterToken, dataUpdatedAt]);
+  }, [filterTokenSymbol, dataUpdatedAt]);
 
   return (
     <Flex alignItems="center">
@@ -214,12 +217,12 @@ const TokenSelectButton = styled(Box)({
   position: 'relative',
   top: '-10px',
   '& p': {
-    color: '#9D9D9D',
+    color: colors.hint_color,
     fontSize: '26px',
     fontWeight: 700,
   },
   svg: {
-    color: '#9D9D9D',
+    color: colors.hint_color,
     fontSize: '26px',
   },
 });

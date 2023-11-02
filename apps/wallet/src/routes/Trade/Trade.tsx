@@ -1,27 +1,40 @@
 import { Box, Container, Flex, useToast, VStack } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDebouncedCallback } from '../../hooks';
+import { useDebouncedCallback, useMultiplyPriceByAmount } from '../../hooks';
 import { TokenPanel } from './TokenPanel';
 import BN from 'bignumber.js';
 import { HiOutlineSwitchVertical } from 'react-icons/hi';
 import { TradeContextProvider, useTradeContext } from './context';
 import { useNavigation } from '../..//router/hooks';
 import { styles } from './styles';
-import {
-  useUpdateMainButton,
-} from '../../store/main-button-store';
+import { useUpdateMainButton } from '../../store/main-button-store';
 import { Page } from '../../components';
+import { setTwaBg } from '@telegram-wallet-ui/twa-ui-kit';
+
+// TODO consider changing value
+const MIN_USD_VALUE_TO_SWAP = 0.5;
 
 const useValidations = () => {
   const { inAmount, inToken } = useTradeContext();
 
+  const _calculatedPriceUsd = useMultiplyPriceByAmount(
+    inToken?.coingeckoId || 'ethereum',
+    Number(inAmount ?? '0')
+  );
+
   const _inAmount = useCallback(
     (inAmount: string) => {
-      return inAmount && inToken && new BN(inAmount).gt(inToken?.balance)
-        ? 'Insufficient balance'
-        : undefined;
+      if (inAmount && inToken && new BN(inAmount).gt(inToken?.balance))
+        return 'Insufficient balance';
+
+      const calculatedPriceUsd = BN(_calculatedPriceUsd);
+      if (
+        BN(calculatedPriceUsd).lt(MIN_USD_VALUE_TO_SWAP) &&
+        BN(calculatedPriceUsd).gt(0)
+      )
+        return `Minimum value to swap is $${MIN_USD_VALUE_TO_SWAP}`;
     },
-    [inToken]
+    [inToken, _calculatedPriceUsd]
   );
 
   const validate = useCallback(() => {
@@ -124,12 +137,13 @@ const SrcTokenPanel = () => {
       isInToken={true}
       error={validations.inAmount(value)}
       otherTokenSymbol={outToken?.symbol}
+      name="inAmountInput"
     />
   );
 };
 
 const DstTokenPanel = () => {
-  const { formattedAmount, quotePending, outToken, setOutToken } =
+  const { formattedAmount, quotePending, outToken, setOutToken, inToken } =
     useTradeContext();
 
   return (
@@ -138,11 +152,21 @@ const DstTokenPanel = () => {
       onTokenSelect={(token) => setOutToken(token.symbol)}
       token={outToken}
       value={formattedAmount}
+      filterTokenSymbol={inToken?.symbol}
+      name="outAmountInput"
     />
   );
 };
 
 export function Trade() {
+  useEffect(() => {
+    setTwaBg(true);
+
+    return () => {
+      setTwaBg(false);
+    };
+  }, []);
+
   return (
     <TradeContextProvider>
       <Page secondaryBackground>

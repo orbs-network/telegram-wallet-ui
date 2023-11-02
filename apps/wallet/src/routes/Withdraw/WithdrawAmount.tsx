@@ -1,5 +1,5 @@
 import { VStack, Text, Flex, Avatar, Container } from '@chakra-ui/react';
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { URLParams } from '../../types';
 import { css } from '@emotion/react';
@@ -23,7 +23,7 @@ const styles = {
     height: 40px;
   `,
   balanceTitle: css`
-    color: #a1a1a1;
+    color: ${colors.hint_color};
     font-size: 14px;
   `,
   balanceValue: css`
@@ -41,7 +41,7 @@ const styles = {
       top: 0px;
       left: 50%;
       transform: translateX(-50%);
-      background: ${colors.secondary_bg_color};
+      background: ${colors.border_color};
       height: 1px;
       width: calc(100% + 32px);
     }
@@ -52,19 +52,20 @@ export function WithdrawAmount() {
   const [amount, setAmount] = useState('');
   const { assetId, recipient } = useParams<URLParams>();
   const { withdrawSummary: navigateToWithdrawSummary } = useNavigation();
-  const formattedAmount = useFormatNumber({ value: amount, decimalScale: 2 });
+
   const token = useGetTokenFromList(assetId);
 
   const formattedBalance = useFormatNumber({
     value: token?.balance,
-    decimalScale: 2,
   });
 
   const isValidAmount = useMemo(() => {
+    if (amount === '') return true;
+
     const amountBN = new BN(amount);
     const balanceBN = new BN(token?.balance || '0');
 
-    return balanceBN.gte(amountBN) && !amountBN.isZero();
+    return balanceBN.gte(amountBN);
   }, [amount, token?.balance]);
 
   const onSubmit = useCallback(() => {
@@ -74,15 +75,15 @@ export function WithdrawAmount() {
   useUpdateMainButton({
     text: !isValidAmount
       ? 'Send'
-      : `Send ${formattedAmount} ${token?.symbol.toUpperCase()}`,
-    disabled: !isValidAmount,
+      : `Send ${amount} ${token?.symbol.toUpperCase()}`,
+    disabled: !isValidAmount || amount === '' || BN(amount).isZero(),
     onClick: onSubmit,
   });
 
   return (
     <StyledPage>
       <Container size="sm" pt={4} css={styles.mainContainer}>
-        <VStack spacing={4} alignItems="stretch" style={{ flex: 1 }}>
+        <VStack alignItems="stretch" style={{ flex: 1 }}>
           <Recipient />
           {/* TODO: handle undefined assetId better */}
           <CryptoAmountInput
@@ -90,6 +91,7 @@ export function WithdrawAmount() {
             value={amount}
             onChange={setAmount}
             tokenSymbol={assetId || ''}
+            error={isValidAmount ? undefined : 'Not enough coins'}
           />
           <Balance balance={formattedBalance} />
         </VStack>

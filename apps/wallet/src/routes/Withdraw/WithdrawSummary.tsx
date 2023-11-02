@@ -1,7 +1,7 @@
-import { Container, Text, VStack } from '@chakra-ui/react';
+import { Box, Container, Heading, Text, VStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { useMutation } from '@tanstack/react-query';
-import { Card } from '@telegram-wallet-ui/twa-ui-kit';
+import { Card, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import { useParams } from 'react-router-dom';
 import { Page } from '../../components';
 import { eventsProvider, web3Provider } from '../../config';
@@ -9,8 +9,9 @@ import { useGetTokenFromList } from '../../hooks';
 import { useNavigation } from '../../router/hooks';
 import { URLParams } from '../../types';
 import { Recipient } from './Components';
-import { amountBN } from '../../utils/conversion';
+import { amountBN, amountUi } from '../../utils/conversion';
 import { useUpdateMainButton } from '../../store/main-button-store';
+import BN from 'bignumber.js';
 
 const useTransferTx = () => {
   const { recipient, amount, assetId } = useParams<URLParams>();
@@ -55,7 +56,10 @@ export function WithdrawSummary() {
   const { recipient, amount, assetId } = useParams<URLParams>();
   const token = useGetTokenFromList(assetId);
   const { mutateAsync, isPending } = useTransferTx();
-  const symbol = token?.symbol || '';
+  const symbol = token?.symbol.toUpperCase() || '';
+  const balanceAfter = BN(amountUi(token, token?.balanceBN || BN(0)))
+    .minus(amount || 0)
+    .toFormat();
 
   useUpdateMainButton({
     text: 'CONFIRM AND SEND',
@@ -66,13 +70,32 @@ export function WithdrawSummary() {
   return (
     <Page>
       <Container size="sm" pt={4}>
-        <VStack spacing={4} alignItems="stretch" height="100%">
+        <VStack spacing={8} alignItems="stretch" height="100%">
           <Recipient />
+          <Heading as="h2" size="3xl">
+            {amount}{' '}
+            <Text as="span" variant="hint" fontSize="3xl">
+              {symbol}
+            </Text>
+          </Heading>
+          <Box>
+            <Card>
+              <VStack alignItems="flex-start" style={{ width: '100%' }}>
+                <Section title="Recipient address" value={recipient!} />
+                <Section title="Total amount" value={`${amount!} ${symbol}`} />
+                <Section title="Network" value="Polygon" />
+              </VStack>
+            </Card>
+            <Text variant="hint" mt={2}>
+              Your funds may be lost if sent to the wrong network
+            </Text>
+          </Box>
           <Card>
             <VStack alignItems="flex-start" style={{ width: '100%' }}>
-              <Section title="Recipient address" value={recipient!} />
-              <Section title="Total amount" value={`${amount!} ${symbol}`} />
-              <Section title="Network" value="Polygon" />
+              <Section
+                title="Balance after"
+                value={`${balanceAfter} ${symbol}`}
+              />
             </VStack>
           </Card>
         </VStack>
@@ -83,7 +106,7 @@ export function WithdrawSummary() {
 
 const styles = {
   container: css`
-    border-bottom: 1px solid #cdcdcd;
+    border-bottom: 1px solid ${colors.border_color};
     width: 100%;
     padding-bottom: 5px;
     &:last-child {
@@ -91,12 +114,8 @@ const styles = {
       padding-bottom: 0px;
     }
   `,
-  sectionTitle: css`
-    font-size: 14px;
-    color: #9d9d9d;
-  `,
+
   sectionValue: css`
-    font-size: 14px;
     word-break: break-all;
   `,
 };
@@ -104,7 +123,7 @@ const styles = {
 const Section = ({ title, value }: { title: string; value: string }) => {
   return (
     <VStack css={styles.container} gap="2px" alignItems="stretch">
-      <Text css={styles.sectionTitle}>{title}</Text>
+      <Text variant="hint">{title}</Text>
       <Text css={styles.sectionValue}>{value}</Text>
     </VStack>
   );

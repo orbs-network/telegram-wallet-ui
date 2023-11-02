@@ -173,7 +173,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
               />
             );
             CardTitle = (
-              <Heading as="h3" variant="bodyTitle">
+              <Heading as="h3" variant="bodyTitle" noOfLines={1}>
                 Deposit
               </Heading>
             );
@@ -181,12 +181,12 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
               <Box
                 style={{
                   textAlign: 'right',
-                  color: 'green',
+                  color: colors.success,
                 }}
               >
-                <Heading as="h3" variant="bodyTitle">
+                <Text noOfLines={1}>
                   +{toUiDisplay(dTx.amount)} {dTx.token.symbol.toUpperCase()}
-                </Heading>
+                </Text>
                 <Text fontSize={12}>Received</Text>
               </Box>
             );
@@ -202,8 +202,8 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
               />
             );
             CardTitle = (
-              <Heading as="h3" variant="bodyTitle">
-                Withdrawal to {wTx.toAddress.slice(0, 8) + '...'}
+              <Heading as="h3" variant="bodyTitle" noOfLines={1}>
+                Withdrawal to {wTx.toAddress.slice(0, 6) + '...'}
               </Heading>
             );
             CardData = (
@@ -212,10 +212,10 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
                   textAlign: 'right',
                 }}
               >
-                <Heading as="h3" variant="bodyTitle">
+                <Text noOfLines={1}>
                   {/* TODO: seems the amount on withdrawal is not the same format as trade */}
                   {toUiDisplay(wTx.amount)} {wTx.token.symbol.toUpperCase()}
-                </Heading>
+                </Text>
                 <Text fontSize={12}>Sent</Text>
               </Box>
             );
@@ -236,7 +236,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
               />
             );
             CardTitle = (
-              <Heading as="h3" variant="bodyTitle">
+              <Heading as="h3" variant="bodyTitle" noOfLines={1}>
                 Trade {tradeTx.inToken?.symbol.toUpperCase()} for{' '}
                 {tradeTx.outToken?.symbol.toUpperCase()}
               </Heading>
@@ -248,13 +248,13 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
               <Box
                 style={{
                   textAlign: 'right',
-                  color: isIn ? 'inherit' : 'green',
+                  color: isIn ? 'inherit' : colors.success,
                 }}
               >
-                <Heading as="h3" variant="bodyTitle">
+                <Text noOfLines={1}>
                   {!isIn && '+'}
                   {toUiDisplay(amount)} {token.symbol.toUpperCase()}
-                </Heading>
+                </Text>
                 <Text fontSize={12}>{!isIn ? 'Received' : 'Traded'}</Text>
               </Box>
             );

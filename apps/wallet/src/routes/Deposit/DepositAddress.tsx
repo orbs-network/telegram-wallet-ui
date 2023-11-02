@@ -1,11 +1,4 @@
-import {
-  Code,
-  Container,
-  HStack,
-  Icon,
-  VStack,
-  useToast,
-} from '@chakra-ui/react';
+import { Code, Container, HStack, Icon, VStack } from '@chakra-ui/react';
 import { useUserData } from '../../hooks';
 import { Button, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import QRCode from 'react-qr-code';
@@ -34,7 +27,6 @@ const styles = {
 export function DepositAddress() {
   const [isCopied, setIsCopied] = useState(false);
   const { data: userData } = useUserData();
-  const toast = useToast();
 
   if (!userData?.account.address) {
     return (
@@ -69,12 +61,7 @@ export function DepositAddress() {
           text: address,
         });
       } catch (err) {
-        toast({
-          title: 'Failed to share',
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-        });
+        // do nothing if user cancels
       }
     }
     void share();
@@ -100,7 +87,7 @@ export function DepositAddress() {
             <Button
               variant={isCopied ? undefined : 'primary'}
               onClick={handleCopy}
-              colorScheme={isCopied ? 'green' : 'none'}
+              colorScheme={isCopied ? colors.success : 'none'}
               leftIcon={isCopied ? <Icon as={BiCheck} /> : undefined}
             >
               {isCopied ? 'Copied!' : 'Copy'}

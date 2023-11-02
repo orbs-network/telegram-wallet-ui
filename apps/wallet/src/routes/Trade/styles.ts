@@ -1,7 +1,5 @@
 import { css } from '@emotion/react';
-import styled from '@emotion/styled';
-import { Page, SuccessPage } from '../../components';
-import { tgColors, twaMode } from '@telegram-wallet-ui/twa-ui-kit';
+import { colors } from '@telegram-wallet-ui/twa-ui-kit';
 
 export const styles = {
   switchTokensContainer: css`
@@ -13,7 +11,7 @@ export const styles = {
       position: absolute;
       width: calc(100% + 32px);
       height: 1px;
-      background-color: #e5e5e5;
+      background-color: ${colors.border_color};
       top: 50%;
       transform: translate(-50%);
       left: 50%;
@@ -23,7 +21,7 @@ export const styles = {
     position: relative;
     z-index: 1;
     padding: 10px;
-    background-color: #417fc6;
+    background-color: ${colors.button_color};
     display: flex;
     justify-content: center;
     align-items: center;

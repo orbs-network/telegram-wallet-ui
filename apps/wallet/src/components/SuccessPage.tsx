@@ -2,8 +2,9 @@ import { Container, VStack } from '@chakra-ui/react';
 import Lottie from 'lottie-react';
 import SuccessLottie from '../assets/lottie/success.json';
 import { css } from '@emotion/react';
-import styled from '@emotion/styled';
 import { Page } from './Page';
+import { setTwaBg } from '@telegram-wallet-ui/twa-ui-kit';
+import { useEffect } from 'react';
 
 const styles = {
   container: css`
@@ -19,36 +20,37 @@ const styles = {
 export function SuccessPage({
   children,
   className = '',
-  secondaryBackground = false
+  secondaryBackground = false,
 }: {
   children: React.ReactNode;
   className?: string;
   secondaryBackground?: boolean;
 }) {
+  useEffect(() => {
+    setTwaBg(true);
+
+    return () => {
+      setTwaBg(false);
+    };
+  }, []);
+
   return (
     <Page className={className} secondaryBackground={secondaryBackground}>
-      <Container css={styles.container} size="sm" pt={4}>
-        <VStack spacing={4}>
-        <LottieContainer>
-            <Lottie
-              animationData={SuccessLottie}
-              loop={true}
-              width={200}
-              height={200}
-            />
-          </LottieContainer>
+      <Container
+        css={styles.container}
+        size="sm"
+        pt={4}
+        justifyContent="stretch"
+      >
+        <VStack spacing={4} justifyContent="space-between">
+          <Lottie
+            animationData={SuccessLottie}
+            loop={true}
+            style={{ height: '300px' }}
+          />
           {children}
         </VStack>
       </Container>
     </Page>
   );
 }
-
-const StyledPage = styled(Page)({
-  paddingBottom: 40,
-});
-
-const LottieContainer = styled('div')({
-  position: 'relative',
-  bottom: -70,
-});

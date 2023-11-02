@@ -7,8 +7,10 @@ import {
   Heading,
   Divider,
   Box,
+  SkeletonText,
+  SkeletonCircle,
 } from '@chakra-ui/react';
-import { Page, WalletSpinner } from '../components';
+import { Page } from '../components';
 import {
   DepositTransactionEvent,
   TradeTransactionEvent,
@@ -19,7 +21,7 @@ import { useUserData } from '../hooks';
 import { amountUi, toUiDisplay } from '../utils/conversion';
 import BN from 'bignumber.js';
 import { useParams } from 'react-router-dom';
-import { Card } from '@telegram-wallet-ui/twa-ui-kit';
+import { Card, colors } from '@telegram-wallet-ui/twa-ui-kit';
 
 export function Transaction() {
   const { txId } = useParams<{ txId: string }>();
@@ -30,20 +32,12 @@ export function Transaction() {
 
   const { data: userData } = useUserData();
 
-  if (!txId || !tx || !userData) {
-    return (
-      <Container size="sm" pt={4}>
-        <WalletSpinner />
-      </Container>
-    );
-  }
-
   let txToken = null;
   let txDescription = '';
   let txAmount = '';
   let TxDetails = null;
 
-  switch (tx.type) {
+  switch (tx?.type) {
     case 'deposit': {
       const dTx = tx as DepositTransactionEvent;
       txToken = Object.values(userData?.tokens || []).find(
@@ -111,20 +105,37 @@ export function Transaction() {
       <Container size="sm" pt={4}>
         <VStack spacing={4} alignItems="stretch" height="100%">
           <HStack>
-            <Avatar width={30} height={30} src={txToken?.logoURI} />
-            <Text size="sm">{txDescription}</Text>
+            {txToken ? (
+              <Avatar width={30} height={30} src={txToken.logoURI} />
+            ) : (
+              <SkeletonCircle />
+            )}
+
+            {txDescription === '' ? (
+              <SkeletonText />
+            ) : (
+              <Text size="sm">{txDescription}</Text>
+            )}
           </HStack>
-          <Heading
-            as="h2"
-            size="2xl"
-            color={tx.direction === 'incoming' ? 'green' : 'inherit'}
-          >
-            {txAmount}{' '}
-            <Text as="span" fontSize="2rem">
-              {txToken?.symbol.toUpperCase()}
-            </Text>
-          </Heading>
-          <Text variant="hint">{tx.date.toLocaleString()}</Text>
+          {txAmount !== '' && txToken && tx ? (
+            <Heading
+              as="h2"
+              size="2xl"
+              color={tx.direction === 'incoming' ? colors.success : 'inherit'}
+            >
+              {txAmount}{' '}
+              <Text as="span" fontSize="2rem">
+                {txToken?.symbol.toUpperCase()}
+              </Text>
+            </Heading>
+          ) : (
+            <SkeletonText />
+          )}
+          {tx ? (
+            <Text variant="hint">{tx.date.toLocaleString()}</Text>
+          ) : (
+            <SkeletonText />
+          )}
           {TxDetails}
         </VStack>
       </Container>
