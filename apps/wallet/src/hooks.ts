@@ -176,6 +176,10 @@ export const useUserData = () => {
         );
 
         coins.forEach((token) => {
+          if (token.symbol.toUpperCase() === 'MATIC') {
+            return;
+          }
+
           let name = token.name
             .split(' ')
             .filter((word) => word !== 'Wrapped')
