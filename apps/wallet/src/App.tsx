@@ -14,6 +14,8 @@ const queryClient = new QueryClient();
 
 const Router = lazy(() => import('./router/Router'));
 
+document.getElementById('loader')?.remove();
+
 const App = () => {
   const [height] = useState(window.innerHeight);
 
