@@ -134,7 +134,7 @@ export const usePortfolioUsdValue = () => {
     useCoinsLastPrice();
 
   return useMemo(() => {
-    if (!data || !usdPrices) return '0';
+    if (!data || !usdPrices) return null;
     const getPrice = (coingeckoId: string) =>
       usdPrices![coingeckoId as keyof typeof usdPrices];
 

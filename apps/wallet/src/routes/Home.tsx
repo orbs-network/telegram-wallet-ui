@@ -6,7 +6,7 @@ import {
 } from '@telegram-wallet-ui/twa-ui-kit';
 import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
 import { Link } from 'react-router-dom';
-import { Page, TokenBalances } from '../components';
+import { Page, TokenBalances, WalletSpinner } from '../components';
 import { useFormatNumber, usePortfolioUsdValue } from '../hooks';
 import { faucetProvider, permit2Provider } from '../config';
 import { MdSwapHorizontalCircle } from 'react-icons/md';
@@ -20,22 +20,6 @@ permit2Provider.pollPermit2Approvals();
 
 // Polls until the current selected erc20 was transferred to this account
 faucetProvider.requestIfNeeded();
-
-const TotalUSDAmount = () => {
-  const usdValue = usePortfolioUsdValue();
-
-  const primaryAmount = useFormatNumber({
-    value: usdValue,
-  });
-
-  return (
-    <TotalBalance
-      currencySymbol="$"
-      amount={primaryAmount}
-      label="Total balance"
-    />
-  );
-};
 
 function handleClick() {
   if (!Twa.isExpanded) {
@@ -56,12 +40,36 @@ export function Home() {
     resetButton();
   }, [resetButton]);
 
+  const usdValue = usePortfolioUsdValue();
+
+  const primaryAmount = useFormatNumber({
+    value: usdValue || 0,
+  });
+
+  if (usdValue === null) {
+    return (
+      <Container
+        size="sm"
+        style={{
+          height: Twa.viewportStableHeight || window.innerHeight,
+          position: 'relative',
+        }}
+      >
+        <WalletSpinner />
+      </Container>
+    );
+  }
+
   return (
     <Page>
       <Container size="sm" pt={4}>
         <VStack spacing={4} alignItems="stretch">
           <Box>
-            <TotalUSDAmount />
+            <TotalBalance
+              currencySymbol="$"
+              amount={primaryAmount}
+              label="Total balance"
+            />
             <HStack
               justifyContent="center"
               alignItems="center"
