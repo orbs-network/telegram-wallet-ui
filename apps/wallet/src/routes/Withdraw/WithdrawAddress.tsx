@@ -92,9 +92,9 @@ const AddressInput = ({
   setAddress: (address: string) => void;
 }) => {
   const paste = () => {
-    if (Telegram.readTextFromClipboard) {
+    if (Telegram.initData) {
       Telegram.readTextFromClipboard((text) => {
-        setAddress(text);
+        setAddress(text || '');
       });
       return;
     }
