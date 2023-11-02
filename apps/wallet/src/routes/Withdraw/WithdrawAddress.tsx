@@ -9,6 +9,7 @@ import {
   HStack,
   Heading,
   Box,
+  useToast,
 } from '@chakra-ui/react';
 import { useCallback, useMemo, useState } from 'react';
 import Telegram from '@twa-dev/sdk';
@@ -91,14 +92,8 @@ const AddressInput = ({
   address: string;
   setAddress: (address: string) => void;
 }) => {
+  const toast = useToast();
   const paste = () => {
-    if (Telegram.initData) {
-      Telegram.readTextFromClipboard((text) => {
-        setAddress(text || '');
-      });
-      return;
-    }
-
     navigator.clipboard
       .readText()
       .then((text) => {
@@ -106,6 +101,13 @@ const AddressInput = ({
       })
       .catch((err) => {
         console.error('Failed to read clipboard contents: ', err);
+        toast({
+          title: 'Failed to read clipboard contents',
+          description: err,
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
       });
   };
 
