@@ -185,7 +185,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
                 }}
               >
                 <Text noOfLines={1}>
-                  +{toUiDisplay(dTx.amount)} {dTx.token.symbol.toUpperCase()}
+                  +{toUiDisplay(dTx.amount)} {dTx.token.symbolDisplay}
                 </Text>
                 <Text fontSize={12}>Received</Text>
               </Box>
@@ -214,7 +214,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
               >
                 <Text noOfLines={1}>
                   {/* TODO: seems the amount on withdrawal is not the same format as trade */}
-                  {toUiDisplay(wTx.amount)} {wTx.token.symbol.toUpperCase()}
+                  {toUiDisplay(wTx.amount)} {wTx.token.symbolDisplay}
                 </Text>
                 <Text fontSize={12}>Sent</Text>
               </Box>
@@ -237,8 +237,8 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
             );
             CardTitle = (
               <Heading as="h3" variant="bodyTitle" noOfLines={1}>
-                Trade {tradeTx.inToken?.symbol.toUpperCase()} for{' '}
-                {tradeTx.outToken?.symbol.toUpperCase()}
+                Trade {tradeTx.inToken?.symbolDisplay} for{' '}
+                {tradeTx.outToken?.symbolDisplay}
               </Heading>
             );
             const isIn = tokenFilter && tokenFilter === tradeTx.inToken?.symbol;
@@ -253,7 +253,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
               >
                 <Text noOfLines={1}>
                   {!isIn && '+'}
-                  {toUiDisplay(amount)} {token.symbol.toUpperCase()}
+                  {toUiDisplay(amount)} {token.symbolDisplay}
                 </Text>
                 <Text fontSize={12}>{!isIn ? 'Received' : 'Traded'}</Text>
               </Box>

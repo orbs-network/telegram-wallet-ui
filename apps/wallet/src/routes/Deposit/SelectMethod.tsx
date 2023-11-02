@@ -37,7 +37,7 @@ export function SelectMethod() {
         <VStack spacing={8} alignItems="stretch">
           <Heading as="h1" size="md" textAlign="center">
             How would you like to deposit{' '}
-            {token ? token.symbol.toUpperCase() : 'crypto'}?
+            {token ? token.symbolDisplay : 'crypto'}?
           </Heading>
           <VStack spacing={4} alignItems="stretch">
             <Link to={ROUTES.depositBuy.replace(':assetId', assetId!)}>

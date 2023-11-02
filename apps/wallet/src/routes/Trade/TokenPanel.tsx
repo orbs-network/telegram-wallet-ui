@@ -94,7 +94,7 @@ const TokenPanelHeader = ({
             Max:{' '}
           </Box>
           <Text fontSize="14px">
-            {formattedBalance} {token?.symbol.toUpperCase()}
+            {formattedBalance} {token?.symbolDisplay}
           </Text>
         </Flex>
       )}
@@ -181,7 +181,7 @@ const TokenSelectDrawer = ({
   return (
     <Flex alignItems="center">
       <TokenSelectButton ref={btnRef.current} onClick={() => setIsOpen(true)}>
-        <Text>{token ? token.symbol?.toUpperCase() : 'Select'}</Text>
+        <Text>{token ? token.symbolDisplay : 'Select'}</Text>
         <BiSolidChevronRight />
       </TokenSelectButton>
       <Drawer

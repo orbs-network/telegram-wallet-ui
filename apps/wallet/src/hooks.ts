@@ -188,10 +188,11 @@ export const useUserData = () => {
           _userData.tokens[token.symbol] = {
             ...token,
             name,
-            symbol:
-              token.symbol.toLowerCase().charAt(0) === 'w'
-                ? token.symbol.toLowerCase().slice(1)
-                : token.symbol.toLowerCase(),
+            symbolDisplay:
+              token.symbol.toUpperCase().charAt(0) === 'W'
+                ? token.symbol.toUpperCase().slice(1)
+                : token.symbol.toUpperCase(),
+            symbol: token.symbol.toLowerCase(),
             balanceBN: balances[token.address],
             balance: amountUi(token, balances[token.address]) || '0',
           };

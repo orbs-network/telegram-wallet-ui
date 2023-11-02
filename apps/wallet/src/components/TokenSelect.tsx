@@ -35,7 +35,7 @@ export const TokenSelect = forwardRef<HTMLSelectElement, TokenSelectProps>(
       <Select {...props} ref={ref}>
         {tokens.map((token) => (
           <option key={token.symbol} value={token.symbol}>
-            {token.symbol.toUpperCase()}
+            {token.symbolDisplay}
           </option>
         ))}
       </Select>

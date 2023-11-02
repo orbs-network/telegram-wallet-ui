@@ -73,7 +73,7 @@ export function Transaction() {
         (token) => token.address === tTx.outToken
       );
       txToken = outToken;
-      txDescription = `Trade ${inToken?.symbol.toUpperCase()} to ${outToken?.symbol.toUpperCase()}`;
+      txDescription = `Trade ${inToken?.symbolDisplay} to ${outToken?.symbolDisplay}`;
       txAmount = `+${amountUi(txToken, BN(tTx.amountOut), 5)}`;
       TxDetails = (
         <Card>
@@ -81,16 +81,15 @@ export function Transaction() {
             <Box>
               <Text variant="hint">Paid</Text>
               <Text>
-                {amountUi(inToken, BN(tTx.amountIn))}{' '}
-                {inToken?.symbol.toUpperCase()}
+                {amountUi(inToken, BN(tTx.amountIn))} {inToken?.symbolDisplay}
               </Text>
             </Box>
             <Divider />
             <Box>
               <Text variant="hint">Exchange Rate</Text>
               <Text>
-                1 {inToken?.symbol.toUpperCase()} ≈{' '}
-                {toUiDisplay(tTx.exchangeRate)} {outToken?.symbol.toUpperCase()}
+                1 {inToken?.symbolDisplay} ≈ {toUiDisplay(tTx.exchangeRate)}{' '}
+                {outToken?.symbolDisplay}
               </Text>
             </Box>
           </VStack>
@@ -125,7 +124,7 @@ export function Transaction() {
             >
               {txAmount}{' '}
               <Text as="span" fontSize="2rem">
-                {txToken?.symbol.toUpperCase()}
+                {txToken?.symbolDisplay}
               </Text>
             </Heading>
           ) : (

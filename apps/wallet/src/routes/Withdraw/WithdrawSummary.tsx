@@ -56,7 +56,7 @@ export function WithdrawSummary() {
   const { recipient, amount, assetId } = useParams<URLParams>();
   const token = useGetTokenFromList(assetId);
   const { mutateAsync, isPending } = useTransferTx();
-  const symbol = token?.symbol.toUpperCase() || '';
+  const symbol = token?.symbolDisplay || '';
   const balanceAfter = BN(amountUi(token, token?.balanceBN || BN(0)))
     .minus(amount || 0)
     .toFormat();

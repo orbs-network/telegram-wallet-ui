@@ -177,7 +177,7 @@ export function CryptoAmountInput({
             }}
             css={styles.inputSymbol}
           >
-            {token?.symbol.toUpperCase()}
+            {token?.symbolDisplay}
           </Text>
         )}
       </Flex>

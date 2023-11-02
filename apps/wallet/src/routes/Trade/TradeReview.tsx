@@ -45,7 +45,7 @@ const useSwap = () => {
     },
     onSettled: () => {
       setProgress(false);
-    }
+    },
   });
 };
 
@@ -107,7 +107,7 @@ const InTokenBalanceAfter = () => {
   }, [token, params.inAmount]);
 
   const formattedNewBalance = useFormatNumber({ value: newBalance });
-  const symbol = token?.symbol.toUpperCase();
+  const symbol = token?.symbolDisplay;
 
   return (
     <ReviewTx.Section
@@ -131,7 +131,7 @@ const OutTokenBalanceAfter = () => {
 
   const formattedNewBalance = useFormatNumber({ value: newBalance });
 
-  const symbol = token?.symbol.toUpperCase();
+  const symbol = token?.symbolDisplay;
 
   return (
     <ReviewTx.Section

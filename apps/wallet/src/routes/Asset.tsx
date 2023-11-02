@@ -60,7 +60,7 @@ export function Asset() {
           />
 
           <Balance
-            secondaryCurrencyCode={tokenData?.symbol.toUpperCase()}
+            secondaryCurrencyCode={tokenData?.symbolDisplay}
             secondaryAmount={balance || '0'}
             primaryCurrencySymbol="$"
             primaryAmount={fiatAmount || '0'}

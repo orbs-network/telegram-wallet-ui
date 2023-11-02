@@ -73,9 +73,7 @@ export function WithdrawAmount() {
   }, [navigateToWithdrawSummary, assetId, recipient, amount]);
 
   useUpdateMainButton({
-    text: !isValidAmount
-      ? 'Send'
-      : `Send ${amount} ${token?.symbol.toUpperCase()}`,
+    text: !isValidAmount ? 'Send' : `Send ${amount} ${token?.symbolDisplay}`,
     disabled: !isValidAmount || amount === '' || BN(amount).isZero(),
     onClick: onSubmit,
   });
@@ -110,7 +108,7 @@ const Balance = ({ balance }: { balance?: string }) => {
       <VStack gap="0px" alignItems="flex-start">
         <Text css={styles.balanceTitle}>Balance</Text>
         <Text css={styles.balanceValue}>
-          {balance} {token?.symbol.toUpperCase()}
+          {balance} {token?.symbolDisplay}
         </Text>
       </VStack>
     </Flex>
