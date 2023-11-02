@@ -15,6 +15,8 @@
     />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/src/styles.css" />
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
     <style>
       @keyframes pulse {
         0% {
@@ -43,6 +45,7 @@
         left: 0;
 
         width: 100%;
+        height: var(--tg-viewport-height);
         overflow: hidden;
         padding: 0;
         margin: 0;
@@ -54,7 +57,6 @@
         color: #cccccc;
       }
     </style>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
   </head>
   <body>
     <div id="root"></div>
