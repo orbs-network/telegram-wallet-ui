@@ -56,7 +56,7 @@ export function TradeSuccess() {
       </Text>
       <Link
         css={styles.link}
-        href={`${POLYGON_EXPLORER}/address/${txHash}`}
+        href={`${POLYGON_EXPLORER}/tx/${txHash}`}
         target="_blank"
       >
         View transaction

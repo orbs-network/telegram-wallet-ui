@@ -13,6 +13,7 @@ import { ROUTES } from './router/routes';
 import _ from 'lodash';
 import { useNumericFormat } from 'react-number-format';
 import { create } from 'zustand';
+import Twa from '@twa-dev/sdk';
 
 export enum QueryKeys {
   FETCH_LAST_PRICE = 'useFetchLatestPrice',
@@ -365,3 +366,23 @@ export const useQuoteQuery = (
     refetchInterval: 5_000,
   });
 };
+
+export function useWebApp() {
+  const [resized, setResized] = useState(false);
+  const [height, setHeight] = useState(window.innerHeight)
+  useEffect(() => {
+    const onChange = () => {
+      setResized(Twa.isExpanded);
+      setHeight(Twa.viewportHeight);
+    };
+    Twa.onEvent('viewportChanged', onChange);
+
+    return () => {
+      Twa.offEvent('viewportChanged', onChange);
+    };
+  }, []);
+
+return {isExpanded: resized, height};
+}
+
+

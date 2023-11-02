@@ -1,4 +1,4 @@
-import { Container } from '@chakra-ui/react';
+import { Container, useToast } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Page, ReviewTx } from '../../components';
@@ -24,6 +24,7 @@ const useSwap = () => {
 
   const queryClient = useQueryClient();
   const { setProgress } = useSwapInProgress();
+  const toast = useToast()
 
   const { quote, amountOut } = useQuote();
   return useMutation({
@@ -32,7 +33,7 @@ const useSwap = () => {
       const result = await swapProvider.swap({
         ...quote!.quote,
       });
-
+      alert(result.toString());
       if ('error' in result) {
         throw new Error(result.error.error);
       }
@@ -46,14 +47,24 @@ const useSwap = () => {
     onSettled: () => {
       setProgress(false);
     },
+    onError: (error) => {
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : error,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+        position: 'top',
+      });
+    }
   });
 };
 
 const useMainButton = () => {
-  const { amountOut } = useQuote();
   const params = useParams<URLParams>();
   const { mutateAsync, isPending } = useSwap();
   const inToken = useGetTokenFromList(params.inToken);
+  const { amountOut, isFetching } = useQuote();
 
   useEffect(() => {
     if (inToken) {
@@ -63,8 +74,8 @@ const useMainButton = () => {
 
   useUpdateMainButton({
     text: 'Confirm and swap',
-    progress: isPending,
-    disabled: !amountOut || !inToken,
+    progress: isPending || isFetching,
+    disabled: !amountOut || !inToken || isFetching,
     onClick: mutateAsync,
   });
 };
@@ -167,7 +178,7 @@ const useQuote = () => {
   const inToken = useGetTokenFromList(params.inToken);
   const outToken = useGetTokenFromList(params.outToken);
 
-  const { data: quote } = useQuoteQuery(inToken, outToken, params.inAmount);
+  const { data: quote, isFetching } = useQuoteQuery(inToken, outToken, params.inAmount);
   const amountOut = useMemo(() => {
     if (!outToken || !quote?.quote.outAmount) {
       return '';
@@ -178,12 +189,19 @@ const useQuote = () => {
   return {
     quote,
     amountOut,
+    isFetching,
   };
 };
 
 const OutTokenDisplay = () => {
   const { outToken: outTokenSymbol } = useParams<URLParams>();
-  const { amountOut } = useQuote();
+  const { amountOut, isFetching } = useQuote();
 
-  return <ReviewTx.TokenDisplay symbol={outTokenSymbol} amount={amountOut} />;
+  return (
+    <ReviewTx.TokenDisplay
+      isRefetching={isFetching}
+      symbol={outTokenSymbol}
+      amount={amountOut}
+    />
+  );
 };
