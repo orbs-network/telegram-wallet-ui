@@ -37,16 +37,11 @@
         z-index: 100;
       }
       .loader-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        display: block;
         position: absolute;
-        top: 0;
-        left: 0;
-
-        width: 100%;
-        height: var(--tg-viewport-height);
-        overflow: hidden;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
       }
       .loader {
         width: 80px;
@@ -65,7 +60,7 @@
   </head>
   <body>
     <div id="debug"></div>
-    <div id="root"></div>
+    <!-- <div id="root"></div> -->
     <div id="loader" class="loader-container">
       <div class="loader">
         <svg
@@ -93,17 +88,17 @@
     </div>
     <script>
       window.Telegram.WebApp.ready();
-      const loader = document.getElementById('loader');
-      loader.style.height = window.Telegram.WebApp.viewportHeight + 'px';
+      // const loader = document.getElementById('loader');
+      // loader.style.height = window.Telegram.WebApp.viewportHeight + 'px';
 
-      const debug = document.getElementById('debug');
-      debug.innerText = loader.style.height;
+      // const debug = document.getElementById('debug');
+      // debug.innerText = loader.style.height;
 
-      document.addEventListener('resize', () => {
-        loader.style.height = window.Telegram.WebApp.viewportHeight + 'px';
-        debug.innerText += '<br />' + loader.style.height;
-      });
+      // document.addEventListener('resize', () => {
+      //   loader.style.height = window.Telegram.WebApp.viewportHeight + 'px';
+      //   debug.innerText += '<br />' + loader.style.height;
+      // });
     </script>
-    <script type="module" src="/src/main.tsx"></script>
+    <!-- <script type="module" src="/src/main.tsx"></script> -->
   </body>
 </html>
