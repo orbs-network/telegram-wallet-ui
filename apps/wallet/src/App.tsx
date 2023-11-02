@@ -17,8 +17,6 @@ const Router = lazy(() => import('./router/Router'));
 const App = () => {
   const [height] = useState(window.innerHeight);
 
-  console.log('Twa.theme', Twa.themeParams);
-
   return (
     <QueryClientProvider client={queryClient}>
       <ChakraProvider theme={theme}>
