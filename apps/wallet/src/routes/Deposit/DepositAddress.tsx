@@ -87,7 +87,7 @@ export function DepositAddress() {
             <Button
               variant={isCopied ? undefined : 'primary'}
               onClick={handleCopy}
-              colorScheme={isCopied ? colors.success : 'none'}
+              colorScheme={isCopied ? 'green' : 'none'}
               leftIcon={isCopied ? <Icon as={BiCheck} /> : undefined}
             >
               {isCopied ? 'Copied!' : 'Copy'}
