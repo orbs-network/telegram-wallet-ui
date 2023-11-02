@@ -1,15 +1,8 @@
-import { Container, HStack, VStack, Box } from '@chakra-ui/react';
-import {
-  IconButtonWithLabel,
-  TotalBalance,
-  setTwaBg,
-} from '@telegram-wallet-ui/twa-ui-kit';
-import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
-import { Link } from 'react-router-dom';
-import { Page, TokenBalances, WalletSpinner } from '../components';
+import { Container, VStack, Box } from '@chakra-ui/react';
+import { TotalBalance, setTwaBg } from '@telegram-wallet-ui/twa-ui-kit';
+import { ActionMenu, Page, TokenBalances, WalletSpinner } from '../components';
 import { useFormatNumber, usePortfolioUsdValue } from '../hooks';
 import { faucetProvider, permit2Provider } from '../config';
-import { MdSwapHorizontalCircle } from 'react-icons/md';
 import { Transactions } from '../components/Transactions';
 import { useMainButtonStore } from '../store/main-button-store';
 import { useEffect } from 'react';
@@ -20,14 +13,6 @@ permit2Provider.pollPermit2Approvals();
 
 // Polls until the current selected erc20 was transferred to this account
 faucetProvider.requestIfNeeded();
-
-function handleClick() {
-  if (!Twa.isExpanded) {
-    Twa.expand();
-  }
-
-  Twa.HapticFeedback.impactOccurred('heavy');
-}
 
 export function Home() {
   const { resetButton } = useMainButtonStore();
@@ -70,31 +55,7 @@ export function Home() {
               amount={primaryAmount}
               label="Total balance"
             />
-            <HStack
-              justifyContent="center"
-              alignItems="center"
-              spacing={2}
-              pt={2}
-            >
-              <Link to="/deposit" onClick={handleClick}>
-                <IconButtonWithLabel
-                  Icon={BiSolidDownArrowCircle}
-                  label="Deposit"
-                />
-              </Link>
-              <Link to="/withdraw" onClick={handleClick}>
-                <IconButtonWithLabel
-                  Icon={BiSolidUpArrowCircle}
-                  label="Withdraw"
-                />
-              </Link>
-              <Link to="/trade" onClick={handleClick}>
-                <IconButtonWithLabel
-                  Icon={MdSwapHorizontalCircle}
-                  label="Trade"
-                />
-              </Link>
-            </HStack>
+            <ActionMenu />
           </Box>
           <TokenBalances />
         </VStack>

@@ -1,16 +1,12 @@
-import { Avatar, Box, Container, HStack, VStack } from '@chakra-ui/react';
-import { Balance, IconButtonWithLabel } from '@telegram-wallet-ui/twa-ui-kit';
-import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
-import { MdSwapHorizontalCircle } from 'react-icons/md';
-import { Link, useParams } from 'react-router-dom';
-import { Page, WalletSpinner } from '../components';
-import { CryptoAsset } from '../config';
+import { Avatar, Box, Container, VStack } from '@chakra-ui/react';
+import { Balance } from '@telegram-wallet-ui/twa-ui-kit';
+import { useParams } from 'react-router-dom';
+import { ActionMenu, Page, WalletSpinner } from '../components';
 import {
   useFormatNumber,
   useMultiplyPriceByAmount,
   useUserData,
 } from '../hooks';
-import { ROUTES } from '../router/routes';
 import { Transactions } from '../components/Transactions';
 
 function Loader() {
@@ -22,10 +18,10 @@ function Loader() {
 }
 
 export function Asset() {
-  const { assetId } = useParams<{ assetId: CryptoAsset }>();
+  const { assetId } = useParams<{ assetId: string }>();
 
   const { data: userData } = useUserData();
-  const tokenData = assetId && userData?.tokens[assetId.toUpperCase()];
+  const tokenData = assetId ? userData?.tokens[assetId.toUpperCase()] : null;
   const price = useMultiplyPriceByAmount(
     tokenData?.coingeckoId,
     tokenData?.balance
@@ -66,33 +62,7 @@ export function Asset() {
             primaryAmount={fiatAmount || '0'}
             label={`${tokenData.name} balance`}
           />
-          <HStack justifyContent="center" alignItems="center" spacing={2}>
-            <Link
-              to={`${ROUTES.depositSelectMethod.replace(
-                ':assetId',
-                tokenData.symbol
-              )}`}
-            >
-              <IconButtonWithLabel
-                Icon={BiSolidDownArrowCircle}
-                label="Deposit"
-              />
-            </Link>
-            <Link
-              to={ROUTES.withdrawAddress.replace(':assetId', tokenData.symbol)}
-            >
-              <IconButtonWithLabel
-                Icon={BiSolidUpArrowCircle}
-                label="Withdraw"
-              />
-            </Link>
-            <Link to={`/trade?inToken=${tokenData.symbol}`}>
-              <IconButtonWithLabel
-                Icon={MdSwapHorizontalCircle}
-                label="Trade"
-              />
-            </Link>
-          </HStack>
+          <ActionMenu tokenSymbol={assetId} />
         </VStack>
       </Container>
       <Box mt={4}>
