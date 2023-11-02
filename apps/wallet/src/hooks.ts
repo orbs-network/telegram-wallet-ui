@@ -175,10 +175,23 @@ export const useUserData = () => {
           coins.map((c) => c.address)
         );
 
-        coins.forEach((token, index) => {
+        coins.forEach((token) => {
+          let name = token.name
+            .split(' ')
+            .filter((word) => word !== 'Wrapped')
+            .join(' ');
+
+          if (name === 'WETH') {
+            name = 'Ethereum';
+          }
+
           _userData.tokens[token.symbol] = {
             ...token,
-            symbol: token.symbol.toLowerCase(),
+            name,
+            symbol:
+              token.symbol.toLowerCase().charAt(0) === 'w'
+                ? token.symbol.toLowerCase().slice(1)
+                : token.symbol.toLowerCase(),
             balanceBN: balances[token.address],
             balance: amountUi(token, balances[token.address]) || '0',
           };
