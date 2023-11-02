@@ -92,6 +92,13 @@ const AddressInput = ({
   setAddress: (address: string) => void;
 }) => {
   const paste = () => {
+    if (Telegram.readTextFromClipboard) {
+      Telegram.readTextFromClipboard((text) => {
+        setAddress(text);
+      });
+      return;
+    }
+
     navigator.clipboard
       .readText()
       .then((text) => {
