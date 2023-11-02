@@ -159,6 +159,7 @@ export function CryptoAmountInput({
           name={name}
           placeholder="0"
           thousandSeparator={true}
+          inputMode="decimal"
           value={value}
           onValueChange={({ value }) => onChange && onChange(value)}
           contentEditable={editable}
