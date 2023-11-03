@@ -10,7 +10,7 @@ import { WalletSpinner } from './components';
 import { useMainButtonStore } from './store/main-button-store';
 import Twa from '@twa-dev/sdk';
 import { useWebApp } from './hooks';
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 const Router = lazy(() => import('./router/Router'));
 
 document.getElementById('loader')?.remove();
