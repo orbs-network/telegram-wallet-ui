@@ -53,8 +53,8 @@ const useInitialTokens = () => {
     ).reverse();
 
     return {
-      inToken: inTokenSymbol || sorted[0]?.symbol || 'usdc',
-      outToken: sorted[1]?.symbol || 'wbtc',
+      inToken: inTokenSymbol || sorted[0]?.symbol || 'usdt',
+      outToken: sorted[1]?.symbol || 'usdc',
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataUpdatedAt, inTokenSymbol]);

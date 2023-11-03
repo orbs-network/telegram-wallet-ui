@@ -14,8 +14,13 @@ export class LocalStorageProvider {
     currValue[property] = value;
     this.storeObject(key, currValue);
   }
+
+  storeValue(key: string, value: any) {
+    localStorage.setItem(this.toKey(key), value);
+  }
+
   storeObject<T>(key: string, object: T) {
-    localStorage.setItem(this.toKey(key), JSON.stringify(object));
+    this.storeValue(key, JSON.stringify(object));
   }
 
   read<T>(key: string): T {
