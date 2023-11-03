@@ -3,6 +3,7 @@ import BN from 'bignumber.js';
 import { TokensList } from './TokensList';
 import { useNavigation } from '../router/hooks';
 import styled from '@emotion/styled';
+import { VStack } from '@chakra-ui/react';
 
 export function TokenBalances() {
   const { asset } = useNavigation();
@@ -15,7 +16,7 @@ export function TokenBalances() {
       );
 
   return (
-    <>
+    <VStack spacing="6px" alignItems="stretch">
       <StyledTokensList
         tokens={tokenBalances}
         onSelect={(token) => asset(token.symbol)}
@@ -39,10 +40,10 @@ export function TokenBalances() {
           // none
         }}
       />
-    </>
+    </VStack>
   );
 }
 
 const StyledTokensList = styled(TokensList)`
-  gap: 15px;
+  gap: 6px;
 `;

@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { colors } from '../theme';
 
 const styles = css`
-  border-radius: 1rem;
+  border-radius: 0.875rem;
   min-height: 72px;
   width: 100%;
   box-shadow: unset;

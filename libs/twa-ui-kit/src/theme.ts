@@ -116,6 +116,7 @@ export const theme = extendTheme({
       baseStyle: {
         backgroundColor: colors.bg_color,
         color: colors.text_color,
+        borderRadius: '0.875rem',
       },
     }),
     Text: defineStyleConfig({

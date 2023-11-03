@@ -81,7 +81,6 @@ function TokenListItem({
 }
 
 const StyledCard = styled(Card)({
-  borderRadius: '20px',
   minHeight: 'unset',
   '.chakra-card__body': {
     padding: '0px',
@@ -101,7 +100,7 @@ const USD = ({ token }: { token: TokenData }) => {
       <Skeleton
         height="13px"
         width="60px"
-        borderRadius="20px"
+        borderRadius="14px"
         marginTop="2px"
       />
     );

@@ -9,7 +9,7 @@ export function SelectToken(props: TokensListProps) {
 
 const StyledTokensList = styled(TokensList)({
   gap: 0,
-  borderRadius: 20,
+  borderRadius: 14,
 
   '.list-item': {
     borderRadius: 0,
