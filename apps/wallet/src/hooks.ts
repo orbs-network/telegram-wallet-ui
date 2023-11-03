@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Token, TokenData, UserData } from './types';
+import { Token, TokenData, User, UserData } from './types';
 import { fetchLatestPrices } from './utils/fetchLatestPrice';
 import BN from 'bignumber.js';
 import { account, coinsProvider, swapProvider, web3Provider } from './config';
@@ -14,6 +14,7 @@ import _ from 'lodash';
 import { useNumericFormat } from 'react-number-format';
 import { create } from 'zustand';
 import Twa from '@twa-dev/sdk';
+import { queryClient } from './App';
 
 export enum QueryKeys {
   FETCH_LAST_PRICE = 'useFetchLatestPrice',
@@ -153,63 +154,73 @@ export const usePortfolioUsdValue = () => {
   }, [userDataUpdatedAt, coinsDataUpdatedAt]);
 };
 
+export const getBalances = async () => {
+  const coins = await coinsProvider.fetchCoins();
+  return (
+    (
+      await queryClient.fetchQuery({
+        queryKey: [QueryKeys.USER_DATA],
+        queryFn: () => updateCoinBalances(coins),
+      })
+    )?.tokens ?? {}
+  );
+};
+
+const updateCoinBalances = async (coins: any[]) => {
+  try {
+    console.log('Refreshing balances...');
+
+    const _userData: UserData = {
+      account,
+      tokens: {},
+    };
+
+    if (coins.length === 0) return _userData;
+
+    const balances = await web3Provider.balancesOf(coins.map((c) => c.address));
+
+    coins.forEach((token) => {
+      if (token.symbol.toUpperCase() === 'MATIC') {
+        return;
+      }
+
+      let name = token.name
+        .split(' ')
+        .filter((word: string) => word !== 'Wrapped')
+        .join(' ');
+
+      if (name === 'WETH') {
+        name = 'Ethereum';
+      }
+
+      _userData.tokens[token.symbol] = {
+        ...token,
+        name,
+        symbolDisplay:
+          token.symbol.toUpperCase().charAt(0) === 'W'
+            ? token.symbol.toUpperCase().slice(1)
+            : token.symbol.toUpperCase(),
+        symbol: token.symbol.toLowerCase(),
+        balanceBN: balances[token.address],
+        balance: amountUi(token, balances[token.address]) || '0',
+      };
+    });
+
+    debug(_userData);
+    return _userData;
+  } catch (e) {
+    debug(e);
+    // console.error(e);
+  }
+};
+
 export const useUserData = () => {
   const { data: coins = [] } = useCoinsList();
   return useQuery({
     queryKey: [QueryKeys.USER_DATA],
     enabled: coins.length > 0,
-    refetchInterval: 20_000,
-    queryFn: async () => {
-      try {
-        if (!account) throw new Error('updateBalances: No account');
-
-        console.log('Refreshing balances...');
-
-        const _userData: UserData = {
-          account,
-          tokens: {},
-        };
-
-        if (coins.length === 0) return _userData;
-
-        const balances = await web3Provider.balancesOf(
-          coins.map((c) => c.address)
-        );
-
-        coins.forEach((token) => {
-          if (token.symbol.toUpperCase() === 'MATIC') {
-            return;
-          }
-
-          let name = token.name
-            .split(' ')
-            .filter((word) => word !== 'Wrapped')
-            .join(' ');
-
-          if (name === 'WETH') {
-            name = 'Ethereum';
-          }
-
-          _userData.tokens[token.symbol] = {
-            ...token,
-            name,
-            symbolDisplay:
-              token.symbol.toUpperCase().charAt(0) === 'W'
-                ? token.symbol.toUpperCase().slice(1)
-                : token.symbol.toUpperCase(),
-            symbol: token.symbol.toLowerCase(),
-            balanceBN: balances[token.address],
-            balance: amountUi(token, balances[token.address]) || '0',
-          };
-        });
-
-        debug(_userData);
-        return _userData;
-      } catch (e) {
-        debug(e);
-        // console.error(e);
-      }
-    },
+    refetchInterval: 10_000,
+    queryFn: () => updateCoinBalances(coins),
   });
 };
 
@@ -369,7 +380,7 @@ export const useQuoteQuery = (
 
 export function useWebApp() {
   const [resized, setResized] = useState(false);
-  const [height, setHeight] = useState(window.innerHeight)
+  const [height, setHeight] = useState(window.innerHeight);
   useEffect(() => {
     const onChange = () => {
       setResized(Twa.isExpanded);
@@ -382,7 +393,5 @@ export function useWebApp() {
     };
   }, []);
 
-return {isExpanded: resized, height};
+  return { isExpanded: resized, height };
 }
-
-

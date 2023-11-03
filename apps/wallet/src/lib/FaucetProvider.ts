@@ -4,6 +4,7 @@ import { getDebug } from './utils/debug';
 import { sleep } from '@defi.org/web3-candies';
 import promiseRetry from 'promise-retry';
 import { DepositTransactionEvent, EventsProvider } from './EventsProvider';
+import { getBalances } from '../hooks';
 
 const debug = getDebug('FaucetProvider');
 
@@ -53,7 +54,9 @@ export class FaucetProvider {
       const erc20Token = localStorage.getItem(this.KEY);
 
       if (erc20Token) {
-        const balance = await this.web3Provider.balanceOf(erc20Token);
+        const balance = Object.values(await getBalances()).find(
+          (t) => t.address === erc20Token
+        )!.balanceBN;
 
         if (balance.isGreaterThan(0)) {
           if (

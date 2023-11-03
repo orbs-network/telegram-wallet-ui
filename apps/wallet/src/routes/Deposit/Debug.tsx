@@ -1,4 +1,4 @@
-import { Button, Container, Text } from '@chakra-ui/react';
+import { Button, Container, Divider, Text } from '@chakra-ui/react';
 import { getDebug } from '../../lib/utils/debug';
 import {
   accountProvider,
@@ -12,6 +12,7 @@ import { Fetcher } from '../../utils/fetcher';
 import BN from 'bignumber.js';
 import { BackButton } from '@twa-dev/sdk/react';
 import Web3 from 'web3';
+import { getBalances } from '../../hooks';
 
 const debug = getDebug('Debug');
 
@@ -21,14 +22,13 @@ const useLoadBalanceData = () => {
     queryFn: async () => {
       const balance = (await web3Provider.balance()).dividedBy(1e18).toFixed(6);
 
+      const tokens = await getBalances();
+
       const erc20s = [];
-      for (const erc20 of permit2Provider.erc20s()) {
-        const erc20Balance = await web3Provider.balanceOf(erc20);
-        const isApproved = await permit2Provider.isApproved(erc20);
+      for (const erc20 of Object.values(tokens)) {
         erc20s.push({
-          erc20,
-          erc20Balance,
-          isApproved,
+          ...erc20,
+          isApproved: permit2Provider.isApproved(erc20.address),
         });
       }
 
@@ -78,9 +78,10 @@ export const Debug = () => {
       </Text>
       <>
         {(data?.erc20s ?? []).map((token) => (
-          <Text key={token.erc20}>
-            {token.erc20} {token.erc20Balance.toString()}{' '}
-            {token.isApproved ? 'Approved' : 'Not Approved'}
+          <Text key={token.address}>
+            {token.symbol.toUpperCase()}{' '}
+            {'...' + token.address.slice(token.address.length - 6)}{' '}
+            {token.balance} {token.isApproved ? '✅' : '❌'}
           </Text>
         ))}
       </>
