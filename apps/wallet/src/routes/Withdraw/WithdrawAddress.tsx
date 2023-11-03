@@ -11,7 +11,7 @@ import {
   Box,
   useToast,
 } from '@chakra-ui/react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Telegram from '@twa-dev/sdk';
 import Web3 from 'web3';
 import { LuScanLine } from 'react-icons/lu';
@@ -22,7 +22,10 @@ import { css } from '@emotion/react';
 import { useParams } from 'react-router-dom';
 import { URLParams } from '../../types';
 import { useCurrentPath } from '../../hooks';
-import { useUpdateMainButton } from '../../store/main-button-store';
+import {
+  useMainButtonStore,
+  useUpdateMainButton,
+} from '../../store/main-button-store';
 import { AiFillCloseCircle, AiFillWarning } from 'react-icons/ai';
 
 const styles = {
@@ -56,6 +59,13 @@ export function WithdrawAddress() {
     disabled: !isValidAddress,
     onClick: onSubmit,
   });
+
+  const { resetButton } = useMainButtonStore();
+  useEffect(() => {
+    return () => {
+      resetButton();
+    };
+  }, [resetButton]);
 
   return (
     <Page>

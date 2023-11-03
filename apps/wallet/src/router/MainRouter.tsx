@@ -28,11 +28,11 @@ const routes: RouteObject[] = [
   },
   {
     path: ROUTES.deposit,
-    element: <DepositSelectToken />,
+    element: <SelectMethod />,
   },
   {
-    path: ROUTES.depositSelectMethod,
-    element: <SelectMethod />,
+    path: ROUTES.depositSelectCoin,
+    element: <DepositSelectToken />,
   },
   {
     path: ROUTES.depositBuy,

@@ -9,4 +9,5 @@ export * from './SelectToken';
 export * from './CryptoAmountInput';
 export * from './ReviewTx';
 export * from './SuccessPage';
-export * from './ActionMenu';
+export * from './MainActionMenu';
+export * from './CoinActionMenu';
