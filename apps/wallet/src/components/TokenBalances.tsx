@@ -43,16 +43,6 @@ export function TokenBalances() {
   );
 }
 
-// coingeckoId: string;
-//   logoURI: string;
-//   name: string;
-// }
-
-// export type TokenData = {
-//   balance: string;
-//   balanceBN: BN;
-//   symbolDisplay: string;
-
 const StyledTokensList = styled(TokensList)`
   gap: 15px;
 `;
