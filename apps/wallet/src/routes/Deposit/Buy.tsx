@@ -1,23 +1,28 @@
-import { useEffect, useRef, useState } from 'react';
-import { ErrorPage } from '../../ErrorPage';
-import { TRANSAK_API_KEY, TRANSAK_URL, account } from '../../config';
-import { Transak } from './transak/constants';
+import { colors } from '@telegram-wallet-ui/twa-ui-kit';
 import { MainButton } from '@twa-dev/sdk/react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { ErrorPage } from '../../ErrorPage';
 import { Page } from '../../components';
+import { TRANSAK_API_KEY, TRANSAK_URL, account } from '../../config';
+import { getDebug } from '../../lib/utils/debug';
 import { URLParams } from '../../types';
+import { Transak } from './transak/constants';
+
+const debug = getDebug('Buy');
 
 const walletAddress = account?.address;
 
-const constructSrcUrl = (walletAddress: string, tokenSymbol: string) => {
+const constructSrcUrl = (walletAddress: string, tokenSymbol = 'USDC') => {
   const params = new URLSearchParams({
     network: 'polygon',
-    fiatCurrency: 'USD',
-    defaultFiatAmount: '30',
-    hideMenu: 'true',
-    disableWalletAddressForm: 'true',
     walletAddress,
-    defaultCryptoCurrency: tokenSymbol,
+    defaultCryptoCurrency: 'USDC',
+    cryptoCurrencyCode: tokenSymbol.toUpperCase(),
+    cryptoCurrencyList: 'WBTC,WETH,USDT,USDC',
+    disableWalletAddressForm: 'true',
+    hideMenu: 'true',
+    themeColor: colors.button_color,
   });
 
   return `${TRANSAK_URL}/?apiKey=${TRANSAK_API_KEY}&${params.toString()}`;
@@ -55,7 +60,13 @@ export const Buy = () => {
           setShowDoneButton(true);
           break;
         default:
-          return;
+          break;
+      }
+
+      // Hook into TRANSAK_WIDGET_CLOSE event to navigate back to Wallet home page upon user successfully purchasing and tapping "Back to App"
+      if (message.data.event_id === Transak.Events.TRANSAK_WIDGET_CLOSE) {
+        debug("TRANSAK_WIDGET_CLOSE event received. Navigating to '/'");
+        navigate('/');
       }
     };
 
@@ -65,11 +76,11 @@ export const Buy = () => {
     return () => {
       window.removeEventListener('message', handleMessage);
     };
-  }, []);
+  }, [navigate]);
 
   if (!walletAddress) return <ErrorPage message="Wallet not created." />;
 
-  const src = constructSrcUrl(walletAddress, assetId?.toUpperCase() || 'USDC');
+  const src = constructSrcUrl(walletAddress, assetId);
 
   return (
     <Page>
@@ -79,7 +90,13 @@ export const Buy = () => {
         title="Transak"
         src={src}
         allow="camera;microphone;payment"
-        style={{ height: '100%', width: '100%', border: 'none' }}
+        style={{
+          height: '100%',
+          width: '100%',
+          border: 'none',
+          transform: 'scale(1.0)',
+          overflow: 'hidden',
+        }}
       ></iframe>
       {showDoneButton && (
         <MainButton text="Done" onClick={() => navigate('/')} />
