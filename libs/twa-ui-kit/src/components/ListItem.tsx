@@ -7,7 +7,7 @@ import { tgColors } from '../theme';
 
 const styles = css`
   width: 100%;
-  padding: 10px 0 8px 0;
+  padding: 16px 20px 14px 16px;
 
   &:last-child:after {
     display: none;

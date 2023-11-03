@@ -58,7 +58,7 @@ function TokenListItem({
 }: TokenListItemProps) {
   return (
     <StyledCard className="list-item">
-      <StyledListItem
+      <ListItem
         selected={selected}
         onClick={onClick}
         className="list-item-content"
@@ -86,9 +86,6 @@ const StyledCard = styled(Card)({
   '.chakra-card__body': {
     padding: '0px',
   },
-});
-const StyledListItem = styled(ListItem)({
-  padding: '10px 20px 10px 16px',
 });
 
 const USD = ({ token }: { token: TokenData }) => {

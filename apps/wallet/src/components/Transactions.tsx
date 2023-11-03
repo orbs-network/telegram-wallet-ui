@@ -26,8 +26,28 @@ import { formatDateTime } from '../utils/utils';
 
 const StyledCard = styled(Card)({
   '.chakra-card__body': {
-    paddingLeft: '16px',
-    paddingRight: '20px',
+    paddingLeft: '0',
+    paddingRight: '0',
+  },
+  '.list-item ': {
+    borderRadius: 0,
+    position: 'relative',
+    color: colors.text_color,
+    '&:last-child > div': {
+      paddingBottom: 0,
+    },
+    '&::after': {
+      content: '""',
+      position: 'absolute',
+      bottom: 0,
+      left: 65,
+      right: 0,
+      height: 1,
+      background: colors.secondary_bg_color,
+    },
+    '&:last-child::after': {
+      display: 'none',
+    },
   },
 });
 
@@ -156,7 +176,9 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
 
   return (
     <StyledCard>
-      <Text variant="hint">TRANSACTION HISTORY</Text>
+      <Box padding="0 16px 0 14px">
+        <Text variant="hint">TRANSACTION HISTORY</Text>
+      </Box>
       {transactions.map((tx) => {
         let StartIcon = null;
         let CardTitle = null;
@@ -267,11 +289,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
         }
 
         return (
-          <Link
-            key={tx.id}
-            to={`/transaction/${tx.id}`}
-            style={{ color: colors.text_color }}
-          >
+          <Link key={tx.id} to={`/transaction/${tx.id}`} className="list-item">
             <ListItem
               StartIconSlot={StartIcon}
               StartTextSlot={
