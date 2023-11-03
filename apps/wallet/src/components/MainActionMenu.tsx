@@ -15,7 +15,7 @@ function handleClick() {
 
 export function MainActionMenu() {
   return (
-    <HStack justifyContent="center" alignItems="center" spacing={2} pt={2}>
+    <HStack justifyContent="center" alignItems="center" spacing={8} pt={2}>
       <Link to={ROUTES.deposit} onClick={handleClick}>
         <IconButtonWithLabel IconSlot={<DepositIcon />} label="Deposit" />
       </Link>

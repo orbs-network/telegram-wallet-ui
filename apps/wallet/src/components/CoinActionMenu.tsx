@@ -34,17 +34,17 @@ export function CoinActionMenu({ tokenSymbol }: CoinActionMenuProps) {
 
   return (
     <HStack justifyContent="center" alignItems="center" spacing={8} pt={2}>
-      <Link to={withdrawPath} onClick={handleClick}>
-        <IconButtonWithLabel IconSlot={<WithdrawIcon />} label="Send" />
-      </Link>
       <Link to={depositPath} onClick={handleClick}>
-        <IconButtonWithLabel IconSlot={<DepositIcon />} label="Receive" />
+        <IconButtonWithLabel IconSlot={<DepositIcon />} label="Deposit" />
       </Link>
       <Link to={buyPath} onClick={handleClick}>
         <IconButtonWithLabel IconSlot={<BuyIcon />} label="Buy" />
       </Link>
       <Link to={tradePath} onClick={handleClick}>
         <IconButtonWithLabel IconSlot={<TradeIcon />} label="Trade" />
+      </Link>
+      <Link to={withdrawPath} onClick={handleClick}>
+        <IconButtonWithLabel IconSlot={<WithdrawIcon />} label="Withdraw" />
       </Link>
     </HStack>
   );
