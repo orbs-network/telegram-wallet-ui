@@ -12,10 +12,13 @@ export const isMumbai = import.meta.env.VITE_IS_MUMBAI === '1';
 
 // export const w3 = new web3(networks.poly.publicRpcUrl);
 export const w3 = new web3(
-  `https://polygon-${isMumbai ? 'mumbai' : 'mainnet'}.g.alchemy.com/v2/${
-    import.meta.env.VITE_ALCHEMY_API_KEY
-  }`
+  isMumbai
+    ? `https://polygon-mumbai.g.alchemy.com/v2/${
+        import.meta.env.VITE_ALCHEMY_API_KEY
+      }`
+    : 'https://nd-629-499-152.p2pify.com/9d54c0800de991110a4e8e5dc6300b3a'
 );
+
 export const TRANSAK_API_KEY = import.meta.env.VITE_TRANSAK_API_KEY;
 export const TRANSAK_URL = import.meta.env.VITE_TRANSAK_URL;
 
@@ -40,7 +43,8 @@ export const swapProvider = new SwapProvider(
   coinsProvider,
   liqHubProvider,
   permit2Provider,
-  eventsProvider
+  eventsProvider,
+  web3Provider
 );
 
 // TODO: remove this

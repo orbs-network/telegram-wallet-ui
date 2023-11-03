@@ -25,6 +25,7 @@ import { estimateGasPrice } from '../utils/estimate';
 import { BNComparable } from '../types';
 import { getDebug } from './utils/debug';
 import { Web3Account } from 'web3-eth-accounts';
+import promiseRetry from 'promise-retry';
 
 const debug = getDebug('Web3Provider');
 
@@ -191,5 +192,23 @@ export class Web3Provider {
     return BN(
       (await this.web3.eth.getBalance(this.account.address)).toString()
     );
+  }
+
+  async waitForTransaction(txHash: string) {
+    return promiseRetry(
+      async (retry, retryNum) => {
+        const { status } = await this.web3.eth
+          .getTransactionReceipt(txHash)
+          .catch(retry);
+
+        if (!status) debug(`txn ${txHash} reverted`);
+
+        return Boolean(status);
+      },
+      { retries: 5, factor: 1.6 }
+    ).catch((e) => {
+      debug(`txn ${txHash} not found`);
+      return false;
+    });
   }
 }
