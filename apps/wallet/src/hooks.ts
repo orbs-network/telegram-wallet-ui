@@ -206,7 +206,6 @@ const updateCoinBalances = async (coins: any[]) => {
       };
     });
 
-    debug(_userData);
     return _userData;
   } catch (e) {
     debug(e);

@@ -116,7 +116,6 @@ export const Debug = () => {
               )
             ) {
               accountProvider.setAccount(newPrivateKey);
-              permit2Provider.resetApprovals();
               window.location.reload();
             }
           }

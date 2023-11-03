@@ -97,12 +97,14 @@ export class Web3Provider {
     return this.signAndSend(txn, token);
   }
 
-  async getAllowanceFor(token: string) {
+  async getPermit2AllowanceFor(token: string) {
     if (!this.account) throw new Error('getAllowanceFor: No account');
 
     const allowance = await this.wrapToken(token)
       .methods.allowance(this.account.address, permit2Address)
       .call();
+
+    debug('getPermit2AllowanceFor: %s', allowance);
     return new BN(allowance);
   }
 
