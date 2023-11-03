@@ -36,3 +36,17 @@ export function getTextSizeInPixels({
 
   return textSize;
 }
+
+export function formatDateTime(timestamp: Date) {
+  const current = new Date();
+
+  return timestamp.toLocaleString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    hour12: true,
+    hour: 'numeric',
+    minute: 'numeric',
+    year:
+      current.getFullYear() !== timestamp.getFullYear() ? 'numeric' : undefined,
+  });
+}

@@ -22,6 +22,7 @@ import { amountUi, toUiDisplay } from '../utils/conversion';
 import BN from 'bignumber.js';
 import { useParams } from 'react-router-dom';
 import { Card, colors } from '@telegram-wallet-ui/twa-ui-kit';
+import { formatDateTime } from '../utils/utils';
 
 export function Transaction() {
   const { txId } = useParams<{ txId: string }>();
@@ -131,7 +132,7 @@ export function Transaction() {
             <SkeletonText />
           )}
           {tx ? (
-            <Text variant="hint">{tx.date.toLocaleString()}</Text>
+            <Text variant="hint">{formatDateTime(tx.date)}</Text>
           ) : (
             <SkeletonText />
           )}

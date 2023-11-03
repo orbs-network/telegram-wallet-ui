@@ -22,6 +22,7 @@ import { useUserData } from '../hooks';
 import { TokenData } from '../types';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
+import { formatDateTime } from '../utils/utils';
 
 const StyledCard = styled(Card)({
   '.chakra-card__body': {
@@ -237,8 +238,8 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
             );
             CardTitle = (
               <Heading as="h3" variant="bodyTitle" noOfLines={1}>
-                Trade {tradeTx.inToken?.symbolDisplay} for{' '}
-                {tradeTx.outToken?.symbolDisplay}
+                Buy {tradeTx.outToken?.symbolDisplay} with{' '}
+                {tradeTx.inToken?.symbolDisplay}
               </Heading>
             );
             const isIn = tokenFilter && tokenFilter === tradeTx.inToken?.symbol;
@@ -277,7 +278,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
                 <Box>
                   {CardTitle}
                   <Text variant="hint" fontSize="xs">
-                    {tx.date.toLocaleString()}
+                    {formatDateTime(tx.date)}
                   </Text>
                 </Box>
               }

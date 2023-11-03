@@ -24,7 +24,7 @@ const useSwap = () => {
 
   const queryClient = useQueryClient();
   const { setProgress } = useSwapInProgress();
-  const toast = useToast()
+  const toast = useToast();
 
   const { quote, amountOut } = useQuote();
   return useMutation({
@@ -56,7 +56,7 @@ const useSwap = () => {
         isClosable: true,
         position: 'top',
       });
-    }
+    },
   });
 };
 
@@ -73,7 +73,7 @@ const useMainButton = () => {
   }, [inToken]);
 
   useUpdateMainButton({
-    text: 'Confirm and swap',
+    text: 'CONFIRM AND TRADE',
     progress: isPending || isFetching,
     disabled: !amountOut || !inToken || isFetching,
     onClick: mutateAsync,
@@ -178,7 +178,11 @@ const useQuote = () => {
   const inToken = useGetTokenFromList(params.inToken);
   const outToken = useGetTokenFromList(params.outToken);
 
-  const { data: quote, isFetching } = useQuoteQuery(inToken, outToken, params.inAmount);
+  const { data: quote, isFetching } = useQuoteQuery(
+    inToken,
+    outToken,
+    params.inAmount
+  );
   const amountOut = useMemo(() => {
     if (!outToken || !quote?.quote.outAmount) {
       return '';
