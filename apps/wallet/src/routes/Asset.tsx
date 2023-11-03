@@ -2,8 +2,8 @@ import { Avatar, Box, Container, VStack } from '@chakra-ui/react';
 import { Balance } from '@telegram-wallet-ui/twa-ui-kit';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { ActionMenu, Page, WalletSpinner } from '../components';
 import { Transactions } from '../components/Transactions';
+import { CoinActionMenu, Page, WalletSpinner } from '../components';
 import {
   useFormatNumber,
   useMultiplyPriceByAmount,
@@ -70,7 +70,7 @@ export function Asset() {
             primaryAmount={fiatAmount || '0'}
             label={`${tokenData.name} balance`}
           />
-          <ActionMenu tokenSymbol={assetId} />
+          <CoinActionMenu tokenSymbol={assetId} />
         </VStack>
       </Container>
       <Box mt={4}>

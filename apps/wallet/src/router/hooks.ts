@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { generatePath, useNavigate } from 'react-router-dom';
 import { ROUTES } from './routes';
 
 export const useNavigation = () => {
@@ -13,16 +13,19 @@ export const useNavigation = () => {
     navigate(ROUTES.deposit);
   }, [navigate]);
 
-  const depositSelectMethod = useCallback(
-    (assetId: string) => {
-      navigate(ROUTES.depositSelectMethod.replace(':assetId', assetId));
+  const depositSelectCoin = useCallback(
+    (method: string) => {
+      navigate(ROUTES.depositSelectCoin.replace(':method', method));
     },
     [navigate]
   );
 
-  const depositBuy = useCallback(() => {
-    navigate(ROUTES.depositBuy);
-  }, [navigate]);
+  const depositBuy = useCallback(
+    (assetId: string) => {
+      navigate(generatePath(ROUTES.depositBuy, { assetId }));
+    },
+    [navigate]
+  );
 
   const depositCrypto = useCallback(
     (assetId: string) => {
@@ -121,7 +124,7 @@ export const useNavigation = () => {
     withdrawAmount,
     withdrawSummary,
     withdrawSuccess,
-    depositSelectMethod,
+    depositSelectCoin,
     tradeReview,
     tradeSuccess,
   };

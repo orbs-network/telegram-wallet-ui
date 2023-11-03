@@ -8,39 +8,26 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Card, DataDisplayItem, colors } from '@telegram-wallet-ui/twa-ui-kit';
-import { useEffect } from 'react';
 import { AiOutlineCreditCard } from 'react-icons/ai';
 import { BiChevronRight } from 'react-icons/bi';
 import { RiApps2Line } from 'react-icons/ri';
-import { Link, useParams } from 'react-router-dom';
+import { Link, generatePath } from 'react-router-dom';
 import { Page } from '../../components';
-import { faucetProvider, permit2Provider } from '../../config';
-import { useGetTokenFromList } from '../../hooks';
+
 import { ROUTES } from '../../router/routes';
-import { URLParams } from '../../types';
 
 export function SelectMethod() {
-  const { assetId } = useParams<URLParams>();
-
-  const token = useGetTokenFromList(assetId);
-
-  useEffect(() => {
-    if (token) {
-      faucetProvider.setProofErc20(token.address);
-      permit2Provider.addErc20(token.address);
-    }
-  }, [token]);
-
   return (
     <Page>
       <Container size="sm" pt={4}>
         <VStack spacing={8} alignItems="stretch">
           <Heading as="h1" size="md" textAlign="center">
-            How would you like to deposit{' '}
-            {token ? token.symbolDisplay : 'crypto'}?
+            How would you like to deposit crypto?
           </Heading>
           <VStack spacing={4} alignItems="stretch">
-            <Link to={ROUTES.depositBuy.replace(':assetId', assetId!)}>
+            <Link
+              to={generatePath(ROUTES.depositSelectCoin, { method: 'buy' })}
+            >
               <Card>
                 <DataDisplayItem
                   StartIconSlot={
@@ -63,7 +50,9 @@ export function SelectMethod() {
                 />
               </Card>
             </Link>
-            <Link to={ROUTES.depositCrypto.replace(':assetId', assetId!)}>
+            <Link
+              to={generatePath(ROUTES.depositSelectCoin, { method: 'crypto' })}
+            >
               <Card>
                 <DataDisplayItem
                   StartIconSlot={

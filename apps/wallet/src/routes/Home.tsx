@@ -1,6 +1,11 @@
 import { Container, VStack, Box } from '@chakra-ui/react';
 import { TotalBalance, setTwaBg } from '@telegram-wallet-ui/twa-ui-kit';
-import { ActionMenu, Page, TokenBalances, WalletSpinner } from '../components';
+import {
+  MainActionMenu,
+  Page,
+  TokenBalances,
+  WalletSpinner,
+} from '../components';
 import { useFormatNumber, usePortfolioUsdValue } from '../hooks';
 import { faucetProvider, permit2Provider } from '../config';
 import { Transactions } from '../components/Transactions';
@@ -55,7 +60,7 @@ export function Home() {
               amount={primaryAmount}
               label="Total balance"
             />
-            <ActionMenu />
+            <MainActionMenu />
           </Box>
           <TokenBalances />
         </VStack>
