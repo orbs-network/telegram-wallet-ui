@@ -10,7 +10,7 @@ import {
   useQuoteQuery,
   useSwapInProgress,
 } from '../../hooks';
-import { URLParams, SwapSuccesss } from '../../types';
+import { URLParams } from '../../types';
 import { amountUi } from '../../utils/conversion';
 import BN from 'bignumber.js';
 import { useNavigation } from '../../router/hooks';
@@ -30,15 +30,9 @@ const useSwap = () => {
   return useMutation({
     mutationFn: async () => {
       setProgress(true);
-      const result = await swapProvider.swap({
+      return swapProvider.swap({
         ...quote!.quote,
       });
-      alert(result.toString());
-      if ('error' in result) {
-        throw new Error(result.error.error);
-      }
-
-      return (result as SwapSuccesss).txHash;
     },
     onSuccess: (txHash) => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.USER_DATA] });
@@ -112,9 +106,10 @@ const InTokenBalanceAfter = () => {
     if (!token) {
       return '';
     }
-    return new BN(token.balance)
-      .minus(new BN(params.inAmount || ''))
-      .toString();
+    return BN.max(
+      new BN(token.balance).minus(params.inAmount ?? '0'),
+      0
+    ).toString();
   }, [token, params.inAmount]);
 
   const formattedNewBalance = useFormatNumber({ value: newBalance });

@@ -7,14 +7,9 @@ import { sleep } from './utils/sleep';
 import { Permit2Provider } from './Permit2Provider';
 import { EventsProvider } from './EventsProvider';
 import { amountUi } from '../utils/conversion';
+import { Web3Provider } from './Web3Provider';
 
 const debug = getDebug('SwapProvider');
-
-type QuoteRequest = {
-  inToken: string;
-  outToken: string;
-  inAmount: BNComparable;
-};
 
 export type OptimizedQuoteRequest = {
   inToken: Token;
@@ -30,9 +25,9 @@ export class SwapProvider {
     private coinsProvider: CoinsProvider,
     private liquidityHubProvider: LiquihubProvider,
     private permit2Provider: Permit2Provider,
-    private eventsProvider: EventsProvider
+    private eventsProvider: EventsProvider,
+    private web3Provider: Web3Provider
   ) {}
-
 
   async optimizedQuote(
     quoteRequest: OptimizedQuoteRequest,
@@ -87,10 +82,16 @@ export class SwapProvider {
       await sleep(this.SLEEP_INTERVAL);
     }
 
-    const txHash = await this.liquidityHubProvider.swap(quote);
+    const { txHash } = await this.liquidityHubProvider.swap(quote);
     if (!txHash) {
-      throw new Error('Swap failed');
+      debug('No tx hash for swap');
+      throw new Error('Swap failed, Please try again');
     }
+
+    await sleep(1000);
+
+    const isSuccessful = await this.web3Provider.waitForTransaction(txHash);
+    if (!isSuccessful) throw new Error('Swap failed, Please try again');
 
     const tokens = await this.coinsProvider.fetchCoins();
 

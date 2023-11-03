@@ -7,7 +7,6 @@ import type {
 } from '../types';
 import { Web3Provider } from './Web3Provider';
 import { Fetcher } from '../utils/fetcher';
-import { sleep } from './utils/sleep';
 import { getDebug } from './utils/debug';
 const debug = getDebug('LiquihubProvider');
 
@@ -38,7 +37,7 @@ export class LiquihubProvider {
     return { ...request, ...quote };
   }
 
-  async swap(quote: QuoteResponse): Promise<SwapSuccesss | SwapError> {
+  async swap(quote: QuoteResponse): Promise<SwapSuccesss> {
     debug('Trying to swap on LiquidityHub');
 
     const signature = await this.web3Provider.sign(quote.permitData);
