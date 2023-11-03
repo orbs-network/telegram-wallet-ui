@@ -80,7 +80,7 @@ export class Web3Provider {
       signed.rawTransaction!
     );
 
-    return transactionHash;
+    return String(transactionHash);
   }
 
   async transfer(token: string, to: string, amount: BNComparable) {
