@@ -150,12 +150,17 @@ const TokenDisplay = ({
           <Box css={styles.tokenDisplayAmount}>
             {formattedAmount ? (
               <Text css={[styles.tokenAmount]}>
-                <StyledSpan $show={Boolean(isRefetching)}>{formattedAmount}</StyledSpan> {symbol?.toUpperCase()}
+                <StyledSpan $show={Boolean(isRefetching)}>
+                  {formattedAmount}
+                </StyledSpan>{' '}
+                {token?.symbolDisplay.toUpperCase()}
               </Text>
             ) : (
               <Flex gap="10px" alignItems="center">
                 <Skeleton css={styles.tokenDisplayLoader} />
-                <Text css={styles.tokenAmount}>{symbol?.toUpperCase()}</Text>
+                <Text css={styles.tokenAmount}>
+                  {token?.symbolDisplay.toUpperCase()}
+                </Text>
               </Flex>
             )}
           </Box>

@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SuccessPage } from '../../components';
 import { POLYGON_EXPLORER } from '../../consts';
-import { useFormatNumber } from '../../hooks';
+import { useFormatNumber, useUserData } from '../../hooks';
 import { useUpdateMainButton } from '../../store/main-button-store';
 import { URLParams } from '../../types';
 import { colors } from '@telegram-wallet-ui/twa-ui-kit';
@@ -33,13 +33,18 @@ export function TradeSuccess() {
   const { outToken, outAmount, txHash } = useParams<URLParams>();
   const formattedOutAmount = useFormatNumber({ value: outAmount });
   const navigate = useNavigate();
+  const { data: userData } = useUserData();
+
+  const token = Object.values(userData?.tokens || []).find(
+    (token) => token.symbol === outToken
+  );
 
   const onClick = useCallback(() => {
     navigate('/');
   }, [navigate]);
 
   useUpdateMainButton({
-    text: 'Done',
+    text: 'DONE',
     onClick,
     disabled: false,
     progress: false,
@@ -50,7 +55,7 @@ export function TradeSuccess() {
       <Text css={styles.title}>Exchange completed</Text>
       <Text>
         <strong>
-          {formattedOutAmount} {`${outToken?.toUpperCase()} `}
+          {formattedOutAmount} {`${token?.symbolDisplay} `}
         </strong>
         has been deposited to your wallet
       </Text>

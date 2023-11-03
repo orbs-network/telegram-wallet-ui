@@ -21,6 +21,7 @@ import { useUpdateMainButton } from '../../store/main-button-store';
 const useSwap = () => {
   const tradeSuccess = useNavigation().tradeSuccess;
   const { outToken: outTokenSymbol } = useParams<URLParams>();
+  const token = useGetTokenFromList(outTokenSymbol);
 
   const queryClient = useQueryClient();
   const { setProgress } = useSwapInProgress();
@@ -36,7 +37,7 @@ const useSwap = () => {
     },
     onSuccess: (txHash) => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.USER_DATA] });
-      tradeSuccess(outTokenSymbol!, amountOut, txHash);
+      tradeSuccess(token?.symbolDisplay || outTokenSymbol!, amountOut, txHash);
     },
     onSettled: () => {
       setProgress(false);
@@ -56,8 +57,8 @@ const useSwap = () => {
 
 const useMainButton = () => {
   const params = useParams<URLParams>();
-  const { mutateAsync, isPending } = useSwap();
   const inToken = useGetTokenFromList(params.inToken);
+  const { mutateAsync, isPending } = useSwap();
   const { amountOut, isFetching } = useQuote();
 
   useEffect(() => {
@@ -149,11 +150,13 @@ const OutTokenBalanceAfter = () => {
 
 const ExchangeRate = () => {
   const params = useParams<URLParams>();
+  const inToken = useGetTokenFromList(params.inToken);
+  const outToken = useGetTokenFromList(params.outToken);
 
   const rate = useExchangeRate(params.inToken, params.outToken);
   const formattedValue = useFormatNumber({ value: rate });
 
-  const value = `1 ${params.inToken?.toUpperCase()} ≈ ${formattedValue} ${params.outToken?.toUpperCase()}`;
+  const value = `1 ${inToken?.symbolDisplay} ≈ ${formattedValue} ${outToken?.symbolDisplay}`;
 
   return (
     <ReviewTx.Section title="Exchange Rate" value={formattedValue && value} />
