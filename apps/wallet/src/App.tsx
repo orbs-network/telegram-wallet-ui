@@ -1,4 +1,9 @@
-import { ChakraProvider, Container, useColorMode } from '@chakra-ui/react';
+import {
+  ChakraProvider,
+  Container,
+  useColorMode,
+  useToast,
+} from '@chakra-ui/react';
 import { MainButton, theme } from '@telegram-wallet-ui/twa-ui-kit';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useLocation } from 'react-router-dom';
@@ -9,14 +14,28 @@ import { usePersistedStore } from './store/persisted-store';
 import { WalletSpinner } from './components';
 import { useMainButtonStore } from './store/main-button-store';
 import Twa from '@twa-dev/sdk';
-import { useWebApp } from './hooks';
+import { useNavigatorOnLine, useWebApp } from './hooks';
 export const queryClient = new QueryClient();
 const Router = lazy(() => import('./router/Router'));
 
 document.getElementById('loader')?.remove();
 
 const App = () => {
-const {height} = useWebApp();
+  const { height } = useWebApp();
+  const isOnline = useNavigatorOnLine();
+  const toast = useToast();
+
+  useEffect(() => {
+    if (!isOnline && !toast.isActive('offline-toast')) {
+      toast({
+        id: 'offline-toast',
+        description: 'You are offline',
+        status: 'error',
+        isClosable: false,
+        duration: null,
+      });
+    }
+  }, [isOnline, toast]);
 
   return (
     <QueryClientProvider client={queryClient}>
