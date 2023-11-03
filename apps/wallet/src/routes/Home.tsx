@@ -54,14 +54,14 @@ export function Home() {
     <Page>
       <Container size="sm" pt={4}>
         <VStack spacing={4} alignItems="stretch">
-          <Box>
+          <VStack spacing={3}>
             <TotalBalance
               currencySymbol="$"
               amount={primaryAmount}
               label="Total balance"
             />
             <MainActionMenu />
-          </Box>
+          </VStack>
           <TokenBalances />
         </VStack>
       </Container>

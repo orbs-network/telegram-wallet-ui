@@ -12,9 +12,11 @@ export function IconButtonWithLabel({
 }: IconButtonWithLabelProps) {
   return (
     <Button variant="icon" onClick={onClick}>
-      <VStack>
+      <VStack gap="0.25rem">
         {IconSlot}
-        <Text fontWeight="bold">{label}</Text>
+        <Text as="span" fontSize="14px">
+          {label}
+        </Text>
       </VStack>
     </Button>
   );

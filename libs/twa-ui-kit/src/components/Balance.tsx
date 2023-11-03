@@ -7,7 +7,6 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { colors } from '../theme';
 
 type BalanceProps = {
   label: string;
