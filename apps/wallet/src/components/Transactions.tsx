@@ -1,14 +1,5 @@
-import {
-  Avatar,
-  Heading,
-  Box,
-  Text,
-  Icon,
-  SkeletonText,
-} from '@chakra-ui/react';
+import { Avatar, Heading, Box, Text, SkeletonText } from '@chakra-ui/react';
 import { Card, ListItem, colors } from '@telegram-wallet-ui/twa-ui-kit';
-import { BiSolidDownArrowCircle, BiSolidUpArrowCircle } from 'react-icons/bi';
-import { MdSwapHorizontalCircle } from 'react-icons/md';
 import {
   DepositTransactionEvent,
   TradeTransactionEvent,
@@ -23,6 +14,7 @@ import { TokenData } from '../types';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { formatDateTime } from '../utils/utils';
+import { DepositIcon, TradeIcon, WithdrawIcon } from './icons';
 
 const StyledCard = styled(Card)({
   '.chakra-card__body': {
@@ -190,10 +182,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
               token: TokenData | undefined;
             };
             StartIcon = (
-              <Avatar
-                icon={<Icon as={BiSolidDownArrowCircle} fontSize="4xl" />}
-                backgroundColor="telegram.500"
-              />
+              <Avatar icon={<DepositIcon />} backgroundColor="telegram.500" />
             );
             CardTitle = (
               <Heading as="h3" variant="bodyTitle" noOfLines={1}>
@@ -219,11 +208,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
             const wTx = tx as WithdrawalTransactionEvent & {
               token: TokenData;
             };
-            StartIcon = (
-              <Avatar
-                icon={<Icon as={BiSolidUpArrowCircle} fontSize="4xl" />}
-              />
-            );
+            StartIcon = <Avatar icon={<WithdrawIcon />} />;
             CardTitle = (
               <Heading as="h3" variant="bodyTitle" noOfLines={1}>
                 Withdrawal to {wTx.toAddress.slice(0, 6) + '...'}
@@ -253,10 +238,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
             };
 
             StartIcon = (
-              <Avatar
-                icon={<Icon as={MdSwapHorizontalCircle} fontSize="4xl" />}
-                backgroundColor="telegram.500"
-              />
+              <Avatar icon={<TradeIcon />} backgroundColor="telegram.500" />
             );
             CardTitle = (
               <Heading as="h3" variant="bodyTitle" noOfLines={1}>
