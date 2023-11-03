@@ -13,23 +13,13 @@ const debug = getDebug('Buy');
 
 const walletAddress = account?.address;
 
-const convertToTransakCurrencyCode = (tokenSymbol: string) => {
-  switch (tokenSymbol) {
-    case 'wmatic':
-      return 'MATIC';
-    default:
-      return tokenSymbol.toUpperCase();
-  }
-};
-
 const constructSrcUrl = (walletAddress: string, tokenSymbol = 'USDC') => {
-  const cryptoCurrencyCode = convertToTransakCurrencyCode(tokenSymbol);
-
   const params = new URLSearchParams({
     network: 'polygon',
     walletAddress,
     defaultCryptoCurrency: 'USDC',
-    cryptoCurrencyCode,
+    cryptoCurrencyCode: tokenSymbol.toUpperCase(),
+    cryptoCurrencyList: 'WBTC,WETH,USDT,USDC',
     disableWalletAddressForm: 'true',
     hideMenu: 'true',
     themeColor: colors.button_color,
