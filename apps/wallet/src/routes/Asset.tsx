@@ -1,13 +1,15 @@
 import { Avatar, Box, Container, VStack } from '@chakra-ui/react';
 import { Balance } from '@telegram-wallet-ui/twa-ui-kit';
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { ActionMenu, Page, WalletSpinner } from '../components';
+import { Transactions } from '../components/Transactions';
 import {
   useFormatNumber,
   useMultiplyPriceByAmount,
   useUserData,
 } from '../hooks';
-import { Transactions } from '../components/Transactions';
+import { useMainButtonStore } from '../store/main-button-store';
 
 function Loader() {
   return (
@@ -26,6 +28,12 @@ export function Asset() {
     tokenData?.coingeckoId,
     tokenData?.balance
   );
+
+  // Ensure bottom button is not shown on asset page
+  const { resetButton } = useMainButtonStore();
+  useEffect(() => {
+    resetButton();
+  }, [resetButton]);
 
   const fiatAmount = useFormatNumber({
     value: price || '0',
