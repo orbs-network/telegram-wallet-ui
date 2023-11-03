@@ -11,7 +11,7 @@ import {
   Box,
   useToast,
 } from '@chakra-ui/react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Telegram from '@twa-dev/sdk';
 import Web3 from 'web3';
 import { LuScanLine } from 'react-icons/lu';
@@ -21,7 +21,6 @@ import { Page } from '../../components';
 import { css } from '@emotion/react';
 import { useParams } from 'react-router-dom';
 import { URLParams } from '../../types';
-import { useCurrentPath } from '../../hooks';
 import { useUpdateMainButton } from '../../store/main-button-store';
 import { AiFillCloseCircle, AiFillWarning } from 'react-icons/ai';
 
@@ -35,8 +34,6 @@ export function WithdrawAddress() {
   const [address, setAddress] = useState('');
   const { withdrawAmount } = useNavigation();
   const { assetId } = useParams<URLParams>();
-
-  useCurrentPath();
 
   const isValidAddress = useMemo(() => {
     try {
@@ -92,31 +89,50 @@ const AddressInput = ({
   address: string;
   setAddress: (address: string) => void;
 }) => {
+  const [pasteSupported, setPasteSupported] = useState(false);
   const toast = useToast();
+
+  useEffect(() => {
+    async function checkPermission() {
+      try {
+        const permission = await navigator.permissions.query({
+          name: 'clipboard-read',
+          // little hack for TS to ignore this unavailable type
+        } as unknown as PermissionDescriptor);
+        if (permission.state === 'granted') {
+          setPasteSupported(true);
+          return;
+        }
+      } catch (err) {
+        // paste not supported
+        console.error(err);
+      }
+    }
+    checkPermission();
+  }, []);
+
   const paste = () => {
-    navigator.clipboard
-      .readText()
-      .then((text) => {
+    async function readClipboard() {
+      try {
+        const text = await navigator.clipboard.readText();
         setAddress(text);
-      })
-      .catch((err) => {
-        console.error('Failed to read clipboard contents: ', err);
+      } catch (err) {
         toast({
-          title: 'Failed to read clipboard contents',
-          description: err,
+          description: 'Failed to read clipboard contents',
           status: 'error',
           duration: 3000,
           isClosable: true,
         });
-      });
-  };
-
-  const onClick = () => {
-    if (address) {
-      setAddress('');
-    } else {
-      paste();
+      }
     }
+
+    readClipboard();
+  };
+  const handlePaste = () => {
+    paste();
+  };
+  const handleClear = () => {
+    setAddress('');
   };
 
   return (
@@ -126,14 +142,21 @@ const AddressInput = ({
         value={address}
         placeholder="Enter Polygon address"
       />
+      {pasteSupported && address === '' && (
+        <InputRightElement
+          onClick={handlePaste}
+          pr={8}
+          color={colors.link_color}
+        >
+          Paste
+        </InputRightElement>
+      )}
 
-      <InputRightElement
-        onClick={onClick}
-        pr={address === '' ? 8 : 0}
-        color={colors.link_color}
-      >
-        {address === '' ? 'Paste' : <Icon as={AiFillCloseCircle} />}
-      </InputRightElement>
+      {address !== '' && (
+        <InputRightElement onClick={handleClear} color={colors.link_color}>
+          <Icon as={AiFillCloseCircle} />
+        </InputRightElement>
+      )}
     </InputGroup>
   );
 };
