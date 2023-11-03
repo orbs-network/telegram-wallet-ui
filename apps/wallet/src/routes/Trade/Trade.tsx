@@ -31,8 +31,10 @@ const useValidations = () => {
       if (
         BN(calculatedPriceUsd).lt(MIN_USD_VALUE_TO_SWAP) &&
         BN(calculatedPriceUsd).gt(0)
-      )
+      ) {
         return `Minimum value to swap is $${MIN_USD_VALUE_TO_SWAP}`;
+      }
+        
     },
     [inToken, _calculatedPriceUsd]
   );

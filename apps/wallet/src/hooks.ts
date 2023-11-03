@@ -375,6 +375,7 @@ export const useQuoteQuery = (
       estimatedAmountOut.gt(0) &&
       !isSwapInProgress,
     refetchInterval: 10_000,
+    staleTime: 10_000,
   });
 };
 

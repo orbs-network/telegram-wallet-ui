@@ -77,8 +77,15 @@ export class Permit2Provider {
               continue;
             }
             const txnHash = await this.web3Provider.approvePermit2(erc20);
-            this.storage.storeProp(erc20, 'lastApprovalTxnTime', Date.now());
-            debug('Approved, txn hash: %s', txnHash);
+            const isApproved = await this.web3Provider.waitForTransaction(
+              txnHash
+            );
+            if (isApproved) {
+              this.storage.storeProp(erc20, 'lastApprovalTxnTime', Date.now());
+              debug('Approved, txn hash: %s', txnHash);
+            } else {
+              debug('Approval failed, txn hash: %s', txnHash);
+            }
           }
         }
       }
