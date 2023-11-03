@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Token, TokenData, User, UserData } from './types';
+import { Token, TokenData, UserData } from './types';
 import { fetchLatestPrices } from './utils/fetchLatestPrice';
 import BN from 'bignumber.js';
 import { account, coinsProvider, swapProvider, web3Provider } from './config';

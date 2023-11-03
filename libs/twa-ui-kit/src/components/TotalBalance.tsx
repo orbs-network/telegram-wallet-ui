@@ -50,7 +50,7 @@ export function TotalBalance({
         {currencySymbol}
       </Text>
       {amountDisplay[0]}.
-      <Text as="span" fontSize="4xl">
+      <Text as="span" fontSize="5xl">
         {amountDisplay[1]}
       </Text>
     </>
@@ -60,7 +60,7 @@ export function TotalBalance({
     PrimaryAmount = (
       <>
         {amountDisplay[0]}.
-        <Text as="span" fontSize="4xl">
+        <Text as="span" fontSize="5xl">
           {amountDisplay[1]}
         </Text>{' '}
         <Text
@@ -83,7 +83,9 @@ export function TotalBalance({
   }
   return (
     <Stat textAlign="center">
-      <StatLabel as="label">{label}</StatLabel>
+      <StatLabel as="label" fontSize="17px" fontWeight={400}>
+        {label}
+      </StatLabel>
       <StatNumber fontSize="6xl" lineHeight="1.3">
         {PrimaryAmount}
       </StatNumber>
