@@ -160,17 +160,17 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
 
   if (!userData) {
     return (
-      <StyledCard>
+      <Card>
         <SkeletonText />
-      </StyledCard>
+      </Card>
     );
   }
 
   if (transactions.length === 0) {
     return (
-      <StyledCard>
+      <Card>
         <Text variant="hint">NO TRANSACTIONS</Text>
-      </StyledCard>
+      </Card>
     );
   }
 
