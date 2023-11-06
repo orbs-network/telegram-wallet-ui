@@ -1,4 +1,11 @@
-import { Box, Container, Heading, Text, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Container,
+  Heading,
+  Text,
+  VStack,
+  useToast,
+} from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { useMutation } from '@tanstack/react-query';
 import { Card, colors } from '@telegram-wallet-ui/twa-ui-kit';
@@ -16,7 +23,7 @@ import BN from 'bignumber.js';
 const useTransferTx = () => {
   const { recipient, amount, assetId } = useParams<URLParams>();
   const { withdrawSuccess } = useNavigation();
-
+  const toast = useToast();
   const token = useGetTokenFromList(assetId);
 
   return useMutation({
@@ -48,6 +55,14 @@ const useTransferTx = () => {
     },
     onError: (error) => {
       console.log(error);
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : error,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+        position: 'top',
+      });
     },
   });
 };
