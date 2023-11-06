@@ -1,5 +1,6 @@
 import { CardBody, Card as ChakraCard } from '@chakra-ui/react';
-import { css } from '@emotion/react';
+import { css, Interpolation } from '@emotion/react';
+import { CSSProperties } from 'react';
 import { colors } from '../theme';
 
 const styles = css`
@@ -15,11 +16,12 @@ type CardProps = {
   children: React.ReactNode;
   onClick?: () => void;
   className?: string;
+  css?: Interpolation<CSSProperties>; 
 };
 
-export function Card({ children, onClick, className = '' }: CardProps) {
+export function Card({ children, onClick, className = '', css = {} }: CardProps) {
   return (
-    <ChakraCard onClick={onClick} size="sm" css={styles} className={className}>
+    <ChakraCard onClick={onClick} size="sm" css={[styles, css]} className={className}>
       <CardBody>{children}</CardBody>
     </ChakraCard>
   );

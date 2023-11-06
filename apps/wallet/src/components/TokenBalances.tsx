@@ -2,48 +2,49 @@ import { useUserData } from '../hooks';
 import BN from 'bignumber.js';
 import { TokensList } from './TokensList';
 import { useNavigation } from '../router/hooks';
-import styled from '@emotion/styled';
 import { VStack } from '@chakra-ui/react';
+import { useMemo } from 'react';
+
+const TON_TOKEN = {
+  coingeckoId: 'ton-coin',
+  name: 'Toncoin',
+  symbol: 'TON',
+  logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/11419.png',
+  balance: '0',
+  balanceBN: new BN(0),
+  symbolDisplay: 'TON',
+  address: '',
+  decimals: 9,
+};
 
 export function TokenBalances() {
   const { asset } = useNavigation();
-  const { data: userData } = useUserData();
+  const { data: userData, dataUpdatedAt } = useUserData();
+  
   // filter out zero balances and at least show usdt
-  const tokenBalances = !userData?.tokens
-    ? undefined
-    : Object.values(userData.tokens).filter(
-        (token) => token.symbol === 'usdt' || !BN(token.balance).eq(0)
-      );
+  const tokens = useMemo(() => {
+    const tokenBalances = !userData?.tokens
+      ? []
+      : Object.values(userData.tokens).filter(
+          (token) => token.symbol === 'usdt' || !BN(token.balance).eq(0)
+        );
+    return [...tokenBalances, TON_TOKEN];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataUpdatedAt]);
 
   return (
     <VStack spacing="6px" alignItems="stretch">
-      <StyledTokensList
-        tokens={tokenBalances}
+      <TokensList
+        mode="display"
+        tokens={tokens}
         onSelect={(token) => asset(token.symbol)}
-      />
-      <StyledTokensList
-        tokens={[
-          {
-            coingeckoId: 'ton-coin',
-            name: 'Toncoin',
-            symbol: 'TON',
-            logoURI:
-              'https://s2.coinmarketcap.com/static/img/coins/64x64/11419.png',
-            balance: '0',
-            balanceBN: new BN(0),
-            symbolDisplay: 'TON',
-            address: '',
-            decimals: 9,
+        disabledTokens={['TON']}
+        css={{
+          '.token-list-item-disabled': {
+            pointerEvents: 'none',
           },
-        ]}
-        onSelect={() => {
-          // none
         }}
       />
     </VStack>
   );
 }
-
-const StyledTokensList = styled(TokensList)`
-  gap: 6px;
-`;

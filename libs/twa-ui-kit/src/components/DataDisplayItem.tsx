@@ -1,4 +1,5 @@
-import { HStack } from '@chakra-ui/react';
+import { HStack, Interpolation } from '@chakra-ui/react';
+import { CSSProperties } from 'react';
 
 type DataDisplayItemProps = {
   StartTextSlot?: React.ReactNode;
@@ -7,6 +8,7 @@ type DataDisplayItemProps = {
   EndIconSlot?: React.ReactNode;
   onClick?: () => void;
   className?: string;
+  css?: Interpolation<CSSProperties>;
 };
 
 export function DataDisplayItem({
@@ -16,9 +18,11 @@ export function DataDisplayItem({
   EndIconSlot,
   onClick,
   className = '',
+  css = {}
 }: DataDisplayItemProps) {
   return (
     <HStack
+      css={css}
       className={className}
       justifyContent="space-between"
       alignItems="center"

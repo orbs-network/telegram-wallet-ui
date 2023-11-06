@@ -1,23 +1,114 @@
 import { Box, Container, Flex, useToast, VStack } from '@chakra-ui/react';
-import React, { useCallback, useEffect, useState } from 'react';
-import { useDebouncedCallback, useMultiplyPriceByAmount } from '../../hooks';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useDebouncedCallback,
+  useFormatNumber,
+  useGetTokenFromList,
+  useMultiplyPriceByAmount,
+  useOptimizedGetMinAmountOut,
+  useQuoteQuery,
+  useUserData,
+} from '../../hooks';
 import { TokenPanel } from './TokenPanel';
 import BN from 'bignumber.js';
 import { HiOutlineSwitchVertical } from 'react-icons/hi';
-import { TradeContextProvider, useTradeContext } from './context';
 import { useNavigation } from '../..//router/hooks';
 import { styles } from './styles';
 import { useUpdateMainButton } from '../../store/main-button-store';
 import { Page } from '../../components';
 import { setTwaBg } from '@telegram-wallet-ui/twa-ui-kit';
 import { INSUFFICIENT_FUNDS_ERROR } from '../../consts';
+import { StringParam, useQueryParam } from 'use-query-params';
+import { useTradeStore } from './store';
+import { amountUi } from '../../utils/conversion';
+import _ from 'lodash';
 
 // TODO consider changing value
 const MIN_USD_VALUE_TO_SWAP = 0.5;
 
-const useValidations = () => {
-  const { inAmount, inToken } = useTradeContext();
+const useInitialTokens = () => {
+  const { data, dataUpdatedAt } = useUserData();
+  const [inTokenSymbol] = useQueryParam('inToken', StringParam);
+  const store = useTradeStore();
+  return useEffect(() => {
+    if (!data) {
+      return undefined;
+    }
+    const withoutInToken = _.filter(
+      data?.tokens,
+      (it) => it.symbol !== inTokenSymbol
+    );
+    const tokensWithBalance = _.filter(withoutInToken, (it) =>
+      new BN(it.balance).gt(0)
+    );
 
+    const sorted = _.sortBy(tokensWithBalance, (it) =>
+      parseFloat(it.balance)
+    ).reverse();
+
+    const _inToken = inTokenSymbol || sorted[0]?.symbol || 'usdt';
+
+    if (!store.inToken) store.setInToken(_inToken);
+
+    if (!store.outToken) store.setOutToken(sorted[1]?.symbol || 'usdc');
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataUpdatedAt, inTokenSymbol]);
+};
+
+const useTokens = () => {
+  const store = useTradeStore();
+
+  const inToken = useGetTokenFromList(store.inToken);
+  const outToken = useGetTokenFromList(store.outToken);
+
+  return {
+    inToken,
+    outToken,
+  };
+};
+
+const useTradeQuote = () => {
+  const { inToken, outToken } = useTokens();
+  const inAmount = useTradeStore().inAmount;
+  const {
+    data: quote,
+    isLoading,
+    isFetching,
+  } = useQuoteQuery(inToken, outToken, inAmount);
+
+  return {
+    quote,
+    isLoading,
+    isFetching,
+  };
+};
+
+const useOutAmount = () => {
+  const quoteData = useTradeQuote();
+  const { inAmount } = useTradeStore();
+  const { outToken, inToken } = useTokens();
+
+  const { estimatedAmountOut } = useOptimizedGetMinAmountOut(
+    inToken,
+    outToken,
+    inAmount
+  );
+
+  const quoteOutAmount = quoteData.quote?.quote.outAmount;
+
+  return useMemo(() => {
+    if (!quoteOutAmount) {
+      return amountUi(outToken, estimatedAmountOut);
+    }
+
+    return amountUi(outToken, new BN(quoteOutAmount));
+  }, [quoteOutAmount, outToken, estimatedAmountOut]);
+};
+
+const useValidations = () => {
+  const { inAmount } = useTradeStore();
+  const inToken = useTokens().inToken;
   const _calculatedPriceUsd = useMultiplyPriceByAmount(
     inToken?.coingeckoId || 'ethereum',
     Number(inAmount ?? '0')
@@ -51,10 +142,13 @@ const useValidations = () => {
   };
 };
 
-const useSubmitButton = () => {
+const useSubmitButton = (disableButton: boolean) => {
   const { validate } = useValidations();
-  const { outToken, inAmount, inToken, amountOut, quotePending } =
-    useTradeContext();
+  const amountOut = useOutAmount();
+  const { isFetching, isLoading } = useTradeQuote();
+  const inAmount = useTradeStore().inAmount;
+
+  const { inToken, outToken } = useTokens();
   const toast = useToast();
   const tradeReview = useNavigation().tradeReview;
 
@@ -84,29 +178,34 @@ const useSubmitButton = () => {
 
   useUpdateMainButton({
     text: 'Review trade',
-    disabled: !inAmount || !inToken || !outToken || !amountOut || quotePending,
-    onClick: onSubmit,
+    disabled:
+      !inAmount ||
+      !inToken ||
+      !outToken ||
+      !amountOut ||
+      isLoading ||
+      isFetching,
+    onClick: disableButton ? undefined : onSubmit,
   });
 };
 
-const TradeForm = () => {
-  useSubmitButton();
-
+const TradeForm = ({ setDisableButton }: { setDisableButton: () => void }) => {
   return (
     <VStack>
-      <SrcTokenPanel />
+      <SrcTokenPanel setDisableButton={setDisableButton} />
       <SwitchTokens />
-      <DstTokenPanel />
+      <DstTokenPanel setDisableButton={setDisableButton} />
     </VStack>
   );
 };
 const SwitchTokens = () => {
-  const { inToken, outToken, setInToken, setOutToken } = useTradeContext();
+  const store = useTradeStore();
+  const { inToken, outToken } = useTokens();
 
   const onClick = useCallback(() => {
-    setInToken(outToken?.symbol);
-    setOutToken(inToken?.symbol);
-  }, [inToken, outToken, setInToken, setOutToken]);
+    store.setInToken(outToken?.symbol);
+    store.setOutToken(inToken?.symbol);
+  }, [store, outToken?.symbol, inToken?.symbol]);
 
   return (
     <Flex css={styles.switchTokensContainer}>
@@ -117,9 +216,10 @@ const SwitchTokens = () => {
   );
 };
 
-const SrcTokenPanel = () => {
-  const { setInAmount } = useTradeContext();
-  const { inToken, setInToken, outToken } = useTradeContext();
+const SrcTokenPanel = ({ setDisableButton }: { setDisableButton: () => void }) => {
+  const { setInAmount } = useTradeStore();
+  const store = useTradeStore();
+  const { inToken, outToken } = useTokens();
   const [value, setValue] = useState('');
   const validations = useValidations();
 
@@ -131,7 +231,7 @@ const SrcTokenPanel = () => {
 
   return (
     <TokenPanel
-      onTokenSelect={(token) => setInToken(token.symbol)}
+      onTokenSelect={(token) => store.setInToken(token.symbol)}
       token={inToken}
       value={value}
       onChange={setValue}
@@ -139,27 +239,41 @@ const SrcTokenPanel = () => {
       error={validations.inAmount(value)}
       otherTokenSymbol={outToken?.symbol}
       name="inAmountInput"
+      setDisableButton={setDisableButton}
     />
   );
 };
 
-const DstTokenPanel = () => {
-  const { formattedAmount, quotePending, outToken, setOutToken, inToken } =
-    useTradeContext();
+const DstTokenPanel = ({
+  setDisableButton,
+}: {
+  setDisableButton: () => void;
+}) => {
+  const amountOut = useOutAmount();
+  const { isLoading, isFetching } = useTradeQuote();
+  const formattedAmount = useFormatNumber({ value: amountOut });
 
+  const store = useTradeStore();
+  const { inToken, outToken } = useTokens();
+  const quotePending = isLoading || isFetching;
   return (
     <TokenPanel
       quotePending={quotePending}
-      onTokenSelect={(token) => setOutToken(token.symbol)}
+      onTokenSelect={(token) => store.setOutToken(token.symbol)}
       token={outToken}
-      value={formattedAmount}
+      value={formattedAmount || ''}
       filterTokenSymbol={inToken?.symbol}
       name="outAmountInput"
+      setDisableButton={setDisableButton}
     />
   );
 };
 
 export function Trade() {
+  useInitialTokens();
+    const [disableButton, setDisableButton] = useState(false);
+
+  useSubmitButton(disableButton);
   useEffect(() => {
     setTwaBg(true);
 
@@ -169,12 +283,10 @@ export function Trade() {
   }, []);
 
   return (
-    <TradeContextProvider>
-      <Page secondaryBackground>
-        <Container size="sm" pt={4}>
-          <TradeForm />
-        </Container>
-      </Page>
-    </TradeContextProvider>
+    <Page secondaryBackground>
+      <Container size="sm" pt={4}>
+        <TradeForm setDisableButton={() => setDisableButton(true)} />
+      </Container>
+    </Page>
   );
 }

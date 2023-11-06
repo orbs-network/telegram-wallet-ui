@@ -1,25 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  Avatar,
-  Box,
-  Drawer,
-  DrawerContent,
-  DrawerOverlay,
-  Flex,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Avatar, Box, Flex, Text, VStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { useMemo, useRef, useState } from 'react';
+import { useMemo } from 'react';
 import { BsChevronCompactRight } from 'react-icons/bs';
-import { CryptoAmountInput, SelectToken } from '../../components';
-import { useFormatNumber, useUserData } from '../../hooks';
+import { CryptoAmountInput } from '../../components';
+import { useFormatNumber } from '../../hooks';
 import { TokenData } from '../../types';
-import { IoClose } from 'react-icons/io5';
 import { colors } from '@telegram-wallet-ui/twa-ui-kit';
 import { flash } from '../../styles';
 import { ERROR_COLOR, INSUFFICIENT_FUNDS_ERROR } from '../../consts';
+import { Link } from 'react-router-dom';
+import { ROUTES } from '../../router/routes';
 
 const outAmountStyles = css`
   animation: ${flash} 1s linear infinite;
@@ -55,9 +47,12 @@ const styles = {
     padding-top: 20px;
   `,
   error: css`
-  color: ${ERROR_COLOR};
-  font-size: 16px;
-  `
+    color: ${ERROR_COLOR};
+    font-size: 16px;
+  `,
+  symbol: css`
+    font-size: 24px;
+  `,
 };
 
 const TokenPanelHeader = ({
@@ -97,7 +92,7 @@ const TokenPanelHeader = ({
 
 const StyledErrorMaxBtn = styled('span')({
   color: colors.link_color,
-})
+});
 
 export const TokenPanel = ({
   quotePending,
@@ -110,6 +105,7 @@ export const TokenPanel = ({
   error,
   otherTokenSymbol,
   name,
+  setDisableButton,
 }: {
   value: string;
   onChange?: (value: string) => void;
@@ -121,11 +117,9 @@ export const TokenPanel = ({
   error?: string;
   otherTokenSymbol?: string;
   name: string;
+  setDisableButton?: () => void;
 }) => {
-
-
   const handleErorrComponent = useMemo(() => {
-    
     if (error === INSUFFICIENT_FUNDS_ERROR && token?.balance) {
       return (
         <Text css={styles.error}>
@@ -138,6 +132,13 @@ export const TokenPanel = ({
     }
   }, [error, onChange, token?.balance]);
 
+  const tokenSelectPath = useMemo(() => {
+    if (isInToken) {
+      return ROUTES.tradeInTokenSelect;
+    }
+    return ROUTES.tradeOutTokenSelect;
+  }, [isInToken]);
+
   return (
     <VStack css={styles.container}>
       <TokenPanelHeader
@@ -146,114 +147,26 @@ export const TokenPanel = ({
         isInToken={isInToken}
       />
 
-        <Flex css={quotePending && outAmountStyles}>
-          <CryptoAmountInput
-            otherTokenSymbol={otherTokenSymbol}
-            value={value}
-            tokenSymbol={token?.symbol}
-            onChange={onChange}
-            editable={!!isInToken}
-            name={name}
-            error={error}
-            errorComponent={handleErorrComponent}
-            sideContent={
-              <TokenSelectDrawer
-                filterTokenSymbol={filterTokenSymbol}
-                onSelect={onTokenSelect}
-                token={token}
+      <Flex css={quotePending && outAmountStyles}>
+        <CryptoAmountInput
+          otherTokenSymbol={otherTokenSymbol}
+          value={value}
+          tokenSymbol={token?.symbol}
+          onChange={onChange}
+          editable={!!isInToken}
+          name={name}
+          error={error}
+          errorComponent={handleErorrComponent}
+          sideContent={
+            <Link to={tokenSelectPath} onClick={setDisableButton}>
+              <CryptoAmountInput.Symbol
+                symbol={token?.symbolDisplay || 'Select'}
+                icon={<BsChevronCompactRight />}
               />
-            }
-          />
-        </Flex>
-
+            </Link>
+          }
+        />
+      </Flex>
     </VStack>
   );
 };
-
-const TokenSelectDrawer = ({
-  onSelect,
-  filterTokenSymbol,
-  token,
-}: {
-  onSelect: (token: TokenData) => void;
-  filterTokenSymbol?: string;
-  token?: TokenData;
-}) => {
-  const { data, dataUpdatedAt } = useUserData();
-  const [isOpen, setIsOpen] = useState(false);
-  const btnRef = useRef<any>();
-
-  const tokens = useMemo(() => {
-    if (!data) return [];
-    return Object.values(data.tokens).filter(
-      (token) => token.symbol !== filterTokenSymbol
-    );
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterTokenSymbol, dataUpdatedAt]);
-
-  return (
-    <Flex alignItems="center">
-      <TokenSelectButton ref={btnRef.current} onClick={() => setIsOpen(true)}>
-        <Text>{token ? token.symbolDisplay : 'Select'}</Text>
-        <BsChevronCompactRight fontWeight={700} />
-      </TokenSelectButton>
-      <Drawer
-        placement="bottom"
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        closeOnOverlayClick={true}
-        finalFocusRef={btnRef}
-        size="full"
-      >
-        <DrawerOverlay />
-        <DrawerContent css={styles.drawerContent}>
-          <StyledClose onClick={() => setIsOpen(false)}>
-            <IoClose />
-          </StyledClose>
-          <StyledTokenList
-            onSelect={(token) => {
-              onSelect(token);
-              setIsOpen(false);
-            }}
-            tokens={tokens}
-          />
-        </DrawerContent>
-      </Drawer>
-    </Flex>
-  );
-};
-
-const TokenSelectButton = styled(Box)({
-  height: 'auto',
-  display: 'flex',
-  alignItems: 'center',
-  position: 'relative',
-  '& p': {
-    color: colors.hint_color,
-    fontSize: '28px',
-    fontWeight: 700,
-  },
-  svg: {
-    color: colors.hint_color,
-    fontSize: '26px',
-  },
-});
-
-const StyledTokenList = styled(SelectToken)({
-  overflowY: 'auto',
-});
-
-const StyledClose = styled('button')({
-  position: 'relative',
-
-  zIndex: 1,
-  outline: 'none',
-  padding: 0,
-  marginRight: 20,
-  marginLeft: 'auto',
-  svg: {
-    width: '24px',
-    height: '24px',
-  },
-});

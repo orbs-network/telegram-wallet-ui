@@ -1,5 +1,5 @@
 import { VStack, Flex, Text, Box } from '@chakra-ui/react';
-import { ReactNode, useEffect, useMemo } from 'react';
+import { CSSProperties, ReactNode, useEffect, useMemo } from 'react';
 import {
   useMultiplyPriceByAmount,
   useFormatNumber,
@@ -7,7 +7,7 @@ import {
   useExchangeRate,
 } from '../hooks';
 import { getTextSizeInPixels } from '../utils/utils';
-import { css } from '@emotion/react';
+import { css, Interpolation } from '@emotion/react';
 import styled from '@emotion/styled';
 import { NumericFormat } from 'react-number-format';
 import { useAnimate } from 'framer-motion';
@@ -15,18 +15,17 @@ import { colors } from '@telegram-wallet-ui/twa-ui-kit';
 import Twa from '@twa-dev/sdk';
 import { ERROR_COLOR } from '../consts';
 
-
 const styles = {
   inputContainer: css`
     position: relative;
   `,
   inputSymbol: css`
-    font-size: 32px;
-    font-weight: 700;
-    color: ${colors.hint_color};
-    position: absolute;
-    bottom: 10px;
-    pointer-events: none;
+    p,
+    svg {
+      font-size: 34px;
+      font-weight: 700;
+      color: ${colors.hint_color};
+    }
   `,
   usd: css`
     padding-left: 7px;
@@ -35,7 +34,7 @@ const styles = {
     color: ${ERROR_COLOR};
   `,
   bottonContent: css`
-  width: 100%;
+    width: 100%;
     height: 20px;
     top: -5px;
     position: relative;
@@ -74,7 +73,7 @@ type CryptoAmountInputProps = {
   errorComponent?: ReactNode;
 };
 
-export function CryptoAmountInput({
+function CryptoAmountInput({
   tokenSymbol,
   name,
   value,
@@ -95,13 +94,11 @@ export function CryptoAmountInput({
   const priceCompare = useExchangeRate(tokenSymbol, otherTokenSymbol);
   const formattedPriceCompare = useFormatNumber({
     value: priceCompare,
-    decimalScale: 6,
   });
   const formattedAmount = useFormatNumber({ value, decimalScale: 18 });
   const formattedUsdPrice = useFormatNumber({
     value: calculatedPrice,
     prefix: '$',
-    decimalScale: 2,
   });
 
   const bottomContent = useMemo(() => {
@@ -178,18 +175,45 @@ export function CryptoAmountInput({
           readOnly={!editable}
         />
         {sideContent || (
-          <Text
-            style={{
+          <Symbol
+            symbol={token?.symbolDisplay}
+            css={{
+              position: 'absolute',
+              bottom: '10px',
+              pointerEvents: 'none',
               left: !value ? 50 : textSizePX + 12,
               color: error ? ERROR_COLOR : '',
             }}
-            css={styles.inputSymbol}
-          >
-            {token?.symbolDisplay}
-          </Text>
+          />
         )}
       </Flex>
       <Box css={styles.bottonContent}>{bottomContent}</Box>
     </VStack>
   );
 }
+
+function Symbol({
+  symbol,
+  css = {},
+  icon,
+}: {
+  symbol?: string;
+  css?: Interpolation<CSSProperties>;
+  icon?: ReactNode;
+}) {
+  return (
+    <Box css={[styles.inputSymbol, css]}>
+      {icon ? (
+        <Flex alignItems="center">
+          <Text>{symbol}</Text> {icon}
+        </Flex>
+      ) : (
+        <Text>{symbol}</Text>
+      )}
+    </Box>
+  );
+}
+
+CryptoAmountInput.Symbol = Symbol;
+
+export default CryptoAmountInput;

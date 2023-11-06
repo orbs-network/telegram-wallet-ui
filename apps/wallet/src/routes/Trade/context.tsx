@@ -17,17 +17,13 @@ import { StringParam, useQueryParam } from 'use-query-params';
 import BN from 'bignumber.js';
 import _ from 'lodash';
 import { amountUi } from '../../utils/conversion';
-import { TokenData } from '../../types';
+import { usePersistedStore } from '../../store/persisted-store';
 interface TradeContext {
   inAmount: string;
   setInAmount: (amount: string) => void;
   amountOut: string;
   quotePending: boolean;
   formattedAmount: string;
-  inToken: TokenData | undefined;
-  outToken: TokenData | undefined;
-  setInToken: (token?: string) => void;
-  setOutToken: (token?: string) => void;
 }
 
 const context = createContext({} as TradeContext);
@@ -60,62 +56,48 @@ const useInitialTokens = () => {
   }, [dataUpdatedAt, inTokenSymbol]);
 };
 
-export const TradeContextProvider = ({ children }: { children: ReactNode }) => {
-  const [inAmount, setInAmount] = useState('');
-  const initialTokens = useInitialTokens();
-  const [inTokenSymbol, setInToken] = useState<string | undefined>('');
-  const [outTokenSymbol, setOutToken] = useState<string | undefined>('');
+// export const TradeContextProvider = ({ children }: { children: ReactNode }) => {
+//   const [inAmount, setInAmount] = useState('');
 
-  useEffect(() => {
-    if (!inTokenSymbol) {
-      setInToken(initialTokens?.inToken);
-    }
-    if (!outTokenSymbol) {
-      setOutToken(initialTokens?.outToken);
-    }
-  }, [initialTokens, inTokenSymbol, outTokenSymbol]);
 
-  const inToken = useGetTokenFromList(inTokenSymbol);
-  const outToken = useGetTokenFromList(outTokenSymbol);
+//   const { estimatedAmountOut } = useOptimizedGetMinAmountOut(
+//     inToken,
+//     outToken,
+//     inAmount
+//   );
+//   const {
+//     data: quote,
+//     isLoading,
+//     isFetching,
+//   } = useQuoteQuery(inToken, outToken, inAmount);
 
-  const { estimatedAmountOut } = useOptimizedGetMinAmountOut(
-    inToken,
-    outToken,
-    inAmount
-  );
-  const {
-    data: quote,
-    isLoading,
-    isFetching,
-  } = useQuoteQuery(inToken, outToken, inAmount);
+//   const quoteOutAmount = quote?.quote.outAmount;
 
-  const quoteOutAmount = quote?.quote.outAmount;
+//   const amountOut = useMemo(() => {
+//     if (!quoteOutAmount) {
+//       return amountUi(outToken, estimatedAmountOut);
+//     }
 
-  const amountOut = useMemo(() => {
-    if (!quoteOutAmount) {
-      return amountUi(outToken, estimatedAmountOut);
-    }
+//     return amountUi(outToken, new BN(quoteOutAmount));
+//   }, [quoteOutAmount, outToken, estimatedAmountOut]);
 
-    return amountUi(outToken, new BN(quoteOutAmount));
-  }, [quoteOutAmount, outToken, estimatedAmountOut]);
+//   const formattedAmount = useFormatNumber({ value: amountOut });
 
-  const formattedAmount = useFormatNumber({ value: amountOut });
-
-  return (
-    <context.Provider
-      value={{
-        inAmount: inAmount ? inAmount : '',
-        setInAmount,
-        amountOut: amountOut || '',
-        quotePending: isLoading || isFetching,
-        formattedAmount: formattedAmount || '',
-        inToken,
-        outToken,
-        setInToken,
-        setOutToken,
-      }}
-    >
-      {children}
-    </context.Provider>
-  );
-};
+//   return (
+//     <context.Provider
+//       value={{
+//         inAmount: inAmount ? inAmount : '',
+//         setInAmount,
+//         amountOut: amountOut || '',
+//         quotePending: isLoading || isFetching,
+//         formattedAmount: formattedAmount || '',
+//         inToken,
+//         outToken,
+//         setInToken,
+//         setOutToken,
+//       }}
+//     >
+//       {children}
+//     </context.Provider>
+//   );
+// };
