@@ -6,3 +6,4 @@ export * from './ListItem';
 export * from './TotalBalance';
 export * from './MainButton';
 export * from './Balance';
+export * from './List';

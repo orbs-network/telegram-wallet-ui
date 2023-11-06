@@ -1,6 +1,5 @@
 import { Avatar, Heading, Skeleton, Text, VStack } from '@chakra-ui/react';
-import styled from '@emotion/styled';
-import { Card, ListItem } from '@telegram-wallet-ui/twa-ui-kit';
+import { List, ListItem } from '@telegram-wallet-ui/twa-ui-kit';
 import _ from 'lodash';
 import { useFormatNumber, useMultiplyPriceByAmount } from '../hooks';
 import { TokenData, TokensListProps } from '../types';
@@ -9,37 +8,33 @@ export function TokensList({
   onSelect,
   className = '',
   tokens,
+  mode,
+  disabledTokens,
+  selected,
+  css = {}
 }: TokensListProps) {
   const isLoading = !tokens || _.isEmpty(tokens);
+  
 
   return (
-    <List className={className}>
-      {isLoading ? (
-        <Card>
-          <TokenListItemLoader />
-        </Card>
-      ) : (
-        _.map(tokens, (token) => {
-          return (
-            <TokenListItem
-              balance={token.balance}
-              onClick={() => onSelect(token)}
-              key={token.address}
-              token={token}
-            />
-          );
-        })
-      )}
+    <List css={css} className={className} mode={mode} isLoading={isLoading}>
+      {_.map(tokens, (token) => {
+        const isDisabled = disabledTokens?.includes(token.symbol);
+        const isSelected = selected === token.symbol;
+        return (
+          <TokenListItem
+            disabled={isDisabled}
+            selected={isSelected}
+            balance={token.balance}
+            onClick={() => onSelect(token)}
+            key={token.address}
+            token={token}
+          />
+        );
+      })}
     </List>
   );
 }
-const List = styled(VStack)({
-  display: 'flex',
-  flexDirection: 'column',
-  borderRadius: 10,
-  overflow: 'hidden',
-});
-
 type TokenListItemProps = {
   token: TokenData;
   balance?: string;
@@ -48,6 +43,7 @@ type TokenListItemProps = {
   className?: string;
   EndIconSlot?: React.ReactNode;
   selected?: boolean;
+  disabled?: boolean;
 };
 
 function TokenListItem({
@@ -55,37 +51,27 @@ function TokenListItem({
   onClick,
   EndIconSlot,
   selected,
+  disabled,
 }: TokenListItemProps) {
   return (
-    <StyledCard className="list-item">
-      <ListItem
-        selected={selected}
-        onClick={onClick}
-        className="list-item-content"
-        StartIconSlot={
-          <Avatar width="40px" height="40px" src={token.logoURI} />
-        }
-        EndIconSlot={EndIconSlot}
-        EndTextSlot={<USD token={token} />}
-        StartTextSlot={
-          <VStack alignItems="flex-start" gap="2px">
-            <Heading as="h3" variant="bodyTitle">
-              {token.name}
-            </Heading>
-            <Balance token={token} />
-          </VStack>
-        }
-      />
-    </StyledCard>
+    <ListItem
+      className={disabled ? `token-list-item-disabled` : ''}
+      selected={selected}
+      onClick={onClick}
+      StartIconSlot={<Avatar width="40px" height="40px" src={token.logoURI} />}
+      EndIconSlot={EndIconSlot}
+      EndTextSlot={<USD token={token} />}
+      StartTextSlot={
+        <VStack alignItems="flex-start" gap="2px">
+          <Heading as="h3" variant="bodyTitle">
+            {token.name}
+          </Heading>
+          <Balance token={token} />
+        </VStack>
+      }
+    />
   );
 }
-
-const StyledCard = styled(Card)({
-  minHeight: 'unset',
-  '.chakra-card__body': {
-    padding: '0px',
-  },
-});
 
 const USD = ({ token }: { token: TokenData }) => {
   const value = useMultiplyPriceByAmount(token.coingeckoId, token.balance);
@@ -121,17 +107,3 @@ const Balance = ({ token }: { token: TokenData }) => {
     </Text>
   );
 };
-
-function TokenListItemLoader() {
-  return (
-    <ListItem
-      StartIconSlot={<Skeleton width="40px" height="40px" borderRadius="50%" />}
-      StartTextSlot={
-        <VStack alignItems="flex-start" gap="5px">
-          <Skeleton width="150px" height="15px" borderRadius="10px" />
-          <Skeleton width="50px" height="15px" borderRadius="10px" />
-        </VStack>
-      }
-    />
-  );
-}

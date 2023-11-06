@@ -1,5 +1,5 @@
 import { Container, Heading, Text, VStack } from '@chakra-ui/react';
-import { Page, SelectToken } from '../../components';
+import { Page, TokensList } from '../../components';
 import { useNavigation } from '../../router/hooks';
 import { useUserData } from '../../hooks';
 import { useMainButtonStore } from '../../store/main-button-store';
@@ -43,9 +43,10 @@ export function Withdraw() {
             <Heading as="h1" size="md" textAlign="center">
               Choose asset to withdraw
             </Heading>
-            <SelectToken
+            <TokensList
               tokens={tokens}
               onSelect={(token) => withdrawAddress(token.symbol)}
+              mode='select'
             />
           </VStack>
         )}

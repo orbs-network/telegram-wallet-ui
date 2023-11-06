@@ -2,6 +2,8 @@ import type { TokenData as CandiesTokenData } from '@defi.org/web3-candies';
 import type { PermitData } from '@uniswap/permit2-sdk/dist/domain';
 import { Web3Account } from 'web3-eth-accounts';
 import BN from 'bignumber.js';
+import { Interpolation } from '@emotion/react';
+import { CSSProperties } from 'react';
 
 export type BNComparable = BN | string | number;
 
@@ -92,4 +94,18 @@ export type TokensListProps = {
   onSelect: (token: TokenData) => void;
   className?: string;
   tokens?: TokenData[];
+  mode: 'select' | 'display';
+  disabledTokens?: string[];
+  selected?: string;
+  css?: Interpolation<CSSProperties>
 };
+
+
+
+export interface Network {
+  name: string;
+  displayName: string;
+  logo: string;
+  symbol: string;
+  enabled: boolean;
+}

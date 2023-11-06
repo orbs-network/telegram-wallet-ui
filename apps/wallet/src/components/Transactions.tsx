@@ -1,5 +1,5 @@
 import { Avatar, Heading, Box, Text, SkeletonText } from '@chakra-ui/react';
-import { Card, ListItem, colors } from '@telegram-wallet-ui/twa-ui-kit';
+import { Card, ListItem, colors, List } from '@telegram-wallet-ui/twa-ui-kit';
 import {
   DepositTransactionEvent,
   TradeTransactionEvent,
@@ -12,36 +12,17 @@ import BN from 'bignumber.js';
 import { useUserData } from '../hooks';
 import { TokenData } from '../types';
 import { Link } from 'react-router-dom';
-import styled from '@emotion/styled';
 import { formatDateTime } from '../utils/utils';
 import { DepositIcon, TradeIcon, WithdrawIcon } from './icons';
+import { css } from '@emotion/react';
 
-const StyledCard = styled(Card)({
-  '.chakra-card__body': {
-    paddingLeft: '0',
-    paddingRight: '0',
-  },
-  '.list-item ': {
-    borderRadius: 0,
-    position: 'relative',
-    color: colors.text_color,
-    '&:last-child > div': {
-      paddingBottom: 0,
-    },
-    '&::after': {
-      content: '""',
-      position: 'absolute',
-      bottom: 0,
-      left: 65,
-      right: 0,
-      height: 1,
-      background: colors.border_color,
-    },
-    '&:last-child::after': {
-      display: 'none',
-    },
-  },
-});
+
+const styles = {
+  avatar: css`
+    width: 40px;
+    height: 40px;
+  `
+}
 
 type TransactionsProps = {
   tokenFilter?: string;
@@ -167,10 +148,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
   }
 
   return (
-    <StyledCard>
-      <Box padding="0 16px 0 14px">
-        <Text variant="hint">TRANSACTION HISTORY</Text>
-      </Box>
+    <List mode="select" title="TRANSACTION HISTORY">
       {transactions.map((tx) => {
         let StartIcon = null;
         let CardTitle = null;
@@ -182,7 +160,11 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
               token: TokenData | undefined;
             };
             StartIcon = (
-              <Avatar icon={<DepositIcon />} backgroundColor="telegram.500" />
+              <Avatar
+                css={styles.avatar}
+                icon={<DepositIcon />}
+                backgroundColor="telegram.500"
+              />
             );
             CardTitle = (
               <Heading as="h3" variant="bodyTitle" noOfLines={1}>
@@ -208,7 +190,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
             const wTx = tx as WithdrawalTransactionEvent & {
               token: TokenData;
             };
-            StartIcon = <Avatar icon={<WithdrawIcon />} />;
+            StartIcon = <Avatar css={styles.avatar} icon={<WithdrawIcon />} />;
             CardTitle = (
               <Heading as="h3" variant="bodyTitle" noOfLines={1}>
                 Withdrawal to {wTx.toAddress.slice(0, 6) + '...'}
@@ -238,7 +220,11 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
             };
 
             StartIcon = (
-              <Avatar icon={<TradeIcon />} backgroundColor="telegram.500" />
+              <Avatar
+                css={styles.avatar}
+                icon={<TradeIcon />}
+                backgroundColor="telegram.500"
+              />
             );
             CardTitle = (
               <Heading as="h3" variant="bodyTitle" noOfLines={1}>
@@ -267,12 +253,12 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
             break;
           }
           default: {
-            StartIcon = <Avatar />;
+            StartIcon = <Avatar css={styles.avatar} />;
           }
         }
 
         return (
-          <Link key={tx.id} to={`/transaction/${tx.id}`} className="list-item">
+          <Link key={tx.id} to={`/transaction/${tx.id}`}>
             <ListItem
               StartIconSlot={StartIcon}
               StartTextSlot={
@@ -288,6 +274,6 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
           </Link>
         );
       })}
-    </StyledCard>
+    </List>
   );
 }
