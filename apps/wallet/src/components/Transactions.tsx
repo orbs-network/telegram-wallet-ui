@@ -35,7 +35,7 @@ const StyledCard = styled(Card)({
       left: 65,
       right: 0,
       height: 1,
-      background: colors.secondary_bg_color,
+      background: colors.border_color,
     },
     '&:last-child::after': {
       display: 'none',
@@ -246,7 +246,8 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
                 {tradeTx.inToken?.symbolDisplay}
               </Heading>
             );
-            const isIn = !!tokenFilter && tokenFilter === tradeTx.inToken?.symbol;
+            const isIn =
+              !!tokenFilter && tokenFilter === tradeTx.inToken?.symbol;
             const amount = isIn ? tradeTx.amountIn : tradeTx.amountOut;
             const token = isIn ? tradeTx.inToken : tradeTx.outToken;
             CardData = (
@@ -258,7 +259,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
               >
                 <Text noOfLines={1}>
                   {!isIn && '+'}
-                  {toUiDisplay(amount)} {token?.symbolDisplay ?? ""}
+                  {toUiDisplay(amount)} {token?.symbolDisplay ?? ''}
                 </Text>
                 <Text fontSize={12}>{!isIn ? 'Received' : 'Traded'}</Text>
               </Box>
