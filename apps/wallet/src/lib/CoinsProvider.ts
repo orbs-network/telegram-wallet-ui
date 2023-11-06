@@ -9,7 +9,7 @@ const coins = [
   {
     symbol: 'BTC',
     name: 'Bitcoin',
-    address: '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6',
+    address: '0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6',
     decimals: 8,
     chainId: 137,
     logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1.png',
@@ -18,7 +18,7 @@ const coins = [
   {
     symbol: 'ETH',
     name: 'Ethereum',
-    address: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
+    address: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
     decimals: 18,
     chainId: 137,
     logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png',
@@ -27,7 +27,7 @@ const coins = [
   {
     symbol: 'USDT',
     name: 'Tether',
-    address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
+    address: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
     decimals: 6,
     chainId: 137,
     logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png',
@@ -36,7 +36,7 @@ const coins = [
   {
     symbol: 'USDC',
     name: 'USDC',
-    address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+    address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
     decimals: 6,
     chainId: 137,
     logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png',
@@ -45,7 +45,7 @@ const coins = [
   {
     symbol: 'BNB',
     name: 'BNB',
-    address: '0xeCDCB5B88F8e3C15f95c720C51c71c9E2080525d',
+    address: '0xecdcb5b88f8e3c15f95c720c51c71c9e2080525d',
     decimals: 18,
     chainId: 137,
     logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png',
@@ -54,7 +54,7 @@ const coins = [
   {
     symbol: 'DAI',
     name: 'Dai',
-    address: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
+    address: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
     decimals: 18,
     chainId: 137,
     logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png',
@@ -63,7 +63,7 @@ const coins = [
   {
     symbol: 'XRP',
     name: 'XRP',
-    address: '0xCc2a9051E904916047c26C90f41c000D4f273456',
+    address: '0xcc2a9051e904916047c26c90f41c000d4f273456',
     decimals: 6,
     chainId: 137,
     logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/52.png',
@@ -72,7 +72,7 @@ const coins = [
   {
     symbol: 'SOL',
     name: 'SOL',
-    address: '0x7DfF46370e9eA5f0Bad3C4E29711aD50062EA7A4',
+    address: '0x7dff46370e9ea5f0bad3c4e29711ad50062ea7a4',
     decimals: 18,
     chainId: 137,
     logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/5426.png',
@@ -81,7 +81,7 @@ const coins = [
   {
     symbol: 'LINK',
     name: 'Chainlink',
-    address: '0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39',
+    address: '0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39',
     decimals: 18,
     chainId: 137,
     logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1975.png',
@@ -90,7 +90,7 @@ const coins = [
   {
     symbol: 'AVAX',
     name: 'Avalanche',
-    address: '0x2C89bbc92BD86F8075d1DEcc58C7F4E0107f286b',
+    address: '0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b',
     decimals: 18,
     chainId: 137,
     logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/5805.png',
