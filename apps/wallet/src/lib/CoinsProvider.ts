@@ -1,66 +1,108 @@
-import { erc20s, zeroAddress } from '@defi.org/web3-candies';
-import { BNComparable, Token, TokenListResponse } from '../types';
-import { Fetcher } from '../utils/fetcher';
+import { BNComparable, Token } from '../types';
 import { amountBN, amountUi, dstAmount } from '../utils/conversion';
 import BN, { BigNumber } from 'bignumber.js';
 import { getDebug } from './utils/debug';
-import { TTLCache } from './TTLCache';
-import fallbackTokenList from './res/polygon';
 
 const debug = getDebug('CoinsProvider');
 
-export class CoinsProvider {
-  coinsUrl: string;
+const coins = [
+  {
+    symbol: 'BTC',
+    name: 'Bitcoin',
+    address: '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6',
+    decimals: 8,
+    chainId: 137,
+    logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1.png',
+    coingeckoId: 'wrapped-bitcoin',
+  },
+  {
+    symbol: 'ETH',
+    name: 'Ethereum',
+    address: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
+    decimals: 18,
+    chainId: 137,
+    logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png',
+    coingeckoId: 'weth',
+  },
+  {
+    symbol: 'USDT',
+    name: 'Tether',
+    address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
+    decimals: 6,
+    chainId: 137,
+    logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png',
+    coingeckoId: 'tether',
+  },
+  {
+    symbol: 'USDC',
+    name: 'USDC',
+    address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+    decimals: 6,
+    chainId: 137,
+    logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png',
+    coingeckoId: 'usd-coin',
+  },
+  {
+    symbol: 'BNB',
+    name: 'BNB',
+    address: '0xeCDCB5B88F8e3C15f95c720C51c71c9E2080525d',
+    decimals: 18,
+    chainId: 137,
+    logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png',
+    coingeckoId: 'wbnb',
+  },
+  {
+    symbol: 'DAI',
+    name: 'Dai',
+    address: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
+    decimals: 18,
+    chainId: 137,
+    logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png',
+    coingeckoId: 'dai',
+  },
+  {
+    symbol: 'XRP',
+    name: 'XRP',
+    address: '0xCc2a9051E904916047c26C90f41c000D4f273456',
+    decimals: 6,
+    chainId: 137,
+    logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/52.png',
+    coingeckoId: 'ripple',
+  },
+  {
+    symbol: 'SOL',
+    name: 'SOL',
+    address: '0x7DfF46370e9eA5f0Bad3C4E29711aD50062EA7A4',
+    decimals: 18,
+    chainId: 137,
+    logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/5426.png',
+    coingeckoId: 'solana',
+  },
+  {
+    symbol: 'LINK',
+    name: 'Chainlink',
+    address: '0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39',
+    decimals: 18,
+    chainId: 137,
+    logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1975.png',
+    coingeckoId: 'chainlink',
+  },
+  {
+    symbol: 'AVAX',
+    name: 'Avalanche',
+    address: '0x2C89bbc92BD86F8075d1DEcc58C7F4E0107f286b',
+    decimals: 18,
+    chainId: 137,
+    logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/5805.png',
+    coingeckoId: 'avalanche-2',
+  },
+];
 
-  constructor(isMumbai: boolean, private ttlCache: TTLCache) {
-    this.coinsUrl = `https://raw.githubusercontent.com/viaprotocol/tokenlists/main/tokenlists/${
-      isMumbai ? 'mumbai' : 'polygon'
-    }.json`;
-  }
+export class CoinsProvider {
+  constructor() {}
 
   async fetchCoins() {
-    let data;
-    try {
-      data = await this.ttlCache.execute(
-        'coins',
-        () => Fetcher.get<TokenListResponse>(this.coinsUrl),
-        60 * 60 * 1000
-      );
-    } catch (e) {
-      data = fallbackTokenList;
-    }
-
-    const parsed: Array<Token> = data.map((coin: any): Token => {
-      return {
-        symbol: coin.symbol,
-        address: coin.address,
-        decimals: coin.decimals,
-        coingeckoId: coin.coingeckoId ?? '',
-        logoURI: coin.logoURI,
-        name: coin.name,
-      };
-    });
-
-    // TODO this doesn't support mumbai but it only hurts sort order
-    // so leaving as-is for now
-    const candiesAddresses = [
-      zeroAddress,
-      ...Object.values(erc20s.poly).map((t) => t().address),
-    ];
-
-    return parsed
-      .sort((a, b) => {
-        const indexA = candiesAddresses.indexOf(a.address);
-        const indexB = candiesAddresses.indexOf(b.address);
-        return indexA >= 0 && indexB >= 0
-          ? indexA - indexB
-          : indexA >= 0
-          ? -1
-          : indexB >= 0
-          ? 1
-          : 0;
-      })
-      .slice(0, 10);
+    return coins;
   }
 
   toRawAmount(token: Token, quantity: BNComparable) {
@@ -71,7 +113,7 @@ export class CoinsProvider {
     return amountUi(token, amount);
   }
 
-  OptimizedGetMinAmountOut(
+  getMinAmountOut(
     srcCoin: Token,
     dstCoin: Token,
     srcCoinLatestPrice: number,

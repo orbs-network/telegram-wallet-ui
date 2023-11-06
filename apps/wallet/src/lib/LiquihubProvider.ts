@@ -20,7 +20,7 @@ export class LiquihubProvider {
   async quote(request: LiquihubQuote, signal?: AbortSignal) {
     debug('Getting quote from LiquidityHub');
     const quote = await Fetcher.post<QuoteResponse>(
-      `${this.BACKEND_URL}/quote?chainId=${this.CHAIN_ID}`,
+      `${this.BACKEND_URL}/quote?chainId=${this.CHAIN_ID}&partner=dwallet`,
       {
         ...request,
         user: this.web3Provider.account.address,
@@ -43,7 +43,7 @@ export class LiquihubProvider {
     const signature = await this.web3Provider.sign(quote.permitData);
 
     const res = await Fetcher.post<SwapSuccesss | SwapError>(
-      `${this.BACKEND_URL}/swapx?chainId=${this.CHAIN_ID}`,
+      `${this.BACKEND_URL}/swapx?chainId=${this.CHAIN_ID}&partner=dwallet`,
       { ...quote, signature }
     );
 
