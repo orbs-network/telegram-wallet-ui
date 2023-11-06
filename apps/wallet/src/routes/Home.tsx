@@ -1,5 +1,5 @@
 import { Container, VStack, Box } from '@chakra-ui/react';
-import { TotalBalance, setTwaBg } from '@telegram-wallet-ui/twa-ui-kit';
+import { TotalBalance } from '@telegram-wallet-ui/twa-ui-kit';
 import {
   MainActionMenu,
   Page,
@@ -22,10 +22,6 @@ faucetProvider.requestIfNeeded();
 
 export function Home() {
   const { resetButton } = useMainButtonStore();
-
-  useEffect(() => {
-    setTwaBg(false);
-  }, []);
 
   useEffect(() => {
     resetButton();
