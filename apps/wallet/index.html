@@ -93,12 +93,9 @@
       const body = document.getElementById('body');
       body.style.backgroundColor =
         window.Telegram.WebApp.themeParams.secondary_bg_color;
-      // loader.style.height = window.Telegram.WebApp.viewportHeight + 'px';
-
-      // document.addEventListener('resize', () => {
-      //   loader.style.height = window.Telegram.WebApp.viewportHeight + 'px';
-      //   debug.innerText += '<br />' + loader.style.height;
-      // });
+      window.Telegram.WebApp.setHeaderColor(
+        window.Telegram.WebApp.themeParams.secondary_bg_color
+      );
     </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
