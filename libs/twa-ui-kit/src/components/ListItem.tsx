@@ -1,14 +1,16 @@
-import { css } from '@emotion/react';
+import { css, Interpolation } from '@emotion/react';
 import { DataDisplayItem } from './DataDisplayItem';
-import { Box, Icon, useColorMode } from '@chakra-ui/react';
+import { Icon, useColorMode } from '@chakra-ui/react';
 import { BiCheck } from 'react-icons/bi';
 
-import { tgColors } from '../theme';
+import { colors, tgColors } from '../theme';
+import { Card } from './Card';
+import { CSSProperties } from 'react';
 
 const styles = css`
   width: 100%;
-  padding: 16px 20px 14px 16px;
-
+  color: ${colors.text_color};
+  min-height: unset;
   &:last-child:after {
     display: none;
   }
@@ -22,6 +24,8 @@ type ListItemProps = {
   selected?: boolean;
   onClick?: () => void;
   className?: string;
+  css?: Interpolation<CSSProperties>;
+  dataDisplayItemCss?: Interpolation<CSSProperties>;
 };
 
 export function ListItem({
@@ -32,12 +36,20 @@ export function ListItem({
   selected,
   onClick,
   className = '',
+  css = {},
+  dataDisplayItemCss = {},
 }: ListItemProps) {
   const mode = useColorMode();
 
   return (
-    <Box css={styles} onClick={onClick} className={className}>
+    <Card
+      css={[styles, css]}
+      onClick={onClick}
+      className={`${className} list-item`}
+    >
       <DataDisplayItem
+        css={dataDisplayItemCss}
+        className="list-item-content"
         StartIconSlot={StartIconSlot}
         StartTextSlot={StartTextSlot}
         EndTextSlot={
@@ -49,6 +61,6 @@ export function ListItem({
         }
         EndIconSlot={EndIconSlot}
       />
-    </Box>
+    </Card>
   );
 }

@@ -6,6 +6,7 @@ interface ButtonProps {
   text?: string;
   disabled?: boolean;
   progress?: boolean;
+  disableUpdate?: boolean;
 }
 
 interface Store extends ButtonProps {
@@ -32,7 +33,7 @@ export const useUpdateMainButton = (args: ButtonProps) => {
   const { setButton } = useMainButtonStore();
   const preventButtonStateChange = useRef(false);
 
-  const { disabled, text, onClick, progress } = args;
+  const { disabled, text, onClick, progress, disableUpdate } = args;
 
   useEffect(() => {
     const handleEvent = () => {
@@ -57,7 +58,7 @@ export const useUpdateMainButton = (args: ButtonProps) => {
         if (!onClick) {
           preventButtonStateChange.current = true;
         } else {
-          Promise.resolve(onClick()).then(() => {
+          Promise.resolve(onClick()).then(() => {            
             preventButtonStateChange.current = true;
           });
         }

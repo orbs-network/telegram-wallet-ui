@@ -17,6 +17,7 @@ import { useNavigation } from '../../router/hooks';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { permit2Provider, swapProvider } from '../../config';
 import { useUpdateMainButton } from '../../store/main-button-store';
+import { useTradeStore } from './store';
 
 const useSwap = () => {
   const tradeSuccess = useNavigation().tradeSuccess;
@@ -76,6 +77,14 @@ const useMainButton = () => {
 
 export function TradeReview() {
   useMainButton();
+  const setInAmount = useTradeStore().setInAmount;
+
+  useEffect(() => {
+  setTimeout(() => {
+     setInAmount('');
+  }, 300);
+  }, [setInAmount]);
+  
 
   return (
     <Page>

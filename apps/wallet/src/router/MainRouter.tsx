@@ -16,6 +16,8 @@ import {
   Trade,
   TradeReview,
   TradeSuccess,
+  DepositNetworkSelect,
+  TradeTokenSelect,
 } from '../routes';
 import { RouteObject } from 'react-router-dom';
 import { ROUTES } from './routes';
@@ -41,6 +43,10 @@ const routes: RouteObject[] = [
   {
     path: ROUTES.depositCrypto,
     element: <DepositAddress />,
+  },
+  {
+    path: ROUTES.depositNetworkSelect,
+    element: <DepositNetworkSelect />,
   },
   {
     path: ROUTES.tempUtils,
@@ -77,6 +83,14 @@ const routes: RouteObject[] = [
   {
     path: ROUTES.trade,
     element: <Trade />,
+  },
+  {
+    path: ROUTES.tradeInTokenSelect,
+    element: <TradeTokenSelect isIn={true} />,
+  },
+  {
+    path: ROUTES.tradeOutTokenSelect,
+    element: <TradeTokenSelect  />,
   },
   {
     path: ROUTES.tradeReview,

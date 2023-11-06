@@ -24,14 +24,15 @@ export function MainButton(props: MainButtonProps) {
         onClick={props.onClick}
         disabled={props.disabled}
       >
-        {props.text}
+        {props.text?.toUpperCase()}
       </Button>
     );
   }
   return (
     <BaseMainButton
       {...props}
-      color={props.disabled ? colors.button_disabed_color : colors.button_color}
+      color={props.disabled || props.progress ? colors.button_disabed_color : colors.button_color}
+      text={props.text?.toUpperCase()}
     />
   );
 }
