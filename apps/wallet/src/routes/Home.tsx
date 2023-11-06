@@ -30,13 +30,13 @@ export function Home() {
     resetButton();
   }, [resetButton]);
 
-  const usdValue = usePortfolioUsdValue();
+  const { data: usdValue, error } = usePortfolioUsdValue();
 
   const primaryAmount = useFormatNumber({
     value: usdValue || 0,
   });
 
-  if (usdValue === null) {
+  if (usdValue === null && error === null) {
     return (
       <Container
         size="sm"

@@ -131,12 +131,16 @@ export const useInterval = (callback: VoidFunction, delay: number | null) => {
 };
 
 export const usePortfolioUsdValue = () => {
-  const { data, dataUpdatedAt: userDataUpdatedAt } = useUserData();
+  const { data, dataUpdatedAt: userDataUpdatedAt, error } = useUserData();
   const { data: usdPrices, dataUpdatedAt: coinsDataUpdatedAt } =
     useCoinsLastPrice();
 
   return useMemo(() => {
-    if (!data || !usdPrices) return null;
+    if (error) {
+      return { error };
+    }
+
+    if (!data || !usdPrices) return { data: null };
     const getPrice = (coingeckoId: string) =>
       usdPrices![coingeckoId as keyof typeof usdPrices];
 
@@ -144,13 +148,15 @@ export const usePortfolioUsdValue = () => {
       (it) => !new BN(it.balance).isZero()
     );
 
-    return tokenWithBalance
-      .reduce((acc, token) => {
-        const price = getPrice(token.coingeckoId);
-        const amount = new BN(token.balance).multipliedBy(price);
-        return acc.plus(amount);
-      }, new BN(0))
-      .toString();
+    return {
+      data: tokenWithBalance
+        .reduce((acc, token) => {
+          const price = getPrice(token.coingeckoId);
+          const amount = new BN(token.balance).multipliedBy(price);
+          return acc.plus(amount);
+        }, new BN(0))
+        .toString(),
+    };
   }, [userDataUpdatedAt, coinsDataUpdatedAt]);
 };
 
@@ -223,7 +229,6 @@ export const useUserData = () => {
   });
 };
 
-
 export const useFormatNumber = ({
   value,
   decimalScale = 3,
@@ -235,34 +240,30 @@ export const useFormatNumber = ({
   prefix?: string;
   suffix?: string;
 }) => {
-  const decimals = useMemo(
-    () => {
-      if (!value) return 0;
-      const [, decimal] = value.toString().split('.');
-      if (!decimal) return 0;
-      const arr = decimal.split('');
-      let count = 0;
+  const decimals = useMemo(() => {
+    if (!value) return 0;
+    const [, decimal] = value.toString().split('.');
+    if (!decimal) return 0;
+    const arr = decimal.split('');
+    let count = 0;
 
-      arr.forEach((item) => {
-        if (item === '0') {
-          count++;
-        } else {
-          return;
-        }
-      });
+    arr.forEach((item) => {
+      if (item === '0') {
+        count++;
+      } else {
+        return;
+      }
+    });
 
-      return count - 1 + decimalScale;
-    },
-    [value, decimalScale]
-  );
-  
+    return count - 1 + decimalScale;
+  }, [value, decimalScale]);
 
   const result = useNumericFormat({
     allowLeadingZeros: true,
     thousandSeparator: ',',
     displayType: 'text',
     value: value || '',
-    decimalScale: decimals ,
+    decimalScale: decimals,
     prefix,
     suffix,
   });
