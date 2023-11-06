@@ -25,9 +25,7 @@ export function SelectMethod() {
             How would you like to deposit crypto?
           </Heading>
           <VStack spacing={4} alignItems="stretch">
-            <Link
-              to={generatePath(ROUTES.depositSelectCoin, { method: 'buy' })}
-            >
+            <Link to={ROUTES.depositBuy}>
               <Card>
                 <DataDisplayItem
                   StartIconSlot={

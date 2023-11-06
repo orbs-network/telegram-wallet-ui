@@ -1,25 +1,22 @@
 import { colors } from '@telegram-wallet-ui/twa-ui-kit';
 import { MainButton } from '@twa-dev/sdk/react';
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ErrorPage } from '../../ErrorPage';
 import { Page } from '../../components';
 import { TRANSAK_API_KEY, TRANSAK_URL, account } from '../../config';
 import { getDebug } from '../../lib/utils/debug';
-import { URLParams } from '../../types';
 import { Transak } from './transak/constants';
 
 const debug = getDebug('Buy');
 
 const walletAddress = account?.address;
 
-const constructSrcUrl = (walletAddress: string, tokenSymbol = 'USDC') => {
+const constructSrcUrl = (walletAddress: string) => {
   const params = new URLSearchParams({
     network: 'polygon',
     walletAddress,
-    defaultCryptoCurrency: 'USDC',
-    cryptoCurrencyCode: tokenSymbol.toUpperCase(),
-    cryptoCurrencyList: 'WBTC,WETH,USDT,USDC',
+    cryptoCurrencyCode: 'USDT',
     disableWalletAddressForm: 'true',
     hideMenu: 'true',
     themeColor: colors.button_color,
@@ -32,7 +29,6 @@ export const Buy = () => {
   const [showDoneButton, setShowDoneButton] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const navigate = useNavigate();
-  const { assetId } = useParams<URLParams>();
 
   useEffect(() => {
     const handleMessage = (message: {
@@ -80,7 +76,7 @@ export const Buy = () => {
 
   if (!walletAddress) return <ErrorPage message="Wallet not created." />;
 
-  const src = constructSrcUrl(walletAddress, assetId);
+  const src = constructSrcUrl(walletAddress);
 
   return (
     <Page>
