@@ -12,13 +12,14 @@ import {
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useMemo, useRef, useState } from 'react';
-import { BiSolidChevronRight } from 'react-icons/bi';
+import { BsChevronCompactRight } from 'react-icons/bs';
 import { CryptoAmountInput, SelectToken } from '../../components';
 import { useFormatNumber, useUserData } from '../../hooks';
 import { TokenData } from '../../types';
 import { IoClose } from 'react-icons/io5';
 import { colors } from '@telegram-wallet-ui/twa-ui-kit';
 import { flash } from '../../styles';
+import { ERROR_COLOR, INSUFFICIENT_FUNDS_ERROR } from '../../consts';
 
 const outAmountStyles = css`
   animation: ${flash} 1s linear infinite;
@@ -53,6 +54,10 @@ const styles = {
   drawerContent: css`
     padding-top: 20px;
   `,
+  error: css`
+  color: ${ERROR_COLOR};
+  font-size: 16px;
+  `
 };
 
 const TokenPanelHeader = ({
@@ -90,6 +95,10 @@ const TokenPanelHeader = ({
   );
 };
 
+const StyledErrorMaxBtn = styled('span')({
+  color: colors.link_color,
+})
+
 export const TokenPanel = ({
   quotePending,
   value,
@@ -113,6 +122,22 @@ export const TokenPanel = ({
   otherTokenSymbol?: string;
   name: string;
 }) => {
+
+
+  const handleErorrComponent = useMemo(() => {
+    
+    if (error === INSUFFICIENT_FUNDS_ERROR && token?.balance) {
+      return (
+        <Text css={styles.error}>
+          Insufficient funds.{' '}
+          <StyledErrorMaxBtn onClick={() => onChange?.(token.balance)}>
+            Exchange max
+          </StyledErrorMaxBtn>
+        </Text>
+      );
+    }
+  }, [error, onChange, token?.balance]);
+
   return (
     <VStack css={styles.container}>
       <TokenPanelHeader
@@ -120,10 +145,9 @@ export const TokenPanel = ({
         token={token}
         isInToken={isInToken}
       />
-      <Flex>
-        <Box css={quotePending && outAmountStyles}>
+
+        <Flex css={quotePending && outAmountStyles}>
           <CryptoAmountInput
-            hideSymbol
             otherTokenSymbol={otherTokenSymbol}
             value={value}
             tokenSymbol={token?.symbol}
@@ -131,15 +155,17 @@ export const TokenPanel = ({
             editable={!!isInToken}
             name={name}
             error={error}
+            errorComponent={handleErorrComponent}
+            sideContent={
+              <TokenSelectDrawer
+                filterTokenSymbol={filterTokenSymbol}
+                onSelect={onTokenSelect}
+                token={token}
+              />
+            }
           />
-        </Box>
+        </Flex>
 
-        <TokenSelectDrawer
-          filterTokenSymbol={filterTokenSymbol}
-          onSelect={onTokenSelect}
-          token={token}
-        />
-      </Flex>
     </VStack>
   );
 };
@@ -170,7 +196,7 @@ const TokenSelectDrawer = ({
     <Flex alignItems="center">
       <TokenSelectButton ref={btnRef.current} onClick={() => setIsOpen(true)}>
         <Text>{token ? token.symbolDisplay : 'Select'}</Text>
-        <BiSolidChevronRight />
+        <BsChevronCompactRight fontWeight={700} />
       </TokenSelectButton>
       <Drawer
         placement="bottom"
@@ -203,10 +229,9 @@ const TokenSelectButton = styled(Box)({
   display: 'flex',
   alignItems: 'center',
   position: 'relative',
-  top: '-10px',
   '& p': {
     color: colors.hint_color,
-    fontSize: '26px',
+    fontSize: '28px',
     fontWeight: 700,
   },
   svg: {

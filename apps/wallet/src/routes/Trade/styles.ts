@@ -1,4 +1,4 @@
-import { css } from '@emotion/react';
+import { css, keyframes } from '@emotion/react';
 import { colors } from '@telegram-wallet-ui/twa-ui-kit';
 
 export const styles = {
@@ -26,7 +26,7 @@ export const styles = {
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-
+    overflow: hidden;
     svg {
       color: white;
       width: 30px;
@@ -34,3 +34,8 @@ export const styles = {
     }
   `,
 };
+
+
+
+
+
