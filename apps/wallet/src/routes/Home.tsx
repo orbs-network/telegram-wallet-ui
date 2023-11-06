@@ -1,5 +1,5 @@
 import { Container, VStack, Box } from '@chakra-ui/react';
-import { TotalBalance } from '@telegram-wallet-ui/twa-ui-kit';
+import { TotalBalance, setTwaBg } from '@telegram-wallet-ui/twa-ui-kit';
 import {
   MainActionMenu,
   Page,
@@ -26,6 +26,10 @@ export function Home() {
   useEffect(() => {
     resetButton();
   }, [resetButton]);
+
+  useEffect(() => {
+    setTwaBg(false);
+  }, []);
 
   const { data: usdValue, error } = usePortfolioUsdValue();
 
