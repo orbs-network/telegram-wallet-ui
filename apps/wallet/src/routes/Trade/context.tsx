@@ -35,12 +35,12 @@ const useInitialTokens = () => {
   const [inTokenSymbol] = useQueryParam('inToken', StringParam);
   return useMemo(() => {
     if (!data) {
-      return undefined
+      return undefined;
     }
-      const withoutInToken = _.filter(
-        data?.tokens,
-        (it) => it.symbol !== inTokenSymbol
-      );
+    const withoutInToken = _.filter(
+      data?.tokens,
+      (it) => it.symbol !== inTokenSymbol
+    );
     const tokensWithBalance = _.filter(withoutInToken, (it) =>
       new BN(it.balance).gt(0)
     );
@@ -49,8 +49,8 @@ const useInitialTokens = () => {
     ).reverse();
 
     return {
-      inToken: inTokenSymbol || sorted[0]?.symbol || 'usdt',
-      outToken: sorted[1]?.symbol || 'usdc',
+      inToken: inTokenSymbol ?? sorted[0]?.symbol ?? 'usdt',
+      outToken: inTokenSymbol === 'usdt' ? 'usdc' : 'usdt',
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataUpdatedAt, inTokenSymbol]);

@@ -15,6 +15,8 @@ const bounce = keyframes`
 `;
 
 const styles = css`
+  color: #ccc;
+
   animation: ${bounce} 1s linear infinite;
 `;
 

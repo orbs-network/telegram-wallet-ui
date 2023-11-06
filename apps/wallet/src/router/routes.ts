@@ -2,7 +2,7 @@ export const ROUTES = {
   root: '/',
   deposit: '/deposit',
   depositSelectCoin: '/deposit/:method/coin',
-  depositBuy: '/deposit/:assetId/buy',
+  depositBuy: '/deposit/buy',
   depositCrypto: '/deposit/:assetId/crypto',
   depositNetworkSelect: '/deposit/:assetId/crypto/network',
   tempUtils: '/tempUtils',

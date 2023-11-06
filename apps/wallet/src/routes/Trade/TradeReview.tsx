@@ -80,7 +80,9 @@ export function TradeReview() {
   const setInAmount = useTradeStore().setInAmount;
 
   useEffect(() => {
-   setInAmount('');
+  setTimeout(() => {
+     setInAmount('');
+  }, 300);
   }, [setInAmount]);
   
 

@@ -23,21 +23,26 @@
     <style>
       @keyframes pulse {
         0% {
-          opacity: 1;
+          opacity: 0.6;
         }
 
         50% {
-          opacity: 0.2;
+          opacity: 0.1;
         }
 
         100% {
-          opacity: 1;
+          opacity: 0.6;
         }
+      }
+
+      body {
+        transition: background-color 0.2s;
       }
 
       #root {
         position: relative;
         z-index: 100;
+        transition: background-color 0.2s;
       }
       .loader-container {
         display: block;
@@ -52,16 +57,9 @@
         animation: pulse 0.5s linear infinite;
         color: #cccccc;
       }
-      #debug {
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 1000;
-        display: block;
-      }
     </style>
   </head>
-  <body>
+  <body id="body">
     <div id="root"></div>
     <div id="loader" class="loader-container">
       <div class="loader">
@@ -90,13 +88,12 @@
     </div>
     <script>
       window.Telegram.WebApp.ready();
-      // const loader = document.getElementById('loader');
-      // loader.style.height = window.Telegram.WebApp.viewportHeight + 'px';
-
-      // document.addEventListener('resize', () => {
-      //   loader.style.height = window.Telegram.WebApp.viewportHeight + 'px';
-      //   debug.innerText += '<br />' + loader.style.height;
-      // });
+      const body = document.getElementById('body');
+      body.style.backgroundColor =
+        window.Telegram.WebApp.themeParams.secondary_bg_color;
+      window.Telegram.WebApp.setHeaderColor(
+        window.Telegram.WebApp.themeParams.secondary_bg_color
+      );
     </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>

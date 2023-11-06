@@ -20,15 +20,17 @@ const TON_TOKEN = {
 export function TokenBalances() {
   const { asset } = useNavigation();
   const { data: userData, dataUpdatedAt } = useUserData();
-  
+
   // filter out zero balances and at least show usdt
   const tokens = useMemo(() => {
-    const tokenBalances = !userData?.tokens
-      ? []
-      : Object.values(userData.tokens).filter(
-          (token) => token.symbol === 'usdt' || !BN(token.balance).eq(0)
-        );
-    return [...tokenBalances, TON_TOKEN];
+    const tokensWithBalances = Object.values(userData?.tokens ?? {}).filter(
+      (t) => BN(t.balance).gt(0)
+    );
+
+    if (tokensWithBalances?.length === 0 && userData) {
+      tokensWithBalances.push(userData.tokens.USDT);
+    }
+    return [...tokensWithBalances, TON_TOKEN];
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataUpdatedAt]);
 

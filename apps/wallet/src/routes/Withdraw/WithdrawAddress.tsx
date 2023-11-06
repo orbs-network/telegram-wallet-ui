@@ -95,14 +95,17 @@ const AddressInput = ({
   useEffect(() => {
     async function checkPermission() {
       try {
-        const permission = await navigator.permissions.query({
-          name: 'clipboard-read',
-          // little hack for TS to ignore this unavailable type
-        } as unknown as PermissionDescriptor);
-        if (permission.state === 'granted') {
-          setPasteSupported(true);
-          return;
-        }
+        // const permission = await navigator.permissions.query({
+        //   name: 'clipboard-read',
+        //   // little hack for TS to ignore this unavailable type
+        // } as unknown as PermissionDescriptor);
+        // if (permission.state === 'granted') {
+        //   setPasteSupported(true);
+        //   return;
+        // }
+
+        await navigator.clipboard.readText();
+        setPasteSupported(true);
       } catch (err) {
         // paste not supported
         console.error(err);

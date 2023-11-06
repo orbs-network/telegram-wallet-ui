@@ -1,5 +1,11 @@
 import { Box, Container, Flex, useToast, VStack } from '@chakra-ui/react';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   useDebouncedCallback,
   useFormatNumber,
@@ -49,8 +55,10 @@ const useInitialTokens = () => {
     const _inToken = inTokenSymbol || sorted[0]?.symbol || 'usdt';
 
     if (!store.inToken) store.setInToken(_inToken);
+    const _outToken = sorted[1]?.symbol || 'usdc';
+    
 
-    if (!store.outToken) store.setOutToken(sorted[1]?.symbol || 'usdc');
+    if (!store.outToken) store.setOutToken(_outToken === _inToken ? 'btc' : _outToken);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataUpdatedAt, inTokenSymbol]);
@@ -98,12 +106,15 @@ const useOutAmount = () => {
   const quoteOutAmount = quoteData.quote?.quote.outAmount;
 
   return useMemo(() => {
+    if (!inAmount) {
+      return '';
+    }
     if (!quoteOutAmount) {
       return amountUi(outToken, estimatedAmountOut);
     }
 
     return amountUi(outToken, new BN(quoteOutAmount));
-  }, [quoteOutAmount, outToken, estimatedAmountOut]);
+  }, [quoteOutAmount, outToken, estimatedAmountOut, inAmount]);
 };
 
 const useValidations = () => {
@@ -182,7 +193,7 @@ const useSubmitButton = (disableButton: boolean) => {
       !inAmount ||
       !inToken ||
       !outToken ||
-      !amountOut ||
+      !Number(amountOut) ||
       isLoading ||
       isFetching,
     onClick: disableButton ? undefined : onSubmit,
@@ -216,7 +227,11 @@ const SwitchTokens = () => {
   );
 };
 
-const SrcTokenPanel = ({ setDisableButton }: { setDisableButton: () => void }) => {
+const SrcTokenPanel = ({
+  setDisableButton,
+}: {
+  setDisableButton: () => void;
+}) => {
   const { setInAmount } = useTradeStore();
   const store = useTradeStore();
   const { inToken, outToken } = useTokens();
@@ -271,7 +286,7 @@ const DstTokenPanel = ({
 
 export function Trade() {
   useInitialTokens();
-    const [disableButton, setDisableButton] = useState(false);
+  const [disableButton, setDisableButton] = useState(false);
 
   useSubmitButton(disableButton);
   useEffect(() => {
