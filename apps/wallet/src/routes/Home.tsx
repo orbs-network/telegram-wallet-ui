@@ -12,6 +12,7 @@ import { Transactions } from '../components/Transactions';
 import { useMainButtonStore } from '../store/main-button-store';
 import { useEffect } from 'react';
 import Twa from '@twa-dev/sdk';
+import { ErrorPage } from '../ErrorPage';
 
 // Checks periodically for non-permit2-approved erc20s and issues TXNs for approval as needed
 permit2Provider.pollPermit2Approvals();
@@ -48,6 +49,10 @@ export function Home() {
         <WalletSpinner />
       </Container>
     );
+  }
+
+  if (error) {
+    <ErrorPage message={error.message} />;
   }
 
   return (

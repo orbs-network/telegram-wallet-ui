@@ -140,7 +140,10 @@ export const usePortfolioUsdValue = () => {
       return { error };
     }
 
-    if (!data || !usdPrices) return { data: null };
+    if (!data || !usdPrices) {
+      return { data: null };
+    }
+
     const getPrice = (coingeckoId: string) =>
       usdPrices![coingeckoId as keyof typeof usdPrices];
 
