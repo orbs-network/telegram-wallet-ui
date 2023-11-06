@@ -84,7 +84,12 @@ const useSubmitButton = () => {
 
   useUpdateMainButton({
     text: 'Review trade',
-    disabled: !inAmount || !inToken || !outToken || !amountOut || quotePending,
+    disabled:
+      !Number(inAmount) ||
+      !inToken ||
+      !outToken ||
+      !Number(amountOut) ||
+      quotePending,
     onClick: onSubmit,
   });
 };
