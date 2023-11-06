@@ -10,6 +10,7 @@ import {
   useUserData,
 } from '../hooks';
 import { useMainButtonStore } from '../store/main-button-store';
+import { motion } from 'framer-motion';
 
 function Loader() {
   return (
@@ -57,11 +58,21 @@ export function Asset() {
     <Page>
       <Container size="sm" pt={4}>
         <VStack spacing={2}>
-          <Avatar
-            name={tokenData.symbol}
-            src={tokenData.logoURI}
-            colorScheme="telegram"
-          />
+          <motion.div
+            style={{ scale: 0.7, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{
+              type: 'spring',
+              delay: 0.5,
+              bounce: 0.6,
+            }}
+          >
+            <Avatar
+              name={tokenData.symbol}
+              src={tokenData.logoURI}
+              colorScheme="telegram"
+            />
+          </motion.div>
 
           <Balance
             secondaryCurrencyCode={tokenData?.symbolDisplay}
