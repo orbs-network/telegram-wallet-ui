@@ -8,17 +8,19 @@ import { VStack } from '@chakra-ui/react';
 export function TokenBalances() {
   const { asset } = useNavigation();
   const { data: userData } = useUserData();
-  // filter out zero balances and at least show usdt
-  const tokenBalances = !userData?.tokens
-    ? undefined
-    : Object.values(userData.tokens).filter(
-        (token) => token.symbol === 'usdt' || !BN(token.balance).eq(0)
-      );
+
+  const tokensWithBalances = Object.values(userData?.tokens ?? {}).filter((t) =>
+    BN(t.balance).gt(0)
+  );
+
+  if (tokensWithBalances?.length === 0 && userData) {
+    tokensWithBalances.push(userData.tokens.USDT);
+  }
 
   return (
     <VStack spacing="6px" alignItems="stretch">
       <StyledTokensList
-        tokens={tokenBalances}
+        tokens={tokensWithBalances}
         onSelect={(token) => asset(token.symbol)}
       />
       <StyledTokensList

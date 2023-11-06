@@ -326,7 +326,7 @@ export const useOptimizedGetMinAmountOut = (
     if (!inToken || !outToken || !inAmount || !srcTokenUsd || !destTokenUsd) {
       return new BN(0);
     }
-    return coinsProvider.OptimizedGetMinAmountOut(
+    return coinsProvider.getMinAmountOut(
       inToken,
       outToken,
       srcTokenUsd,
