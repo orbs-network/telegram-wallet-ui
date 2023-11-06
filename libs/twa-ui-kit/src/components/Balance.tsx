@@ -7,6 +7,7 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import BN from 'bignumber.js';
 
 type BalanceProps = {
   label: string;
@@ -48,7 +49,7 @@ export function Balance({
       >
         {primaryCurrencySymbol}
       </Text>
-      {primaryAmount}
+      {BN(primaryAmount || 0).toFixed(2)}
     </SkeletonText>
   );
 
