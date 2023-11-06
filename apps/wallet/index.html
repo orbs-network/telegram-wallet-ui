@@ -37,6 +37,7 @@
 
       body {
         transition: background-color 0.2s;
+        background-color: var(--tg-theme-secondary-bg-color);
       }
 
       #root {
@@ -91,9 +92,9 @@
       const body = document.getElementById('body');
       body.style.backgroundColor =
         window.Telegram.WebApp.themeParams.secondary_bg_color;
-      window.Telegram.WebApp.setHeaderColor(
-        window.Telegram.WebApp.themeParams.secondary_bg_color
-      );
+      // window.Telegram.WebApp.setHeaderColor(
+      //   window.Telegram.WebApp.themeParams.secondary_bg_color
+      // );
     </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>

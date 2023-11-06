@@ -12,6 +12,7 @@ import { Transactions } from '../components/Transactions';
 import { useMainButtonStore } from '../store/main-button-store';
 import { useEffect } from 'react';
 import Twa from '@twa-dev/sdk';
+import { ErrorPage } from '../ErrorPage';
 
 // Checks periodically for non-permit2-approved erc20s and issues TXNs for approval as needed
 permit2Provider.pollPermit2Approvals();
@@ -30,13 +31,13 @@ export function Home() {
     resetButton();
   }, [resetButton]);
 
-  const usdValue = usePortfolioUsdValue();
+  const { data: usdValue, error } = usePortfolioUsdValue();
 
   const primaryAmount = useFormatNumber({
     value: usdValue || 0,
   });
 
-  if (usdValue === null) {
+  if (usdValue === null && error === null) {
     return (
       <Container
         size="sm"
@@ -48,6 +49,10 @@ export function Home() {
         <WalletSpinner />
       </Container>
     );
+  }
+
+  if (error) {
+    <ErrorPage message={error.message} />;
   }
 
   return (
