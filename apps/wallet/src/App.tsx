@@ -34,6 +34,8 @@ const App = () => {
         isClosable: false,
         duration: null,
       });
+    } else if (isOnline && toast.isActive('offline-toast')) {
+      toast.close('offline-toast');
     }
   }, [isOnline, toast]);
 
