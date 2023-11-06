@@ -197,7 +197,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
                 }}
               >
                 <Text noOfLines={1}>
-                  +{toUiDisplay(dTx.amount)} {dTx.token.symbolDisplay}
+                  +{toUiDisplay(dTx.amount)} {dTx.token?.symbolDisplay}
                 </Text>
                 <Text fontSize={12}>Received</Text>
               </Box>
@@ -222,7 +222,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
               >
                 <Text noOfLines={1}>
                   {/* TODO: seems the amount on withdrawal is not the same format as trade */}
-                  {toUiDisplay(wTx.amount)} {wTx.token.symbolDisplay}
+                  {toUiDisplay(wTx.amount)} {wTx.token?.symbolDisplay}
                 </Text>
                 <Text fontSize={12}>Sent</Text>
               </Box>
