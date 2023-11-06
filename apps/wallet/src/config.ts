@@ -30,7 +30,7 @@ export const web3Provider = new Web3Provider(w3, account);
 
 export const liqHubProvider = new LiquihubProvider(web3Provider);
 
-export const coinsProvider = new CoinsProvider(false, new TTLCache());
+export const coinsProvider = new CoinsProvider();
 
 export const permit2Provider = new Permit2Provider(
   web3Provider,
