@@ -21,10 +21,6 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
     <style>
-      body {
-        background-color: #efeff3;
-      }
-
       @keyframes pulse {
         0% {
           opacity: 0.6;
@@ -65,7 +61,7 @@
       }
     </style>
   </head>
-  <body>
+  <body id="body">
     <div id="root"></div>
     <div id="loader" class="loader-container">
       <div class="loader">
@@ -94,7 +90,9 @@
     </div>
     <script>
       window.Telegram.WebApp.ready();
-      // const loader = document.getElementById('loader');
+      const body = document.getElementById('body');
+      body.style.backgroundColor =
+        window.Telegram.WebApp.themeParams.secondary_bg_color;
       // loader.style.height = window.Telegram.WebApp.viewportHeight + 'px';
 
       // document.addEventListener('resize', () => {
