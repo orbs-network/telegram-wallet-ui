@@ -21,7 +21,6 @@ import { useUpdateMainButton } from '../../store/main-button-store';
 const useSwap = () => {
   const tradeSuccess = useNavigation().tradeSuccess;
   const { outToken: outTokenSymbol } = useParams<URLParams>();
-  const token = useGetTokenFromList(outTokenSymbol);
 
   const queryClient = useQueryClient();
   const { setProgress } = useSwapInProgress();
@@ -37,7 +36,7 @@ const useSwap = () => {
     },
     onSuccess: (txHash) => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.USER_DATA] });
-      tradeSuccess(token?.symbolDisplay || outTokenSymbol!, amountOut, txHash);
+      tradeSuccess(outTokenSymbol!, amountOut, txHash);
     },
     onSettled: () => {
       setProgress(false);

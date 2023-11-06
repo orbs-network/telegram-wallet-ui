@@ -223,6 +223,7 @@ export const useUserData = () => {
   });
 };
 
+
 export const useFormatNumber = ({
   value,
   decimalScale = 3,
@@ -234,12 +235,34 @@ export const useFormatNumber = ({
   prefix?: string;
   suffix?: string;
 }) => {
+  const decimals = useMemo(
+    () => {
+      if (!value) return 0;
+      const [, decimal] = value.toString().split('.');
+      if (!decimal) return 0;
+      const arr = decimal.split('');
+      let count = 0;
+
+      arr.forEach((item) => {
+        if (item === '0') {
+          count++;
+        } else {
+          return;
+        }
+      });
+
+      return count - 1 + decimalScale;
+    },
+    [value, decimalScale]
+  );
+  
+
   const result = useNumericFormat({
     allowLeadingZeros: true,
     thousandSeparator: ',',
     displayType: 'text',
     value: value || '',
-    decimalScale,
+    decimalScale: decimals ,
     prefix,
     suffix,
   });

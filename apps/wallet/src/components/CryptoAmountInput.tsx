@@ -1,5 +1,5 @@
 import { VStack, Flex, Text, Box } from '@chakra-ui/react';
-import { useEffect, useMemo } from 'react';
+import { ReactNode, useEffect, useMemo } from 'react';
 import {
   useMultiplyPriceByAmount,
   useFormatNumber,
@@ -13,8 +13,8 @@ import { NumericFormat } from 'react-number-format';
 import { useAnimate } from 'framer-motion';
 import { colors } from '@telegram-wallet-ui/twa-ui-kit';
 import Twa from '@twa-dev/sdk';
+import { ERROR_COLOR } from '../consts';
 
-const ERROR_COLOR = '#ff3333';
 
 const styles = {
   inputContainer: css`
@@ -34,7 +34,8 @@ const styles = {
   error: css`
     color: ${ERROR_COLOR};
   `,
-  bottomText: css`
+  bottonContent: css`
+  width: 100%;
     height: 20px;
     top: -5px;
     position: relative;
@@ -53,6 +54,7 @@ const StyledNumericFormat = styled(NumericFormat)({
   caretColor: colors.button_color,
   width: '100%',
   overflow: 'hidden',
+  height: '75px',
   backgroundColor: 'transparent',
   color: colors.text_color,
   '::placeholder': {
@@ -65,10 +67,11 @@ type CryptoAmountInputProps = {
   tokenSymbol?: string;
   value: string;
   onChange?: (value: string) => void;
-  hideSymbol?: boolean;
   editable?: boolean;
   error?: string;
   otherTokenSymbol?: string;
+  sideContent?: ReactNode;
+  errorComponent?: ReactNode;
 };
 
 export function CryptoAmountInput({
@@ -76,10 +79,11 @@ export function CryptoAmountInput({
   name,
   value,
   onChange,
-  hideSymbol,
   editable = true,
   error,
   otherTokenSymbol,
+  sideContent,
+  errorComponent,
 }: CryptoAmountInputProps) {
   const token = useGetTokenFromList(tokenSymbol);
 
@@ -102,7 +106,7 @@ export function CryptoAmountInput({
 
   const bottomContent = useMemo(() => {
     if (error) {
-      return <Text css={styles.error}>{error}</Text>;
+      return errorComponent || <Text css={styles.error}>{error}</Text>;
     }
     if (!value && otherTokenSymbol) {
       return (
@@ -121,6 +125,7 @@ export function CryptoAmountInput({
     tokenSymbol,
     formattedPriceCompare,
     otherTokenSymbol,
+    errorComponent,
   ]);
 
   const textSizePX = useMemo(() => {
@@ -152,9 +157,10 @@ export function CryptoAmountInput({
     <VStack alignItems="flex-start" gap="0px">
       <Flex
         css={styles.inputContainer}
-        alignItems="flex-end"
+        alignItems="center"
         justifyContent="flex-start"
         ref={scope}
+        gap="10px"
       >
         <StyledNumericFormat
           id={name}
@@ -167,15 +173,15 @@ export function CryptoAmountInput({
           contentEditable={editable}
           style={{
             pointerEvents: editable ? 'auto' : 'none',
-            color: error && ERROR_COLOR,
+            color: error ? ERROR_COLOR : '',
           }}
           readOnly={!editable}
         />
-        {!hideSymbol && (
+        {sideContent || (
           <Text
             style={{
               left: !value ? 50 : textSizePX + 12,
-              color: error && ERROR_COLOR,
+              color: error ? ERROR_COLOR : '',
             }}
             css={styles.inputSymbol}
           >
@@ -183,7 +189,7 @@ export function CryptoAmountInput({
           </Text>
         )}
       </Flex>
-      <Box css={styles.bottomText}>{bottomContent}</Box>
+      <Box css={styles.bottonContent}>{bottomContent}</Box>
     </VStack>
   );
 }

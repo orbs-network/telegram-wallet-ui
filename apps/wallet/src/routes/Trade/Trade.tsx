@@ -10,6 +10,7 @@ import { styles } from './styles';
 import { useUpdateMainButton } from '../../store/main-button-store';
 import { Page } from '../../components';
 import { setTwaBg } from '@telegram-wallet-ui/twa-ui-kit';
+import { INSUFFICIENT_FUNDS_ERROR } from '../../consts';
 
 // TODO consider changing value
 const MIN_USD_VALUE_TO_SWAP = 0.5;
@@ -25,7 +26,7 @@ const useValidations = () => {
   const _inAmount = useCallback(
     (inAmount: string) => {
       if (inAmount && inToken && new BN(inAmount).gt(inToken?.balance))
-        return 'Insufficient balance';
+        return INSUFFICIENT_FUNDS_ERROR;
 
       const calculatedPriceUsd = BN(_calculatedPriceUsd);
       if (
@@ -34,7 +35,6 @@ const useValidations = () => {
       ) {
         return `Minimum value to swap is $${MIN_USD_VALUE_TO_SWAP}`;
       }
-        
     },
     [inToken, _calculatedPriceUsd]
   );
@@ -100,7 +100,6 @@ const TradeForm = () => {
     </VStack>
   );
 };
-
 const SwitchTokens = () => {
   const { inToken, outToken, setInToken, setOutToken } = useTradeContext();
 
