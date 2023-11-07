@@ -43,12 +43,10 @@ export function twaMode(light: string | undefined, dark: string | undefined) {
 
 export function setTwaBg(isAlt: boolean) {
   if (!Twa) return;
-  Twa.setHeaderColor(
-    isAlt ? Twa.themeParams.bg_color : Twa.themeParams.secondary_bg_color
-  );
-  Twa.setBackgroundColor(
-    isAlt ? Twa.themeParams.bg_color : Twa.themeParams.secondary_bg_color
-  );
+
+  const color = isAlt ? 'bg_color' : 'secondary_bg_color';
+  Twa.setHeaderColor(color);
+  Twa.setBackgroundColor(color);
 }
 
 export const colors = {
@@ -85,6 +83,12 @@ const config: ThemeConfig = {
   initialColorMode: Twa.colorScheme,
   useSystemColorMode: false,
 };
+
+const secondary_button_color =
+  twaMode(
+    adjustBrightness(colors.button_color, 0.84),
+    adjustBrightness(colors.button_color, -0.5)
+  ) || adjustBrightness(colors.button_color, 0.84);
 
 export const theme = extendTheme({
   config,
@@ -155,10 +159,10 @@ export const theme = extendTheme({
           },
         },
         tertiary: {
-          backgroundColor: '#DEE4EE',
+          backgroundColor: secondary_button_color,
           color: colors.button_color,
           _hover: {
-            backgroundColor: adjustBrightness('#DEE4EE', -0.07),
+            backgroundColor: adjustBrightness(secondary_button_color, -0.07),
           },
           fontSize: '1rem',
         },
