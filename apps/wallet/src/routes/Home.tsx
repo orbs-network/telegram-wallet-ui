@@ -61,9 +61,9 @@ export function Home() {
 
   return (
     <Page>
-      <Container size="sm" pt={4}>
+      <Container size="sm" pt={8}>
         <VStack spacing={4} alignItems="stretch">
-          <VStack spacing={3}>
+          <VStack spacing={4}>
             <TotalBalance
               currencySymbol="$"
               amount={primaryAmount}

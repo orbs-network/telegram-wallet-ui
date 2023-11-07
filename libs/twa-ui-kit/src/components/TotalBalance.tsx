@@ -56,7 +56,7 @@ export function TotalBalance({
         {currencySymbol}
       </Text>
       {amountDisplay[0]}.
-      <Text as="span" fontSize="4xl">
+      <Text as="span" fontSize="34px">
         {amountDisplay[1]}
       </Text>
     </>
@@ -66,12 +66,12 @@ export function TotalBalance({
     PrimaryAmount = (
       <>
         {amountDisplay[0]}.
-        <Text as="span" fontSize="4xl">
+        <Text as="span" fontSize="34px">
           {amountDisplay[1]}
         </Text>{' '}
         <Text
           as="span"
-          fontSize="4xl"
+          fontSize="34px"
           color={colors.hint_color}
           fontWeight="normal"
           onDoubleClick={() => {
