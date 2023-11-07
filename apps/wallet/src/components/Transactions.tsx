@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 import { formatDateTime } from '../utils/utils';
 import { DepositIcon, TradeIcon, WithdrawIcon } from './icons';
 import { css } from '@emotion/react';
+import _ from 'lodash';
 
 const styles = {
   avatar: css`
@@ -149,7 +150,9 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
     );
   }
 
-  if (transactions.length === 0) {
+  const filteredTransactions = filterTx(transactions);
+
+  if (!_.size(filteredTransactions)) {
     return (
       <Card>
         <Text variant="hint">NO TRANSACTIONS</Text>
@@ -160,7 +163,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
 
   return (
     <List mode="select" title="TRANSACTION HISTORY">
-      {filterTx(transactions)?.map((tx) => {
+      {filteredTransactions?.map((tx) => {
         let StartIcon = null;
         let CardTitle = null;
         let CardData = null;
