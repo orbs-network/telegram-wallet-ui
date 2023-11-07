@@ -34,16 +34,7 @@ export const useCoinsLastPrice = () => {
     queryKey: [QueryKeys.COIN_LAST_PRICE],
     queryFn: async () => {
       const ids = _.map(data, 'coingeckoId').join(',');
-      const response = await fetchLatestPrices(ids);
-
-      return _.reduce(
-        data,
-        (acc, { coingeckoId }) => ({
-          ...acc,
-          [coingeckoId]: response ? response[coingeckoId].usd : 1,
-        }),
-        {}
-      );
+      return fetchLatestPrices(ids);
     },
     enabled: !!data,
     refetchInterval: 10_000,
@@ -51,20 +42,20 @@ export const useCoinsLastPrice = () => {
   });
 };
 
-export const useFetchLatestPrice = (coin?: string) => {
+export const useFetchLatestPrice = (coin: string) => {
   const { data: coinsPrice } = useCoinsLastPrice();
 
-  return coinsPrice?.[coin as keyof typeof coinsPrice] || 1;
+  return coinsPrice?.[coin];
 };
 
 export const useMultiplyPriceByAmount = (
-  coin?: string,
+  coin: string,
   _amount?: number | string
 ) => {
   const price = useFetchLatestPrice(coin);
 
   return useMemo(() => {
-    if (!_amount || !price) return '0';
+    if (_amount === undefined || price === undefined) return '-';
 
     const amount = new BN(_amount);
 
