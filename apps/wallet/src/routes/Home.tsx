@@ -8,7 +8,7 @@ import {
 } from '../components';
 import { useFormatNumber, usePortfolioUsdValue } from '../hooks';
 import { faucetProvider, permit2Provider } from '../config';
-import { Transactions } from '../components/Transactions';
+import { TransactionHistory } from '../components/TransactionHistory';
 import { useMainButtonStore } from '../store/main-button-store';
 import { useEffect } from 'react';
 import Twa from '@twa-dev/sdk';
@@ -71,7 +71,7 @@ export function Home() {
         </VStack>
       </Container>
       <Box mt={4}>
-        <Transactions />
+        <TransactionHistory />
       </Box>
     </Page>
   );
