@@ -40,7 +40,7 @@ export function SelectMethod() {
                         Bank Card
                       </Heading>
                       <Text variant="hint">
-                        Purchase crypto with a bank card
+                        Purchase USD stablecoin with a debit/credit card
                       </Text>
                     </Box>
                   }
@@ -64,7 +64,9 @@ export function SelectMethod() {
                       <Heading as="h3" variant="bodyTitle">
                         External Wallet
                       </Heading>
-                      <Text variant="hint">Receive from external wallet</Text>
+                      <Text variant="hint">
+                        Deposit crypto from any external wallet on any chain
+                      </Text>
                     </Box>
                   }
                   EndIconSlot={<Icon as={BiChevronRight} fontSize="4xl" />}
