@@ -8,6 +8,7 @@ import { Permit2Provider } from './Permit2Provider';
 import { EventsProvider } from './EventsProvider';
 import { amountUi } from '../utils/conversion';
 import { Web3Provider } from './Web3Provider';
+import { TokenData } from '@defi.org/web3-candies';
 
 const debug = getDebug('SwapProvider');
 
@@ -97,8 +98,8 @@ export class SwapProvider {
 
     const tokenIn = tokens.find((t) => t.address === quote.inToken);
     const tokenOut = tokens.find((t) => t.address === quote.outToken);
-    const amountIn = amountUi(tokenIn, BN(quote.inAmount));
-    const amountOut = amountUi(tokenOut, BN(quote.outAmount));
+    const amountIn = amountUi(tokenIn as TokenData, BN(quote.inAmount));
+    const amountOut = amountUi(tokenOut as TokenData, BN(quote.outAmount));
     const exchangeRate = BN(amountOut).dividedBy(amountIn).toString();
 
     this.eventsProvider.trade({
