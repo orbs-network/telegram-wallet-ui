@@ -26,7 +26,7 @@ export function Asset() {
   const { data: userData } = useUserData();
   const tokenData = assetId ? userData?.tokens[assetId.toUpperCase()] : null;
   const price = useMultiplyPriceByAmount(
-    tokenData?.coingeckoId,
+    tokenData?.coingeckoId || '',
     tokenData?.balance
   );
 

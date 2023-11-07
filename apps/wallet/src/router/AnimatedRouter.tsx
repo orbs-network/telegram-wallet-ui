@@ -23,10 +23,15 @@ const AnimatedRouter = ({ routes }: { routes: RouteObject[] }) => {
   const location = useLocation();
   const navigationType = useNavigationType();
 
+
+const homePage = location.pathname === ROUTES.root;
+  
+
+
   return (
     <Context.Provider value={{ navigationType }}>
       <Back />
-      <AnimatePresence>
+      <AnimatePresence initial={!homePage}>
         <Routes location={location} key={location.pathname}>
           {routes.map((route) => {
             return (
