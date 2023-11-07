@@ -99,8 +99,6 @@ const coins = [
 ];
 
 export class CoinsProvider {
-  constructor() {}
-
   async fetchCoins() {
     return coins;
   }
