@@ -21,7 +21,7 @@ export const chainstackW3 = new web3(
 
 // ---- TEMP: provider fallback for demo ----
 export const alchemyW3 = new web3(
-  `https://polygon-mumbai.g.alchemy.com/v2/${
+  `https://polygon-mainnet.g.alchemy.com/v2/${
     import.meta.env.VITE_ALCHEMY_API_KEY
   }`
 );
