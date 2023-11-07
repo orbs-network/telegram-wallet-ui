@@ -2,7 +2,7 @@ import { Avatar, Box, Container, VStack } from '@chakra-ui/react';
 import { Balance } from '@telegram-wallet-ui/twa-ui-kit';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Transactions } from '../components/Transactions';
+import { TransactionHistory } from '../components/TransactionHistory';
 import { CoinActionMenu, Page, WalletSpinner } from '../components';
 import {
   useFormatNumber,
@@ -19,7 +19,6 @@ function Loader() {
     </Container>
   );
 }
-
 
 export function Asset() {
   const { assetId } = useParams<{ assetId: string }>();
@@ -86,7 +85,7 @@ export function Asset() {
         </VStack>
       </Container>
       <Box mt={4}>
-        <Transactions tokenFilter={tokenData.symbol} />
+        <TransactionHistory tokenFilter={tokenData.symbol} />
       </Box>
     </Page>
   );
