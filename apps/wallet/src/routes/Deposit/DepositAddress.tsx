@@ -19,6 +19,7 @@ import { URLParams } from '../../types';
 import { BiSolidCopy } from 'react-icons/bi';
 import { useEffect } from 'react';
 import { faucetProvider, permit2Provider } from '../../config';
+
 const QR_SIZE = 190;
 const isShareSupported = navigator.share !== undefined;
 
@@ -169,6 +170,8 @@ const ShareButton = ({ address }: { address: string }) => {
   );
 };
 
+const copyToastId = 'copy-toast';
+
 const CopyButton = ({ address }: { address: string }) => {
   const toast = useToast();
 
@@ -176,12 +179,15 @@ const CopyButton = ({ address }: { address: string }) => {
     navigator.clipboard
       .writeText(address)
       .then(() => {
-        toast({
-          status: 'success',
-          title: 'Copied to clipboard',
-          isClosable: true,
-          duration: 40_000,
-        });
+        if (!toast.isActive(copyToastId)) {
+          toast({
+            status: 'success',
+            title: 'Copied to clipboard',
+            isClosable: true,
+            duration: 3_000,
+            id: copyToastId,
+          });
+        }
       })
       .catch((err) => {
         console.error('Failed to copy text: ', err);
