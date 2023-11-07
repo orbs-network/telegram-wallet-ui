@@ -1,5 +1,4 @@
-import { Button, Container, Divider, Text } from '@chakra-ui/react';
-import { getDebug } from '../../lib/utils/debug';
+import { Button, Container, Text } from '@chakra-ui/react';
 import {
   accountProvider,
   eventsProvider,
@@ -7,14 +6,15 @@ import {
   web3Provider,
 } from '../../config';
 import { useQuery } from '@tanstack/react-query';
-import { erc20s } from '@defi.org/web3-candies';
 import { Fetcher } from '../../utils/fetcher';
 import BN from 'bignumber.js';
 import { BackButton } from '@twa-dev/sdk/react';
 import Web3 from 'web3';
 import { getBalances } from '../../hooks';
 
-const debug = getDebug('Debug');
+function setCurrentW3Provider(provider: 'chainstack' | 'alchemy') {
+  localStorage.setItem('currentProvider', provider);
+}
 
 const useLoadBalanceData = () => {
   return useQuery({
@@ -100,6 +100,11 @@ export const Debug = () => {
           </>
         )}
       </>
+
+      <>
+        <b>Current web3 provider:</b>
+        <Text>{localStorage.getItem('currentProvider') ?? 'chainstack'}</Text>
+      </>
       <Button
         onClick={() => {
           const newPrivateKey = prompt(
@@ -142,6 +147,24 @@ export const Debug = () => {
         }}
       >
         Reset app state (delete account)
+      </Button>
+
+      <Button
+        onClick={() => {
+          const current = localStorage.getItem('currentProvider');
+          if (current === 'chainstack') {
+            console.log('switching to alchemy');
+            setCurrentW3Provider('alchemy');
+          } else {
+            console.log('switching to chainstack');
+            setCurrentW3Provider('chainstack');
+          }
+          setTimeout(() => {
+            window.location.reload();
+          }, 0);
+        }}
+      >
+        Change web3 provider
       </Button>
     </Container>
   );
