@@ -12,6 +12,7 @@ import { flash } from '../../styles';
 import { ERROR_COLOR, INSUFFICIENT_FUNDS_ERROR } from '../../consts';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../router/routes';
+import { useTradeContext } from './context';
 
 const outAmountStyles = css`
   animation: ${flash} 1s linear infinite;
@@ -105,7 +106,6 @@ export const TokenPanel = ({
   error,
   otherTokenSymbol,
   name,
-  setDisableButton,
 }: {
   value: string;
   onChange?: (value: string) => void;
@@ -117,8 +117,8 @@ export const TokenPanel = ({
   error?: string;
   otherTokenSymbol?: string;
   name: string;
-  setDisableButton?: () => void;
 }) => {
+  const { setDisableMainButtonUpdate } = useTradeContext();
   const handleErorrComponent = useMemo(() => {
     if (error === INSUFFICIENT_FUNDS_ERROR && token?.balance) {
       return (
@@ -158,7 +158,7 @@ export const TokenPanel = ({
           error={error}
           errorComponent={handleErorrComponent}
           sideContent={
-            <Link to={tokenSelectPath} onClick={setDisableButton}>
+            <Link to={tokenSelectPath} onClick={setDisableMainButtonUpdate}>
               <CryptoAmountInput.Symbol
                 symbol={token?.symbolDisplay || 'Select'}
                 icon={<BsChevronCompactRight />}

@@ -9,4 +9,4 @@ export * from './ReviewTx';
 export * from './SuccessPage';
 export * from './MainActionMenu';
 export * from './CoinActionMenu';
-export { default as NetworkSelect } from './NetworkSelect';
+export * from './NetworkSelector';

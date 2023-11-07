@@ -34,9 +34,13 @@ const styles = {
       right: 0px;
       height: 1px;
       background: ${colors.secondary_bg_color};
-    },
-    
+    },    
 },
+ &:last-child {
+    .chakra-card__body::after {
+        display: none;
+    }
+   }
 },
 a{
    &:last-child {
