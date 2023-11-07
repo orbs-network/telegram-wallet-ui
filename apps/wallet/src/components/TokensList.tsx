@@ -126,7 +126,11 @@ const USD = ({ token }: { token: TokenData }) => {
     );
   }
 
-  return <Text size="sm">${BN(formattedAmount).toFixed(2)}</Text>;
+  return (
+    <Text size="sm">
+      ${BN(formattedAmount).toFixed(2, BN.ROUND_HALF_UP)} {formattedAmount}
+    </Text>
+  );
 };
 
 const Balance = ({ token }: { token: TokenData }) => {
