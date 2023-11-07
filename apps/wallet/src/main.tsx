@@ -6,9 +6,7 @@ import * as Sentry from '@sentry/react';
 import App from './App';
 import { ColorModeScript } from '@chakra-ui/react';
 import { theme } from '@telegram-wallet-ui/twa-ui-kit';
-import Twa from '@twa-dev/sdk';
 import './styles.css';
-Twa.ready();
 
 if (import.meta.env.PROD) {
   Sentry.init({

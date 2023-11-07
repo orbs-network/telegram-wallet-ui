@@ -13,7 +13,6 @@ const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(inputAnatomy.keys);
 
 // Telegram theme colours as of 09/10/2023
-console.log('theme', Twa.themeParams);
 export const tgColors = {
   dark: {
     bg_color: '#18222d',
