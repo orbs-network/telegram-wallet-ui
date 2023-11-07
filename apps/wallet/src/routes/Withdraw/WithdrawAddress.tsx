@@ -23,6 +23,8 @@ import { useParams } from 'react-router-dom';
 import { URLParams } from '../../types';
 import { useUpdateMainButton } from '../../store/main-button-store';
 import { AiFillCloseCircle, AiFillWarning } from 'react-icons/ai';
+import { useUserData } from '../../hooks';
+import { eqIgnoreCase } from '@defi.org/web3-candies';
 
 const styles = {
   container: css`
@@ -30,19 +32,40 @@ const styles = {
   `,
 };
 
+const validateAddress = (address?: string) => {
+  if (!address) return true;
+  try {
+    Web3.utils.toChecksumAddress(address);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
 export function WithdrawAddress() {
   const [address, setAddress] = useState('');
   const { withdrawAmount } = useNavigation();
   const { assetId } = useParams<URLParams>();
+  const account = useUserData().data?.account;
 
-  const isValidAddress = useMemo(() => {
-    try {
-      Web3.utils.toChecksumAddress(address);
-      return true;
-    } catch (e) {
-      return false;
+  const addressError = useMemo(() => {
+    const valid = validateAddress(address);
+
+    if (!address) return 
+      if (!valid) {
+        return {
+          title: ' Invalid Address',
+          subtitle: 'Enter a valid Polygon address',
+        };
+      }
+
+    if (eqIgnoreCase(address, account?.address || '')) {
+      return {
+        title: ' Invalid Address',
+        subtitle: 'You cannot withdraw to your own address',
+      };
     }
-  }, [address]);
+  }, [address, account]);
 
   const onSubmit = useCallback(() => {
     withdrawAmount(assetId!, address);
@@ -50,39 +73,49 @@ export function WithdrawAddress() {
 
   useUpdateMainButton({
     text: 'Continue',
-    disabled: !isValidAddress,
+    disabled: !address || !!addressError,
     onClick: onSubmit,
   });
 
-  const isInvalidAddress = address !== '' && !isValidAddress;
-
+  // '0x2Faa775F78952aF08026bDF651A6Da288DE1360c';
   return (
     <Page>
       <Container size="sm" pt={4} css={styles.container}>
         <VStack spacing={4} alignItems="stretch" height="100%">
-          <AddressInput address={address} setAddress={setAddress} />
           <NetworkSelector />
-          {isInvalidAddress && (
-            <ListItem
-              StartIconSlot={<Icon as={AiFillWarning} />}
-              StartTextSlot={
-                <Box>
-                  <Heading as="h3" variant="bodyTitle">
-                    Invalid Address
-                  </Heading>
-                  <Text variant="hint" fontSize="xs">
-                    Enter a valid Polygon address
-                  </Text>
-                </Box>
-              }
+          <AddressInput address={address} setAddress={setAddress} />
+
+          {addressError && (
+            <AddressError
+              title={addressError.title}
+              subtitle={addressError.subtitle}
             />
           )}
 
-          {!isInvalidAddress && <ScanQR setAddress={setAddress} />}
+          {!addressError && <ScanQR setAddress={setAddress} />}
         </VStack>
       </Container>
     </Page>
   );
+}
+
+
+const AddressError = ({ title, subtitle }: { title: string; subtitle: string }) => {
+   return (
+     <ListItem
+       StartIconSlot={<Icon as={AiFillWarning} />}
+       StartTextSlot={
+         <Box>
+           <Heading as="h3" variant="bodyTitle">
+             {title}
+           </Heading>
+           <Text variant="hint" fontSize="xs">
+             {subtitle}
+           </Text>
+         </Box>
+       }
+     />
+   );
 }
 
 const AddressInput = ({

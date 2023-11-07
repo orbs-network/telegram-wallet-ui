@@ -42,10 +42,10 @@ export const useCoinsLastPrice = () => {
   });
 };
 
-export const useFetchLatestPrice = (coin: string) => {
+export const useFetchLatestPrice = (coin?: string) => {
   const { data: coinsPrice } = useCoinsLastPrice();
 
-  return coinsPrice?.[coin];
+  return !coin ? 0 :  coinsPrice?.[coin];
 };
 
 export const useMultiplyPriceByAmount = (

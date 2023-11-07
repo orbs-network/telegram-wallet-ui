@@ -9,22 +9,36 @@ export const NETWORKS: Network[] = [
   {
     name: 'ethereum',
     displayName: 'Ethereum',
-    logo: 'https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880',
+    logo: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png',
     symbol: 'ETH',
-    enabled: false
+    enabled: false,
   },
   {
     name: 'binance-smart-chain',
-    displayName: 'Binance Smart Chain',
-    logo: 'https://assets.coingecko.com/coins/images/825/small/binance-coin-logo.png?1547034615',
+    displayName: 'BNB Chain',
+    logo: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png',
     symbol: 'BNB',
-    enabled: false
+    enabled: false,
   },
   {
     name: 'polygon',
-    displayName: 'Polygon',
-    logo: 'https://assets.coingecko.com/coins/images/4713/small/matic___polygon.jpg?1612939050',
+    displayName: 'Polygon (Matic)',
+    logo: 'https://s3.coinmarketcap.com/static-gravity/image/b8db9a2ac5004c1685a39728cdf4e100.png',
     symbol: 'MATIC',
-    enabled: true
+    enabled: true,
+  },
+  {
+    name: 'arbitrum',
+    displayName: 'Arbitrum',
+    logo: 'https://s2.coinmarketcap.com/static/img/coins/64x64/11841.png',
+    symbol: 'ARB',
+    enabled: false,
+  },
+  {
+    name: 'ton',
+    displayName: 'TON Blockchain',
+    logo: 'https://s2.coinmarketcap.com/static/img/coins/64x64/11419.png',
+    symbol: 'TON',
+    enabled: false,
   },
 ];
