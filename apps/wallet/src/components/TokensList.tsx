@@ -7,19 +7,16 @@ import BN from 'bignumber.js';
 import Twa from '@twa-dev/sdk';
 import { css } from '@emotion/react';
 
-
-
-
 const styles = {
   showMoreBtn: css`
-  color: ${colors.button_color};
-  font-size: 15px;
-  font-weight: 500;
-  padding-left: 10px;
-  margin-top: 5px;
-  margin-bottom: 10px;
-  `
-}
+    color: ${colors.button_color};
+    font-size: 15px;
+    font-weight: 500;
+    padding-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+  `,
+};
 
 export function TokensList({
   onSelect,
@@ -29,7 +26,7 @@ export function TokensList({
   disabledTokens,
   selected,
   css = {},
-  showMoreBtn
+  showMoreBtn,
 }: TokensListProps) {
   const isLoading = !tokens || _.isEmpty(tokens);
 
@@ -79,7 +76,6 @@ function TokenListItem({
   EndIconSlot,
   selected,
   disabled,
-
 }: TokenListItemProps) {
   return (
     <ListItem
@@ -127,9 +123,7 @@ const USD = ({ token }: { token: TokenData }) => {
   }
 
   return (
-    <Text size="sm">
-      ${BN(formattedAmount).toFixed(2, BN.ROUND_HALF_UP)} {formattedAmount}
-    </Text>
+    <Text size="sm">${BN(formattedAmount).toFixed(2, BN.ROUND_HALF_UP)}</Text>
   );
 };
 
