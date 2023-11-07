@@ -168,7 +168,13 @@ export function TransactionHistory({ tokenFilter }: TransactionsProps) {
   return (
     <List mode="select" title="TRANSACTION HISTORY">
       {transactions.map((tx) => {
-        return <TransactionHistoryItem tx={tx} tokenFilter={tokenFilter} />;
+        return (
+          <TransactionHistoryItem
+            key={tx.id}
+            tx={tx}
+            tokenFilter={tokenFilter}
+          />
+        );
       })}
     </List>
   );
