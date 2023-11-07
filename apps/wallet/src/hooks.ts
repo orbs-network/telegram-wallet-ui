@@ -33,7 +33,7 @@ export const useCoinsLastPrice = () => {
   return useQuery({
     queryKey: [QueryKeys.COIN_LAST_PRICE],
     queryFn: async () => {
-      const ids = _.map(data, 'coingeckoId').join(',');
+      const ids = _.map(data || {}, 'coingeckoId').join(',');
       return fetchLatestPrices(ids);
     },
     enabled: !!data,
@@ -88,7 +88,7 @@ export const useExchangeRate = (
 };
 
 export const useCoinsList = () => {
-  return useQuery<Token[]>({
+  return useQuery({
     queryKey: [QueryKeys.COINS_LIST],
     queryFn: async () => {
       return coinsProvider.fetchCoins();
