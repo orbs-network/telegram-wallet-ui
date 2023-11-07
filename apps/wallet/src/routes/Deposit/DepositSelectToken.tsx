@@ -37,6 +37,7 @@ export function DepositSelectToken() {
             Choose asset to deposit
           </Heading>
           <TokensList
+          showMoreBtn={true}
             onSelect={onSelect}
             tokens={Object.values(data?.tokens || {})}
             mode="select"

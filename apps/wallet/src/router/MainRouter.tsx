@@ -104,6 +104,10 @@ const routes: RouteObject[] = [
     path: ROUTES.transaction,
     element: <Transaction />,
   },
+  {
+    path: '*',  
+    element: <Home />,
+  }
 ];
 
 export const MainRouter = () => {

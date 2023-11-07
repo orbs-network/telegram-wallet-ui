@@ -2,11 +2,12 @@ import { Avatar, Container, Heading, Text, VStack } from "@chakra-ui/react";
 import { css } from "@emotion/react";
 import { List, ListItem } from "@telegram-wallet-ui/twa-ui-kit";
 import _ from "lodash";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Page } from "../components";
 import { NETWORKS } from "../consts";
+import { useGetTokenFromList } from "../hooks";
 import { usePersistedStore } from "../store/persisted-store";
-import { Network as NetworkType } from "../types";
+import { Network as NetworkType, TokenData, URLParams } from "../types";
 
 
 const styles = {
@@ -18,7 +19,10 @@ const styles = {
 
 export function Network({ className = '' }: { className?: string }) {
   const { network: selectedNetwork, setNetwork } = usePersistedStore();
+  const {assetId} = useParams<URLParams>()
   const navigate = useNavigate();
+  const token = useGetTokenFromList(assetId);
+  
 
   const onSelect = (network: string) => {
     navigate(-1);
@@ -39,6 +43,7 @@ export function Network({ className = '' }: { className?: string }) {
                 key={network.name}
                 network={network}
                 selected={selected}
+                token={token}
               />
             );
           })}
@@ -53,6 +58,7 @@ interface NetworkProps {
   network: NetworkType;
   onClick: () => void;
   selected: boolean;
+  token?: TokenData;
 }
 
 
@@ -79,3 +85,4 @@ function NetworkListItem({ network, onClick, selected }: NetworkProps) {
     />
   );
 }
+

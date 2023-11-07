@@ -1,10 +1,25 @@
 import { Avatar, Heading, Skeleton, Text, VStack } from '@chakra-ui/react';
-import { List, ListItem } from '@telegram-wallet-ui/twa-ui-kit';
+import { colors, List, ListItem } from '@telegram-wallet-ui/twa-ui-kit';
 import _ from 'lodash';
 import { useFormatNumber, useMultiplyPriceByAmount } from '../hooks';
 import { TokenData, TokensListProps } from '../types';
 import BN from 'bignumber.js';
 import Twa from '@twa-dev/sdk';
+import { css } from '@emotion/react';
+
+
+
+
+const styles = {
+  showMoreBtn: css`
+  color: ${colors.button_color};
+  font-size: 15px;
+  font-weight: 500;
+  padding-left: 10px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  `
+}
 
 export function TokensList({
   onSelect,
@@ -14,6 +29,7 @@ export function TokensList({
   disabledTokens,
   selected,
   css = {},
+  showMoreBtn
 }: TokensListProps) {
   const isLoading = !tokens || _.isEmpty(tokens);
 
@@ -35,6 +51,14 @@ export function TokensList({
           />
         );
       })}
+      {showMoreBtn && (
+        <Text
+          css={styles.showMoreBtn}
+          onClick={() => Twa.showAlert('Coming soon')}
+        >
+          Show more
+        </Text>
+      )}
     </List>
   );
 }
@@ -55,6 +79,7 @@ function TokenListItem({
   EndIconSlot,
   selected,
   disabled,
+
 }: TokenListItemProps) {
   return (
     <ListItem

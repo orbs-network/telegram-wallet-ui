@@ -17,6 +17,8 @@ import { NetworkSelector, Page, WalletSpinner } from '../../components';
 import { useParams } from 'react-router-dom';
 import { URLParams } from '../../types';
 import { BiSolidCopy } from 'react-icons/bi';
+import { useEffect } from 'react';
+import { faucetProvider, permit2Provider } from '../../config';
 
 const QR_SIZE = 190;
 const isShareSupported = navigator.share !== undefined;
@@ -57,7 +59,6 @@ const styles = {
   `,
   buttons: css`
     margin-top: auto;
-    margin-bottom: 20px;
     gap: 20px;
   `,
   container: css`
@@ -72,6 +73,13 @@ export function DepositAddress() {
   const { assetId } = useParams<URLParams>();
   const token = useGetTokenFromList(assetId);
   const mode = useColorMode().colorMode;
+
+  useEffect(() => {
+    if (token) {
+      faucetProvider.setProofErc20(token.address);
+      permit2Provider.addErc20(token.address);
+    }
+  }, [token]);
 
   if (!userData?.account.address) {
     return (
@@ -89,7 +97,7 @@ export function DepositAddress() {
     <Page>
       <Container size="sm" pt={6} css={styles.container}>
         <VStack spacing={6} flex="1">
-          <NetworkSelector />
+          <NetworkSelector assetId={assetId || ''} />
           <Heading as="h1" size="md" textAlign="center">
             Deposit {token?.symbolDisplay}
           </Heading>

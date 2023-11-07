@@ -77,12 +77,11 @@ export function WithdrawAddress() {
     onClick: onSubmit,
   });
 
-  // '0x2Faa775F78952aF08026bDF651A6Da288DE1360c';
   return (
     <Page>
       <Container size="sm" pt={4} css={styles.container}>
         <VStack spacing={4} alignItems="stretch" height="100%">
-          <NetworkSelector />
+          <NetworkSelector assetId={assetId || ''} />
           <AddressInput address={address} setAddress={setAddress} />
 
           {addressError && (

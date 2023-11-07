@@ -97,7 +97,8 @@ export type TokensListProps = {
   mode: 'select' | 'display';
   disabledTokens?: string[];
   selected?: string;
-  css?: Interpolation<CSSProperties>
+  css?: Interpolation<CSSProperties>;
+  showMoreBtn?: boolean;
 };
 
 

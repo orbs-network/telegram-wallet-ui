@@ -35,13 +35,16 @@ const styles = {
   `,
 };
 
-export const NetworkSelector = () => {
+export const NetworkSelector = ({assetId}:{assetId: string}) => {
   const { network } = usePersistedStore();
 
   const selected = _.find(NETWORKS, { name: network });
 
   return (
-    <Link to={ROUTES.networkSelect} style={{ width: '100%' }}>
+    <Link
+      to={ROUTES.networkSelect.replace(':assetId', assetId || '')}
+      style={{ width: '100%' }}
+    >
       <Card css={styles.selector}>
         <Text>Network</Text>
         <Flex alignItems="center" css={styles.selectorRight}>

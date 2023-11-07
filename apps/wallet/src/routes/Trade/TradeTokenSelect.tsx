@@ -39,6 +39,7 @@ export function TradeTokenSelect({ isIn }: { isIn?: boolean }) {
     <Page secondaryBackground>
       <Container size="sm" pt={4}>
         <TokensList
+        showMoreBtn={true}
           disabledTokens={disabledTokens}
           selected={selected}
           tokens={tokens.filter((t) => t.symbol !== filteredToken)}

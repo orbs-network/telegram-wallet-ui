@@ -112,7 +112,7 @@ const AnimatedRouteContainer = styled('div')<{ $secondaryBackground: boolean }>(
       flexDirection: 'column',
       height: '100%',
       overflowX: 'hidden',
-      paddingBottom: !Telegram.initData ? 60 : 0,
+      paddingBottom: !Telegram.initData ? 60 : 20,
     };
   }
 );

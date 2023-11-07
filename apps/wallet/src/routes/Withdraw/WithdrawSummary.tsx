@@ -10,9 +10,9 @@ import { css } from '@emotion/react';
 import { useMutation } from '@tanstack/react-query';
 import { Card, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import { useParams } from 'react-router-dom';
-import { Page } from '../../components';
+import { Page, ReviewTx } from '../../components';
 import { eventsProvider, web3Provider } from '../../config';
-import { useGetTokenFromList } from '../../hooks';
+import { useFormatNumber, useGetTokenFromList } from '../../hooks';
 import { useNavigation } from '../../router/hooks';
 import { URLParams } from '../../types';
 import { Recipient } from './Components';
@@ -72,9 +72,14 @@ export function WithdrawSummary() {
   const token = useGetTokenFromList(assetId);
   const { mutateAsync, isPending } = useTransferTx();
   const symbol = token?.symbolDisplay || '';
-  const balanceAfter = BN(amountUi(token, token?.balanceBN || BN(0)))
-    .minus(amount || 0)
-    .toFormat();
+
+  const balanceAfter = useFormatNumber({
+    value: !token?.balance
+      ? ''
+      : BN(token?.balance || 0)
+          .minus(amount || 0)
+          .toString(),
+  });
 
   useUpdateMainButton({
     text: 'CONFIRM AND SEND',
@@ -85,7 +90,7 @@ export function WithdrawSummary() {
   return (
     <Page>
       <Container size="sm" pt={4}>
-        <VStack spacing={8} alignItems="stretch" height="100%">
+        <VStack spacing={6} alignItems="stretch" height="100%">
           <Recipient />
           <Heading as="h2" size="3xl">
             {amount}{' '}
@@ -93,26 +98,23 @@ export function WithdrawSummary() {
               {symbol}
             </Text>
           </Heading>
-          <Box>
-            <Card>
-              <VStack alignItems="flex-start" style={{ width: '100%' }}>
-                <Section title="Recipient address" value={recipient!} />
-                <Section title="Total amount" value={`${amount!} ${symbol}`} />
-                <Section title="Network" value="Polygon" />
-              </VStack>
-            </Card>
-            <Text variant="hint" mt={2}>
-              Your funds may be lost if sent to the wrong network
-            </Text>
-          </Box>
-          <Card>
-            <VStack alignItems="flex-start" style={{ width: '100%' }}>
-              <Section
+          <ReviewTx>
+            <ReviewTx.Category bottomText="Your funds may be lost if sent to the wrong network">
+              <ReviewTx.Section title="Recipient address" value={recipient!} />
+              <ReviewTx.Section
+                title="Total amount"
+                value={`${amount!} ${symbol}`}
+              />
+              <ReviewTx.Section title="Network" value="Polygon" />
+            </ReviewTx.Category>
+
+            <ReviewTx.Category>
+              <ReviewTx.Section
                 title="Balance after"
                 value={`${balanceAfter} ${symbol}`}
               />
-            </VStack>
-          </Card>
+            </ReviewTx.Category>
+          </ReviewTx>
         </VStack>
       </Container>
     </Page>
