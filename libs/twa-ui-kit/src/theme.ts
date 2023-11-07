@@ -77,13 +77,18 @@ export const colors = {
   border_color: twaMode('#c8c7cb', '#3d3d3f'),
   button_disabed_color: twaMode('#999999', '#333333'),
   success: twaMode('#38A169', '#4cd964'),
-  secondary_button_color: twaMode('#DEE4EE', '#121822') || '#DEE4EE',
 };
 
 const config: ThemeConfig = {
   initialColorMode: Twa.colorScheme,
   useSystemColorMode: false,
 };
+
+const secondary_button_color =
+  twaMode(
+    adjustBrightness(colors.button_color, 0.84),
+    adjustBrightness(colors.button_color, -0.5)
+  ) || adjustBrightness(colors.button_color, 0.84);
 
 export const theme = extendTheme({
   config,
@@ -154,13 +159,10 @@ export const theme = extendTheme({
           },
         },
         tertiary: {
-          backgroundColor: colors.secondary_button_color,
+          backgroundColor: secondary_button_color,
           color: colors.button_color,
           _hover: {
-            backgroundColor: adjustBrightness(
-              colors.secondary_button_color,
-              -0.07
-            ),
+            backgroundColor: adjustBrightness(secondary_button_color, -0.07),
           },
           fontSize: '1rem',
         },
