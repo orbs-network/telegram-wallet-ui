@@ -3,6 +3,7 @@ import { Card, ListItem, colors, List } from '@telegram-wallet-ui/twa-ui-kit';
 import {
   DepositTransactionEvent,
   TradeTransactionEvent,
+  TransactionEvent,
   WithdrawalTransactionEvent,
   useEventsProvider,
 } from '../lib/EventsProvider';
@@ -23,12 +24,29 @@ const styles = {
   `,
 };
 
-const filterTx = (transactions?: any[]) => {
+const filterTx = (transactions?: TransactionEvent[]) => {
   return transactions?.filter((tx) => {
-    if (!tx.inToken || !tx.outToken) {
-      return false;
+    switch (tx.type) {
+      case 'deposit':
+      case 'withdrawal': {
+        if ('amount' in tx && tx.amount === '') {
+          return false;
+        }
+        break;
+      }
+      case 'trade': {
+        if (
+          ('amountIn' in tx && tx.amountIn === '') ||
+          ('amountOut' in tx && tx.amountOut === '')
+        ) {
+          return false;
+        }
+        break;
+      }
+      default: {
+        return true;
+      }
     }
-
     return true;
   });
 };
@@ -40,7 +58,6 @@ type TransactionsProps = {
 export function Transactions({ tokenFilter }: TransactionsProps) {
   const events = useEventsProvider();
   const { data: userData } = useUserData();
-  console.log({ userData });
 
   const transactions = useMemo(() => {
     const filteredTxs = tokenFilter
@@ -62,15 +79,17 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
               return token.symbol === tokenFilter;
             }
             case 'trade': {
+              const tradeTx = tx as TradeTransactionEvent;
+
               const inToken = Object.values(userData?.tokens || []).find(
-                (t) => t.address === (tx as TradeTransactionEvent).inToken
+                (t) => t.address === tradeTx.inToken
               );
 
               const outToken = Object.values(userData?.tokens || []).find(
-                (t) => t.address === (tx as TradeTransactionEvent).outToken
+                (t) => t.address === tradeTx.outToken
               );
 
-              if (!inToken && !outToken) {
+              if (!inToken || !outToken) {
                 return false;
               }
 
@@ -138,7 +157,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
       }
     });
 
-    return mappedTxs;
+    return filterTx(mappedTxs);
   }, [events, tokenFilter, userData?.tokens]);
 
   if (!userData) {
@@ -149,7 +168,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
     );
   }
 
-  if (transactions.length === 0) {
+  if (!transactions || transactions.length === 0) {
     return (
       <Card>
         <Text variant="hint">NO TRANSACTIONS</Text>
@@ -157,10 +176,9 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
     );
   }
 
-
   return (
     <List mode="select" title="TRANSACTION HISTORY">
-      {filterTx(transactions)?.map((tx) => {
+      {transactions.map((tx) => {
         let StartIcon = null;
         let CardTitle = null;
         let CardData = null;
@@ -247,6 +265,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
               !!tokenFilter && tokenFilter === tradeTx.inToken?.symbol;
             const amount = isIn ? tradeTx.amountIn : tradeTx.amountOut;
             const token = isIn ? tradeTx.inToken : tradeTx.outToken;
+
             CardData = (
               <Box
                 style={{
