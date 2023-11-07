@@ -4,6 +4,7 @@ import { TokensList } from './TokensList';
 import { useNavigation } from '../router/hooks';
 import { VStack } from '@chakra-ui/react';
 import { useMemo } from 'react';
+import { disabledTokens } from '../config';
 
 export function TokenBalances() {
   const { asset } = useNavigation();
@@ -15,9 +16,13 @@ export function TokenBalances() {
       (t) => BN(t.balance).gt(0)
     );
 
-    if (tokensWithBalances?.length === 0 && userData) {
-      tokensWithBalances.push(userData.tokens.USDT);
+    if (userData) {
+      if (tokensWithBalances?.length === 0) {
+        tokensWithBalances.push(userData.tokens.USDT);
+      }
+      tokensWithBalances.push(userData.tokens.TON);
     }
+
     return [...tokensWithBalances];
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataUpdatedAt]);
@@ -28,7 +33,7 @@ export function TokenBalances() {
         mode="display"
         tokens={tokens}
         onSelect={(token) => asset(token.symbol)}
-        disabledTokens={['TON']}
+        disabledTokens={disabledTokens}
       />
     </VStack>
   );

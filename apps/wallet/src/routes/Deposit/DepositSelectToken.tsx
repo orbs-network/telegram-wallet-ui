@@ -5,7 +5,7 @@ import { useUserData } from '../../hooks';
 import { useNavigation } from '../../router/hooks';
 import { useMainButtonStore } from '../../store/main-button-store';
 import { TokenData } from '../../types';
-import { faucetProvider, permit2Provider } from '../../config';
+import { disabledTokens, faucetProvider, permit2Provider } from '../../config';
 import { useParams } from 'react-router-dom';
 
 export function DepositSelectToken() {
@@ -40,7 +40,7 @@ export function DepositSelectToken() {
             onSelect={onSelect}
             tokens={Object.values(data?.tokens || {})}
             mode="select"
-            disabledTokens={['TON']}
+            disabledTokens={disabledTokens}
           />
         </VStack>
       </Container>

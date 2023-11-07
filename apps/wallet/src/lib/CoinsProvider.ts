@@ -101,7 +101,7 @@ const coins = [
     name: 'Toncoin',
     symbol: 'TON',
     logoURI: 'https://s2.coinmarketcap.com/static/img/coins/128x128/11419.png',
-    address: null,
+    address: '',
     decimals: 9,
   },
 ];
