@@ -7,7 +7,7 @@ import {
 import Twa from '@twa-dev/sdk';
 import { inputAnatomy } from '@chakra-ui/anatomy';
 import { createMultiStyleConfigHelpers } from '@chakra-ui/react';
-import { adjustBrightness } from './utils';
+import { adjustBrightness, hexToRgba } from './utils';
 
 const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(inputAnatomy.keys);
@@ -84,11 +84,7 @@ const config: ThemeConfig = {
   useSystemColorMode: false,
 };
 
-const secondary_button_color =
-  twaMode(
-    adjustBrightness(colors.button_color, 0.84),
-    adjustBrightness(colors.button_color, -0.5)
-  ) || adjustBrightness(colors.button_color, 0.84);
+const secondary_button_color = hexToRgba(colors.button_color, 0.1);
 
 export const theme = extendTheme({
   config,
@@ -151,18 +147,10 @@ export const theme = extendTheme({
           fontSize: '1rem',
         },
         secondary: {
-          backgroundColor: 'transparent',
-          fontSize: '1rem',
+          backgroundColor: `var(--secondary-button-color, ${secondary_button_color})`,
           color: colors.button_color,
           _hover: {
-            color: adjustBrightness(colors.button_color, -0.1),
-          },
-        },
-        tertiary: {
-          backgroundColor: secondary_button_color,
-          color: colors.button_color,
-          _hover: {
-            backgroundColor: adjustBrightness(secondary_button_color, -0.07),
+            backgroundColor: `var(--secondary-button-color, ${secondary_button_color})`,
           },
           fontSize: '1rem',
         },

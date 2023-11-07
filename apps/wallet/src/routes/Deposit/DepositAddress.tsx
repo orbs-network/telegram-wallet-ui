@@ -161,7 +161,7 @@ const ShareButton = ({ address }: { address: string }) => {
   if (!isShareSupported) return null;
   return (
     <Button
-      variant="tertiary"
+      variant="secondary"
       leftIcon={<Icon as={MdIosShare} />}
       onClick={handleShare}
     >
