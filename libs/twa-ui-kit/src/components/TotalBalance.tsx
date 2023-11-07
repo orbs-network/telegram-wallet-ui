@@ -1,4 +1,10 @@
-import { Stat, StatLabel, StatNumber, Text } from '@chakra-ui/react';
+import {
+  SkeletonText,
+  Stat,
+  StatLabel,
+  StatNumber,
+  Text,
+} from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import BN from 'bignumber.js';
 import { useState, useEffect } from 'react';
@@ -87,7 +93,7 @@ export function TotalBalance({
         {label}
       </StatLabel>
       <StatNumber fontSize="5xl" lineHeight="1.3">
-        {PrimaryAmount}
+        {!amount ? <SkeletonText /> : PrimaryAmount}
       </StatNumber>
     </Stat>
   );
