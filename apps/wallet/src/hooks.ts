@@ -51,7 +51,7 @@ export const useFetchLatestPrice = (coin: string | undefined) => {
 };
 
 export const useMultiplyPriceByAmount = (
-  coin: string,
+  coin?: string,
   _amount?: number | string
 ) => {
   const price = useFetchLatestPrice(coin);
