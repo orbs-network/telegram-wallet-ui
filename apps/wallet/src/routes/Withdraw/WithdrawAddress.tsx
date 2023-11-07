@@ -17,7 +17,7 @@ import Web3 from 'web3';
 import { LuScanLine } from 'react-icons/lu';
 import { ListItem, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import { useNavigation } from '../../router/hooks';
-import { Page } from '../../components';
+import { NetworkSelector, Page } from '../../components';
 import { css } from '@emotion/react';
 import { useParams } from 'react-router-dom';
 import { URLParams } from '../../types';
@@ -54,12 +54,15 @@ export function WithdrawAddress() {
     onClick: onSubmit,
   });
 
+  const isInvalidAddress = address !== '' && !isValidAddress;
+
   return (
     <Page>
       <Container size="sm" pt={4} css={styles.container}>
         <VStack spacing={4} alignItems="stretch" height="100%">
           <AddressInput address={address} setAddress={setAddress} />
-          {address !== '' && !isValidAddress ? (
+          <NetworkSelector />
+          {isInvalidAddress && (
             <ListItem
               StartIconSlot={<Icon as={AiFillWarning} />}
               StartTextSlot={
@@ -73,9 +76,9 @@ export function WithdrawAddress() {
                 </Box>
               }
             />
-          ) : (
-            <ScanQR setAddress={setAddress} />
           )}
+
+          {!isInvalidAddress && <ScanQR setAddress={setAddress} />}
         </VStack>
       </Container>
     </Page>

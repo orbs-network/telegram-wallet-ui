@@ -16,6 +16,7 @@ import { Link } from 'react-router-dom';
 import { formatDateTime } from '../utils/utils';
 import { DepositIcon, TradeIcon, WithdrawIcon } from './icons';
 import { css } from '@emotion/react';
+import _ from 'lodash';
 
 const styles = {
   avatar: css`

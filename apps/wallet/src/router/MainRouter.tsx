@@ -13,11 +13,11 @@ import {
   WithdrawSuccess,
   WithdrawSummary,
   DepositSelectToken,
-  Trade,
+  TradePanel,
   TradeReview,
   TradeSuccess,
-  DepositNetworkSelect,
   TradeTokenSelect,
+  Network,
 } from '../routes';
 import { RouteObject } from 'react-router-dom';
 import { ROUTES } from './routes';
@@ -45,8 +45,8 @@ const routes: RouteObject[] = [
     element: <DepositAddress />,
   },
   {
-    path: ROUTES.depositNetworkSelect,
-    element: <DepositNetworkSelect />,
+    path: ROUTES.networkSelect,
+    element: <Network />,
   },
   {
     path: ROUTES.tempUtils,
@@ -82,7 +82,7 @@ const routes: RouteObject[] = [
   },
   {
     path: ROUTES.trade,
-    element: <Trade />,
+    element: <TradePanel />,
   },
   {
     path: ROUTES.tradeInTokenSelect,
@@ -90,7 +90,7 @@ const routes: RouteObject[] = [
   },
   {
     path: ROUTES.tradeOutTokenSelect,
-    element: <TradeTokenSelect  />,
+    element: <TradeTokenSelect />,
   },
   {
     path: ROUTES.tradeReview,

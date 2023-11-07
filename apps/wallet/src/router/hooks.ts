@@ -34,16 +34,6 @@ export const useNavigation = () => {
     [navigate]
   );
 
-  const depositCryptoNetworkSelect = useCallback(
-    (assetId: string) => {
-      navigate(ROUTES.depositNetworkSelect.replace(':assetId', assetId));
-    },
-    [navigate]
-  );
-
-  const depositCryptoNetworkSelectPath = useCallback((assetId: string) => {
-    return ROUTES.depositNetworkSelect.replace(':assetId', assetId);
-  }, []);
 
   const tempUtils = useCallback(() => {
     navigate(ROUTES.tempUtils);
@@ -138,7 +128,5 @@ export const useNavigation = () => {
     depositSelectCoin,
     tradeReview,
     tradeSuccess,
-    depositCryptoNetworkSelect,
-    depositCryptoNetworkSelectPath,
   };
 };

@@ -1,9 +1,10 @@
 import { Box, Container, Flex, useToast, VStack } from '@chakra-ui/react';
 import React, {
+  createContext,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from 'react';
 import {
@@ -18,7 +19,7 @@ import {
 import { TokenPanel } from './TokenPanel';
 import BN from 'bignumber.js';
 import { HiOutlineSwitchVertical } from 'react-icons/hi';
-import { useNavigation } from '../..//router/hooks';
+import { useNavigation } from '../../router/hooks';
 import { styles } from './styles';
 import { useUpdateMainButton } from '../../store/main-button-store';
 import { Page } from '../../components';
@@ -28,6 +29,7 @@ import { StringParam, useQueryParam } from 'use-query-params';
 import { useTradeStore } from './store';
 import { amountUi } from '../../utils/conversion';
 import _ from 'lodash';
+import { TradeContext, useTradeContext } from './context';
 
 // TODO consider changing value
 const MIN_USD_VALUE_TO_SWAP = 0.5;
@@ -56,9 +58,9 @@ const useInitialTokens = () => {
 
     if (!store.inToken) store.setInToken(_inToken);
     const _outToken = sorted[1]?.symbol || 'usdc';
-    
 
-    if (!store.outToken) store.setOutToken(_outToken === _inToken ? 'btc' : _outToken);
+    if (!store.outToken)
+      store.setOutToken(_outToken === _inToken ? 'btc' : _outToken);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataUpdatedAt, inTokenSymbol]);
@@ -153,11 +155,12 @@ const useValidations = () => {
   };
 };
 
-const useSubmitButton = (disableButton: boolean) => {
+const useSubmitButton = () => {
   const { validate } = useValidations();
   const amountOut = useOutAmount();
   const { isFetching, isLoading } = useTradeQuote();
   const inAmount = useTradeStore().inAmount;
+  const { disableMainButtonUpdate } = useTradeContext();
 
   const { inToken, outToken } = useTokens();
   const toast = useToast();
@@ -196,19 +199,10 @@ const useSubmitButton = (disableButton: boolean) => {
       !Number(amountOut) ||
       isLoading ||
       isFetching,
-    onClick: disableButton ? undefined : onSubmit,
+    onClick: disableMainButtonUpdate ? undefined : onSubmit,
   });
 };
 
-const TradeForm = ({ setDisableButton }: { setDisableButton: () => void }) => {
-  return (
-    <VStack>
-      <SrcTokenPanel setDisableButton={setDisableButton} />
-      <SwitchTokens />
-      <DstTokenPanel setDisableButton={setDisableButton} />
-    </VStack>
-  );
-};
 const SwitchTokens = () => {
   const store = useTradeStore();
   const { inToken, outToken } = useTokens();
@@ -227,11 +221,7 @@ const SwitchTokens = () => {
   );
 };
 
-const SrcTokenPanel = ({
-  setDisableButton,
-}: {
-  setDisableButton: () => void;
-}) => {
+const SrcTokenPanel = () => {
   const { setInAmount } = useTradeStore();
   const store = useTradeStore();
   const { inToken, outToken } = useTokens();
@@ -254,16 +244,11 @@ const SrcTokenPanel = ({
       error={validations.inAmount(value)}
       otherTokenSymbol={outToken?.symbol}
       name="inAmountInput"
-      setDisableButton={setDisableButton}
     />
   );
 };
 
-const DstTokenPanel = ({
-  setDisableButton,
-}: {
-  setDisableButton: () => void;
-}) => {
+const DstTokenPanel = () => {
   const amountOut = useOutAmount();
   const { isLoading, isFetching } = useTradeQuote();
   const formattedAmount = useFormatNumber({ value: amountOut });
@@ -279,16 +264,14 @@ const DstTokenPanel = ({
       value={formattedAmount || ''}
       filterTokenSymbol={inToken?.symbol}
       name="outAmountInput"
-      setDisableButton={setDisableButton}
     />
   );
 };
 
-export function Trade() {
+export function TradePanel() {
   useInitialTokens();
-  const [disableButton, setDisableButton] = useState(false);
+  const [disableMainButtonUpdate, setDisableMainButtonUpdate] = useState(false);
 
-  useSubmitButton(disableButton);
   useEffect(() => {
     setTwaBg(true);
 
@@ -298,10 +281,28 @@ export function Trade() {
   }, []);
 
   return (
-    <Page secondaryBackground>
-      <Container size="sm" pt={4}>
-        <TradeForm setDisableButton={() => setDisableButton(true)} />
-      </Container>
-    </Page>
+    <TradeContext.Provider
+      value={{
+        disableMainButtonUpdate,
+        setDisableMainButtonUpdate: () => setDisableMainButtonUpdate(true),
+      }}
+    >
+      <Page secondaryBackground>
+        <Container size="sm" pt={4}>
+          <TradeForm />
+        </Container>
+      </Page>
+    </TradeContext.Provider>
   );
 }
+
+const TradeForm = () => {
+  useSubmitButton();
+  return (
+    <VStack>
+      <SrcTokenPanel />
+      <SwitchTokens />
+      <DstTokenPanel />
+    </VStack>
+  );
+};

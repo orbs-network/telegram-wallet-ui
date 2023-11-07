@@ -4,7 +4,6 @@ export const ROUTES = {
   depositSelectCoin: '/deposit/:method/coin',
   depositBuy: '/deposit/buy',
   depositCrypto: '/deposit/:assetId/crypto',
-  depositNetworkSelect: '/deposit/:assetId/crypto/network',
   tempUtils: '/tempUtils',
   asset: '/asset/:assetId',
   withdraw: '/withdraw',
@@ -20,4 +19,5 @@ export const ROUTES = {
   tradeReview: '/trade/:inToken/:outToken/:inAmount/review',
   tradeSuccess: '/trade/:outToken/:outAmount/:txHash/success',
   transaction: '/transaction/:txId',
+  networkSelect: '/network',
 };
