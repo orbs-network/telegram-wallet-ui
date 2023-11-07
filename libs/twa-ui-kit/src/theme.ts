@@ -43,12 +43,10 @@ export function twaMode(light: string | undefined, dark: string | undefined) {
 
 export function setTwaBg(isAlt: boolean) {
   if (!Twa) return;
-  Twa.setHeaderColor(
-    isAlt ? Twa.themeParams.bg_color : Twa.themeParams.secondary_bg_color
-  );
-  Twa.setBackgroundColor(
-    isAlt ? Twa.themeParams.bg_color : Twa.themeParams.secondary_bg_color
-  );
+
+  const color = isAlt ? 'bg_color' : 'secondary_bg_color';
+  Twa.setHeaderColor(color);
+  Twa.setBackgroundColor(color);
 }
 
 export const colors = {
