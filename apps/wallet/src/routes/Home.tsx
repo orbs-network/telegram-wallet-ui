@@ -13,6 +13,8 @@ import { useMainButtonStore } from '../store/main-button-store';
 import { useEffect } from 'react';
 import Twa from '@twa-dev/sdk';
 import { ErrorPage } from '../ErrorPage';
+import { useEventsProvider } from '../lib/EventsProvider';
+import { DepositOptions } from '../components/DepositOptions';
 
 // Checks periodically for non-permit2-approved erc20s and issues TXNs for approval as needed
 permit2Provider.pollPermit2Approvals();
@@ -22,6 +24,8 @@ faucetProvider.requestIfNeeded();
 
 export function Home() {
   const { resetButton } = useMainButtonStore();
+
+  const events = useEventsProvider();
 
   useEffect(() => {
     resetButton();
@@ -71,7 +75,8 @@ export function Home() {
         </VStack>
       </Container>
       <Box mt={4}>
-        <TransactionHistory />
+        {events.length > 0 && <TransactionHistory />}
+        {events.length === 0 && <DepositOptions />}
       </Box>
     </Page>
   );
