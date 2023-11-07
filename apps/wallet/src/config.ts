@@ -10,6 +10,8 @@ import { EventsProvider } from './lib/EventsProvider';
 
 export const isMumbai = import.meta.env.VITE_IS_MUMBAI === '1';
 
+export const disabledTokens = ['TON'];
+
 // export const w3 = new web3(networks.poly.publicRpcUrl);
 export const w3 = new web3(
   isMumbai
