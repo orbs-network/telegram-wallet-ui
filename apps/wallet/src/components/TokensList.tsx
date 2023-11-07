@@ -4,6 +4,7 @@ import _ from 'lodash';
 import { useFormatNumber, useMultiplyPriceByAmount } from '../hooks';
 import { TokenData, TokensListProps } from '../types';
 import BN from 'bignumber.js';
+import Twa from '@twa-dev/sdk';
 
 export function TokensList({
   onSelect,
@@ -19,7 +20,9 @@ export function TokensList({
   return (
     <List css={css} className={className} mode={mode} isLoading={isLoading}>
       {_.map(tokens, (token) => {
-        const isDisabled = disabledTokens?.includes(token.symbol);
+        const isDisabled = disabledTokens
+          ?.map((t) => t.toLowerCase())
+          .includes(token.symbol.toLowerCase());
         const isSelected = selected === token.symbol;
         return (
           <TokenListItem
@@ -57,7 +60,13 @@ function TokenListItem({
     <ListItem
       className={disabled ? `token-list-item-disabled` : ''}
       selected={selected}
-      onClick={onClick}
+      onClick={
+        disabled
+          ? () => {
+              Twa.showAlert('Coming soon');
+            }
+          : onClick
+      }
       StartIconSlot={<Avatar width="40px" height="40px" src={token.logoURI} />}
       EndIconSlot={EndIconSlot}
       EndTextSlot={<USD token={token} />}
