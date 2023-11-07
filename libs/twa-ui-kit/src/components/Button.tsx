@@ -4,7 +4,7 @@ import {
 } from '@chakra-ui/react';
 
 type ButtonProps = ChakraButtonProps & {
-  variant?: 'primary' | 'secondary' | 'tertiary';
+  variant?: 'primary' | 'secondary';
   children: React.ReactNode;
 };
 
