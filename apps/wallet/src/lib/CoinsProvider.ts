@@ -96,6 +96,14 @@ const coins = [
     logoURI: 'https://s2.coinmarketcap.com/static/img/coins/128x128/5805.png',
     coingeckoId: 'avalanche-2',
   },
+  {
+    coingeckoId: 'ton-coin',
+    name: 'Toncoin',
+    symbol: 'TON',
+    logoURI: 'https://s2.coinmarketcap.com/static/img/coins/128x128/11419.png',
+    address: null,
+    decimals: 9,
+  },
 ];
 
 export class CoinsProvider {

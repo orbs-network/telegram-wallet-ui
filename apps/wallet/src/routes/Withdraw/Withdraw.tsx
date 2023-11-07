@@ -20,6 +20,7 @@ export function Withdraw() {
       setButton({
         text: 'Deposit',
         onClick: () => {
+          resetButton();
           deposit();
         },
       });
@@ -46,7 +47,7 @@ export function Withdraw() {
             <TokensList
               tokens={tokens}
               onSelect={(token) => withdrawAddress(token.symbol)}
-              mode='select'
+              mode="select"
             />
           </VStack>
         )}

@@ -33,7 +33,7 @@ export const useCoinsLastPrice = () => {
   return useQuery({
     queryKey: [QueryKeys.COIN_LAST_PRICE],
     queryFn: async () => {
-      const ids = _.map(data, 'coingeckoId').join(',');
+      const ids = _.map(data || {}, 'coingeckoId').join(',');
       return fetchLatestPrices(ids);
     },
     enabled: !!data,
@@ -42,10 +42,12 @@ export const useCoinsLastPrice = () => {
   });
 };
 
-export const useFetchLatestPrice = (coin?: string) => {
+export const useFetchLatestPrice = (coin: string | undefined) => {
   const { data: coinsPrice } = useCoinsLastPrice();
 
-  return !coin ? 0 :  coinsPrice?.[coin];
+  if (!coin) return;
+
+  return coinsPrice?.[coin];
 };
 
 export const useMultiplyPriceByAmount = (
@@ -86,7 +88,7 @@ export const useExchangeRate = (
 };
 
 export const useCoinsList = () => {
-  return useQuery<Token[]>({
+  return useQuery({
     queryKey: [QueryKeys.COINS_LIST],
     queryFn: async () => {
       return coinsProvider.fetchCoins();
@@ -177,25 +179,24 @@ const updateCoinBalances = async (coins: any[]) => {
 
     if (coins.length === 0) return _userData;
 
-    const balances = await web3Provider.balancesOf(coins.map((c) => c.address));
+    const balances = await web3Provider.balancesOf(
+      coins.filter((c) => !!c.address).map((c) => c.address)
+    );
+
+    coins
+      .filter((c) => !c.address)
+      .forEach((c) => {
+        balances[c.address] = new BN(0);
+      });
 
     coins.forEach((token) => {
       if (token.symbol.toUpperCase() === 'MATIC') {
         return;
       }
 
-      let name = token.name
-        .split(' ')
-        .filter((word: string) => word !== 'Wrapped')
-        .join(' ');
-
-      if (name === 'WETH') {
-        name = 'Ethereum';
-      }
-
       _userData.tokens[token.symbol] = {
         ...token,
-        name,
+        name: token.name,
         symbolDisplay:
           token.symbol.toUpperCase().charAt(0) === 'W'
             ? token.symbol.toUpperCase().slice(1)

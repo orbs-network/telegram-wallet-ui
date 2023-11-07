@@ -140,8 +140,9 @@ const AddressInput = ({
         //   return;
         // }
 
-        await navigator.clipboard.readText();
-        setPasteSupported(true);
+        if (typeof navigator.clipboard.readText === 'function') {
+          setPasteSupported(true);
+        }
       } catch (err) {
         // paste not supported
         console.error(err);
