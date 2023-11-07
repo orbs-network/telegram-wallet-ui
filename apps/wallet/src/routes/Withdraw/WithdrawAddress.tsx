@@ -81,7 +81,7 @@ export function WithdrawAddress() {
     <Page>
       <Container size="sm" pt={4} css={styles.container}>
         <VStack spacing={4} alignItems="stretch" height="100%">
-          <NetworkSelector />
+          <NetworkSelector assetId={assetId || ''} />
           <AddressInput address={address} setAddress={setAddress} />
 
           {addressError && (

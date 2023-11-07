@@ -84,12 +84,13 @@ export function WithdrawAmount() {
         <VStack alignItems="stretch" style={{ flex: 1 }}>
           <Recipient />
           {/* TODO: handle undefined assetId better */}
-          <VStack gap='0px'>
+          <VStack gap="0px">
             <CryptoAmountInput.MaxButton
               tokenSymbol={assetId}
               onChange={setAmount}
               css={{
-                marginLeft: 'auto',
+                marginRight: 'auto',
+                marginTop: '10px',
               }}
             />
             <CryptoAmountInput

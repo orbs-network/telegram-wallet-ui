@@ -96,7 +96,7 @@ export function DepositAddress() {
     <Page>
       <Container size="sm" pt={6} css={styles.container}>
         <VStack spacing={6} flex="1">
-          <NetworkSelector />
+          <NetworkSelector assetId={assetId || ''} />
           <Heading as="h1" size="md" textAlign="center">
             Deposit {token?.symbolDisplay}
           </Heading>

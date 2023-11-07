@@ -36,7 +36,7 @@ const styles = {
       background: ${colors.secondary_bg_color};
     },    
 },
- &:last-child {
+ &:last-of-type {
     .chakra-card__body::after {
         display: none;
     }
