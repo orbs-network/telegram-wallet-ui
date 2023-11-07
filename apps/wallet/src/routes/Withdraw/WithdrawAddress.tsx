@@ -11,7 +11,7 @@ import {
   Box,
   useToast,
 } from '@chakra-ui/react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import Telegram from '@twa-dev/sdk';
 import Web3 from 'web3';
 import { LuScanLine } from 'react-icons/lu';
@@ -92,30 +92,30 @@ const AddressInput = ({
   address: string;
   setAddress: (address: string) => void;
 }) => {
-  const [pasteSupported, setPasteSupported] = useState(false);
+  // const [pasteSupported, setPasteSupported] = useState(false);
   const toast = useToast();
 
-  useEffect(() => {
-    async function checkPermission() {
-      try {
-        // const permission = await navigator.permissions.query({
-        //   name: 'clipboard-read',
-        //   // little hack for TS to ignore this unavailable type
-        // } as unknown as PermissionDescriptor);
-        // if (permission.state === 'granted') {
-        //   setPasteSupported(true);
-        //   return;
-        // }
+  // useEffect(() => {
+  //   async function checkPermission() {
+  //     try {
+  //       // const permission = await navigator.permissions.query({
+  //       //   name: 'clipboard-read',
+  //       //   // little hack for TS to ignore this unavailable type
+  //       // } as unknown as PermissionDescriptor);
+  //       // if (permission.state === 'granted') {
+  //       //   setPasteSupported(true);
+  //       //   return;
+  //       // }
 
-        await navigator.clipboard.readText();
-        setPasteSupported(true);
-      } catch (err) {
-        // paste not supported
-        console.error(err);
-      }
-    }
-    checkPermission();
-  }, []);
+  //       await navigator.clipboard.readText();
+  //       setPasteSupported(true);
+  //     } catch (err) {
+  //       // paste not supported
+  //       console.error(err);
+  //     }
+  //   }
+  //   checkPermission();
+  // }, []);
 
   const paste = () => {
     async function readClipboard() {
@@ -148,7 +148,7 @@ const AddressInput = ({
         value={address}
         placeholder="Enter Polygon address"
       />
-      {pasteSupported && address === '' && (
+      {address === '' && (
         <InputRightElement
           onClick={handlePaste}
           pr={8}
