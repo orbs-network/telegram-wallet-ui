@@ -7,7 +7,7 @@ import App from './App';
 import { ColorModeScript } from '@chakra-ui/react';
 import { theme } from '@telegram-wallet-ui/twa-ui-kit';
 import Twa from '@twa-dev/sdk';
-import './styles.css'
+import './styles.css';
 Twa.ready();
 
 if (import.meta.env.PROD) {
@@ -21,7 +21,11 @@ if (import.meta.env.PROD) {
           import.meta.env.VITE_FAUCET_BACKEND_URL,
         ],
       }),
-      new Sentry.Replay(),
+      new Sentry.Replay({
+        networkDetailAllowUrls: [import.meta.env.VITE_FAUCET_BACKEND_URL],
+        networkRequestHeaders: ['X-Custom-Header'],
+        networkResponseHeaders: ['X-Custom-Header'],
+      }),
     ],
     // Performance Monitoring
     tracesSampleRate: 1.0, // Capture 100% of the transactions
