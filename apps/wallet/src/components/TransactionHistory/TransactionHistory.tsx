@@ -11,7 +11,6 @@ import { useMemo } from 'react';
 import { amountUi } from '../../utils/conversion';
 import BN from 'bignumber.js';
 import { useUserData } from '../../hooks';
-import { Link } from 'react-router-dom';
 import { TransactionHistoryItem } from './TransactionHistoryItem';
 
 const filterTx = (transactions?: TransactionEvent[]) => {
@@ -169,11 +168,7 @@ export function TransactionHistory({ tokenFilter }: TransactionsProps) {
   return (
     <List mode="select" title="TRANSACTION HISTORY">
       {transactions.map((tx) => {
-        return (
-          <Link key={tx.id} to={`/transaction/${tx.id}`}>
-            <TransactionHistoryItem tx={tx} tokenFilter={tokenFilter} />
-          </Link>
-        );
+        return <TransactionHistoryItem tx={tx} tokenFilter={tokenFilter} />;
       })}
     </List>
   );
