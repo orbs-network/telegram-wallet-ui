@@ -89,8 +89,8 @@ const secondary_button_color = hexToRgba(colors.button_color, 0.1);
 export const theme = extendTheme({
   config,
   fonts: {
-    heading: `'ui-rounded', 'Inter', sans-serif`,
-    body: `'ui-rounded', 'Inter', sans-serif`,
+    heading: `'ui-rounded',  sans-serif`,
+    body: `'ui-rounded', sans-serif`,
   },
   styles: {
     global: {
