@@ -193,13 +193,18 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
               <Box
                 style={{
                   textAlign: 'right',
-                  color: colors.success,
+                  color:
+                    dTx.status === 'pending'
+                      ? colors.hint_color
+                      : colors.success,
                 }}
               >
                 <Text noOfLines={1}>
                   +{toUiDisplay(dTx.amount)} {dTx.token?.symbolDisplay}
                 </Text>
-                <Text fontSize={12}>Received</Text>
+                <Text fontSize={12}>
+                  {dTx.status === 'pending' ? 'Pending' : 'Received'}
+                </Text>
               </Box>
             );
             break;
@@ -246,7 +251,8 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
                 {tradeTx.inToken?.symbolDisplay}
               </Heading>
             );
-            const isIn = !!tokenFilter && tokenFilter === tradeTx.inToken?.symbol;
+            const isIn =
+              !!tokenFilter && tokenFilter === tradeTx.inToken?.symbol;
             const amount = isIn ? tradeTx.amountIn : tradeTx.amountOut;
             const token = isIn ? tradeTx.inToken : tradeTx.outToken;
             CardData = (
@@ -258,7 +264,7 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
               >
                 <Text noOfLines={1}>
                   {!isIn && '+'}
-                  {toUiDisplay(amount)} {token?.symbolDisplay ?? ""}
+                  {toUiDisplay(amount)} {token?.symbolDisplay ?? ''}
                 </Text>
                 <Text fontSize={12}>{!isIn ? 'Received' : 'Traded'}</Text>
               </Box>

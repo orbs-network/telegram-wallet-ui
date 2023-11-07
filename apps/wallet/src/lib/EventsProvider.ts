@@ -30,12 +30,14 @@ export type TransactionEventType =
   | 'trade'
   | 'transfer';
 
+type EventId = string;
+
 export type TransactionEvent = {
   date: Date;
   status: TransactionEventStatus;
   type: TransactionEventType;
   direction: TransactionEventDirection;
-  id: string;
+  id: EventId;
 };
 
 export type WithdrawalTransactionEvent = TransactionEvent &
@@ -56,6 +58,7 @@ export type TradeTransactionEvent = TransactionEvent & {
 type AddedDepositTransactionEvent = {
   amount: string;
   token: string;
+  status: TransactionEventStatus;
 };
 
 export type DepositTransactionEvent = TransactionEvent &
@@ -66,25 +69,35 @@ export class EventsProvider {
     this.storage.setKeyPrefix('events');
   }
 
-  private addEvent(event: Record<string, any>) {
-    this.storage.storeObject(v1(), {
+  private addEvent(event: Record<string, any>): EventId {
+    const id = v1();
+    this.storage.storeObject(id, {
       ...event,
       date: Date.now(),
-      status: 'completed',
     });
     this.onUpdate();
+
+    return id;
   }
 
-  withdrawal(event: AddedWithdrawalTransactionEvent) {
-    this.addEvent({ ...event, type: 'withdrawal' });
+  private updateEvent(id: EventId, event: Record<string, any>) {
+    const existing = this.storage.read<TransactionEvent>(id);
+    this.storage.storeObject(id, {
+      ...existing,
+      ...event,
+    });
   }
 
-  trade(event: AddedTradeTransactionEvent) {
-    this.addEvent({ ...event, type: 'trade' });
+  withdrawal(event: AddedWithdrawalTransactionEvent): EventId {
+    return this.addEvent({ ...event, type: 'withdrawal', status: 'completed' });
   }
 
-  deposit(event: AddedDepositTransactionEvent) {
-    this.addEvent({ ...event, type: 'deposit' });
+  trade(event: AddedTradeTransactionEvent): EventId {
+    return this.addEvent({ ...event, type: 'trade', status: 'completed' });
+  }
+
+  deposit(event: AddedDepositTransactionEvent): EventId {
+    return this.addEvent({ ...event, type: 'deposit', status: event.status });
   }
 
   events() {

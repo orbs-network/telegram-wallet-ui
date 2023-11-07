@@ -62,7 +62,8 @@ export const swapProvider = new SwapProvider(
 export const bridgeProvider = new BridgeProvider({
   ethW3Provider: new Web3Provider(ethW3, account),
   polyW3Provider: web3Provider,
-  storage: localStorageProvider,
+  eventsProvider,
+  storage: new LocalStorageProvider(),
   MIN_REQUIRED_ETHER_BALANCE: BN(w3.utils.toWei('0.01', 'ether')),
 });
 

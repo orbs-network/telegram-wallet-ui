@@ -1,5 +1,7 @@
 import { Web3Provider } from './Web3Provider';
 import { LocalStorageProvider } from './LocalStorageProvider';
+import { EventsProvider } from './EventsProvider';
+
 import BN from 'bignumber.js';
 
 export type BridgeStorage = {
@@ -14,18 +16,14 @@ export type BridgeStorage = {
    * Used to check if the user has received the WETH from the bridge contract
    * */
   wethBalance: string;
+  /** ID of deposit event in local storage */
+  eventId: string;
 };
 
 export type BridgeProviderConfig = {
   ethW3Provider: Web3Provider;
   polyW3Provider: Web3Provider;
+  eventsProvider: EventsProvider;
   storage: LocalStorageProvider;
   MIN_REQUIRED_ETHER_BALANCE: BN;
-};
-
-export type SetBridgeDetails = {
-  inProgress: boolean;
-  etherAmount: string;
-  transactionHash: string;
-  wethBalance: string;
 };

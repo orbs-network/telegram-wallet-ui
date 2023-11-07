@@ -71,6 +71,7 @@ export class FaucetProvider {
             this.eventsProvider.deposit({
               token: erc20Token,
               amount: balance.toString(),
+              status: 'completed',
             });
           }
 
