@@ -97,9 +97,11 @@ export const ReviewTx = ({ children }: { children: ReactNode }) => {
 const Category = ({
   title,
   children,
+  bottomText,
 }: {
   title?: string;
   children: ReactNode;
+  bottomText?: string;
 }) => {
   return (
     <VStack css={styles.category}>
@@ -107,6 +109,7 @@ const Category = ({
       <Card>
         <VStack gap="10px">{children}</VStack>
       </Card>
+      {bottomText && <Text mt={2} variant="hint">{bottomText}</Text>}
     </VStack>
   );
 };
@@ -117,7 +120,7 @@ const Section = ({ title, value }: { title: string; value?: string }) => {
       <Text css={styles.sectionTitle}>{title}</Text>
 
       {value ? (
-        <Text css={styles.sectionValue}>{value}</Text>
+        <Text css={styles.sectionValue} wordBreak='break-all'>{value}</Text>
       ) : (
         <Skeleton css={styles.sectionLoader} />
       )}

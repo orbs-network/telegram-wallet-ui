@@ -19,6 +19,17 @@ const styles = {
   inputContainer: css`
     position: relative;
   `,
+  max: css`
+    color: ${colors.link_color};
+  `,
+  balance: css`
+    font-size: 14px;
+    align-items: center;
+    gap: 4px;
+    p {
+      color: ${colors.hint_color};
+    }
+  `,
   inputSymbol: css`
     p,
     svg {
@@ -214,6 +225,37 @@ function Symbol({
   );
 }
 
+const MaxButton = ({
+  onChange,
+  tokenSymbol,
+  css = {},
+}: {
+  onChange: (value: string) => void;
+  tokenSymbol?: string;
+  css?: Interpolation<CSSProperties>;
+}) => {
+  const token = useGetTokenFromList(tokenSymbol);
+
+  const formattedBalance = useFormatNumber({
+    value: token?.balance || '0',
+  });
+
+  if (!token?.balance) {
+    return null;
+  }
+  return (
+    <Flex css={[css, styles.balance]}>
+      <Box onClick={() => onChange(token?.balance || '')} css={styles.max}>
+        Max:{' '}
+      </Box>
+      <Text fontSize="14px">
+        {formattedBalance} {token?.symbolDisplay}
+      </Text>
+    </Flex>
+  );
+};
+
 CryptoAmountInput.Symbol = Symbol;
+CryptoAmountInput.MaxButton = MaxButton;
 
 export default CryptoAmountInput;

@@ -4,6 +4,7 @@ import { Link, generatePath } from 'react-router-dom';
 import { DepositIcon, TradeIcon, WithdrawIcon } from './icons';
 import Twa from '@twa-dev/sdk';
 import { ROUTES } from '../router/routes';
+import { useNavigation } from '../router/hooks';
 
 function handleClick() {
   if (!Twa.isExpanded) {
@@ -18,7 +19,8 @@ type CoinActionMenuProps = {
 };
 
 export function CoinActionMenu({ tokenSymbol }: CoinActionMenuProps) {
-  const depositPath = ROUTES.deposit;
+  const depositCryptoPath = useNavigation().depositCryptoPath;
+  const depositPath = depositCryptoPath(tokenSymbol);
 
   const tradePath = `${ROUTES.trade}?inToken=${tokenSymbol}`;
 

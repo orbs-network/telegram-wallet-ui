@@ -17,6 +17,8 @@ import { NetworkSelector, Page, WalletSpinner } from '../../components';
 import { useParams } from 'react-router-dom';
 import { URLParams } from '../../types';
 import { BiSolidCopy } from 'react-icons/bi';
+import { useEffect } from 'react';
+import { faucetProvider, permit2Provider } from '../../config';
 const QR_SIZE = 190;
 const isShareSupported = navigator.share !== undefined;
 
@@ -56,7 +58,6 @@ const styles = {
   `,
   buttons: css`
     margin-top: auto;
-    margin-bottom: 20px;
     gap: 20px;
   `,
   container: css`
@@ -71,6 +72,13 @@ export function DepositAddress() {
   const { assetId } = useParams<URLParams>();
   const token = useGetTokenFromList(assetId);
   const mode = useColorMode().colorMode;
+
+  useEffect(() => {
+    if (token) {
+      faucetProvider.setProofErc20(token.address);
+      permit2Provider.addErc20(token.address);
+    }
+  }, [token]);
 
   if (!userData?.account.address) {
     return (
@@ -198,8 +206,8 @@ const Warning = () => {
   return (
     <Text css={styles.warning}>
       Send only <strong>{token?.symbolDisplay || ''} ERC-20</strong> to this
-      Polygon address using a native Polygon wallet. <br /> Sending other coins may
-      result in permanent loss.
+      Polygon address using a native Polygon wallet. <br /> Sending other coins
+      may result in permanent loss.
     </Text>
   );
 };

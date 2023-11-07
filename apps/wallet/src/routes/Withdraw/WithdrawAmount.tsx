@@ -54,7 +54,7 @@ export function WithdrawAmount() {
   const { withdrawSummary: navigateToWithdrawSummary } = useNavigation();
 
   const token = useGetTokenFromList(assetId);
-
+  
   const formattedBalance = useFormatNumber({
     value: token?.balance,
   });
@@ -84,13 +84,22 @@ export function WithdrawAmount() {
         <VStack alignItems="stretch" style={{ flex: 1 }}>
           <Recipient />
           {/* TODO: handle undefined assetId better */}
-          <CryptoAmountInput
-            name="withdrawalAmount"
-            value={amount}
-            onChange={setAmount}
-            tokenSymbol={assetId || ''}
-            error={isValidAmount ? undefined : 'Not enough coins'}
-          />
+          <VStack gap='0px'>
+            <CryptoAmountInput.MaxButton
+              tokenSymbol={assetId}
+              onChange={setAmount}
+              css={{
+                marginLeft: 'auto',
+              }}
+            />
+            <CryptoAmountInput
+              name="withdrawalAmount"
+              value={amount}
+              onChange={setAmount}
+              tokenSymbol={assetId || ''}
+              error={isValidAmount ? undefined : 'Not enough coins'}
+            />
+          </VStack>
           <Balance balance={formattedBalance} />
         </VStack>
       </Container>

@@ -78,14 +78,10 @@ const TokenPanelHeader = ({
         {!isInToken && <Text fontSize="14px">You receive</Text>}
       </Flex>
       {isInToken && onChange && token && (
-        <Flex css={styles.balance}>
-          <Box onClick={() => onChange(token?.balance)} css={styles.max}>
-            Max:{' '}
-          </Box>
-          <Text fontSize="14px">
-            {formattedBalance} {token?.symbolDisplay}
-          </Text>
-        </Flex>
+        <CryptoAmountInput.MaxButton
+          tokenSymbol={token.symbol}
+          onChange={onChange}
+        />
       )}
     </Flex>
   );

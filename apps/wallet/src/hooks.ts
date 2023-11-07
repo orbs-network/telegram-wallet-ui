@@ -226,7 +226,7 @@ export const useUserData = () => {
 
 export const useFormatNumber = ({
   value,
-  decimalScale = 3,
+  decimalScale = 4,
   prefix,
   suffix,
 }: {
@@ -250,7 +250,7 @@ export const useFormatNumber = ({
       }
     });
 
-    return count - 1 + decimalScale;
+    return !count ? decimalScale : count + decimalScale;
   }, [value, decimalScale]);
 
   const result = useNumericFormat({

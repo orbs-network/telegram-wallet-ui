@@ -77,7 +77,6 @@ export function WithdrawAddress() {
     onClick: onSubmit,
   });
 
-  // '0x2Faa775F78952aF08026bDF651A6Da288DE1360c';
   return (
     <Page>
       <Container size="sm" pt={4} css={styles.container}>

@@ -20,6 +20,8 @@ export function WithdrawSuccess() {
   useUpdateMainButton({
     text: 'Done',
     onClick: onSubmit,
+    progress: false,
+    disabled: false,
   });
 
   return (
