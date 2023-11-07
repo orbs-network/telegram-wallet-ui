@@ -31,7 +31,7 @@ const styles = {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 22px;
+      gap: 18px;
       padding: 30px 30px 20px 30px;
     }
   `,
@@ -56,6 +56,8 @@ const styles = {
   `,
   buttons: css`
     margin-top: auto;
+    margin-bottom: 20px;
+    gap: 20px;
   `,
   container: css`
     flex: 1;
@@ -106,8 +108,8 @@ export function DepositAddress() {
                 level="L"
                 imageSettings={{
                   src: token?.logoURI || '',
-                  height: 37,
-                  width: 37,
+                  height: 47,
+                  width: 47,
                   excavate: true,
                 }}
               />
@@ -183,7 +185,7 @@ const CopyButton = ({ address }: { address: string }) => {
       variant="primary"
       onClick={handleCopy}
       colorScheme="none"
-      leftIcon={<BiSolidCopy />}
+      leftIcon={<Icon as={BiSolidCopy} />}
     >
       Copy
     </Button>
