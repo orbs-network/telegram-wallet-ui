@@ -7,6 +7,7 @@ import { useUserData } from '../../hooks';
 import { useMainButtonStore } from '../../store/main-button-store';
 import { TokenData } from '../../types';
 import { useTradeStore } from './store';
+import { disabledTokens } from '../../config';
 
 export function TradeTokenSelect({ isIn }: { isIn?: boolean }) {
   const { data, dataUpdatedAt } = useUserData();
@@ -38,7 +39,7 @@ export function TradeTokenSelect({ isIn }: { isIn?: boolean }) {
     <Page secondaryBackground>
       <Container size="sm" pt={4}>
         <TokensList
-          disabledTokens={['TON']}
+          disabledTokens={disabledTokens}
           selected={selected}
           tokens={tokens.filter((t) => t.symbol !== filteredToken)}
           mode="select"

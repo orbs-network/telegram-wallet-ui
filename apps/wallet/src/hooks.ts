@@ -180,11 +180,11 @@ const updateCoinBalances = async (coins: any[]) => {
     if (coins.length === 0) return _userData;
 
     const balances = await web3Provider.balancesOf(
-      coins.filter((c) => !!c.address).map((c) => c.address)
+      coins.filter((c) => c.address !== '').map((c) => c.address)
     );
 
     coins
-      .filter((c) => !c.address)
+      .filter((c) => c.address === '')
       .forEach((c) => {
         balances[c.address] = new BN(0);
       });
