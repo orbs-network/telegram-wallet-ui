@@ -3,6 +3,7 @@ import { List, ListItem } from '@telegram-wallet-ui/twa-ui-kit';
 import _ from 'lodash';
 import { useFormatNumber, useMultiplyPriceByAmount } from '../hooks';
 import { TokenData, TokensListProps } from '../types';
+import BN from 'bignumber.js';
 
 export function TokensList({
   onSelect,
@@ -11,10 +12,9 @@ export function TokensList({
   mode,
   disabledTokens,
   selected,
-  css = {}
+  css = {},
 }: TokensListProps) {
   const isLoading = !tokens || _.isEmpty(tokens);
-  
 
   return (
     <List css={css} className={className} mode={mode} isLoading={isLoading}>
@@ -92,7 +92,7 @@ const USD = ({ token }: { token: TokenData }) => {
     );
   }
 
-  return <Text size="sm">${formattedAmount}</Text>;
+  return <Text size="sm">${BN(formattedAmount).toFixed(2)}</Text>;
 };
 
 const Balance = ({ token }: { token: TokenData }) => {
