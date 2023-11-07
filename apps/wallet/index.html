@@ -37,7 +37,7 @@
       html,
       body {
         transition: background-color 0.2s;
-        background-color: var(--tg-theme-secondary-bg-color);
+        background-color: var(--tg-theme-secondary-bg-color, #000);
       }
 
       #root {
@@ -60,9 +60,9 @@
       }
     </style>
   </head>
-  <body id="body">
+  <body>
     <div id="root"></div>
-    <div id="loader" class="loader-container">
+    <div class="loader-container">
       <div class="loader">
         <svg
           fill="currentColor"
@@ -90,8 +90,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
       window.Telegram.WebApp.ready();
-      const body = document.getElementById('body');
-      body.style.backgroundColor =
+      document.body.style.backgroundColor =
         window.Telegram.WebApp.themeParams.secondary_bg_color;
       window.Telegram.WebApp.setHeaderColor('secondary_bg_color');
     </script>
