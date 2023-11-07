@@ -20,6 +20,7 @@ function Loader() {
   );
 }
 
+
 export function Asset() {
   const { assetId } = useParams<{ assetId: string }>();
 
