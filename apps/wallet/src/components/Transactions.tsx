@@ -16,13 +16,22 @@ import { formatDateTime } from '../utils/utils';
 import { DepositIcon, TradeIcon, WithdrawIcon } from './icons';
 import { css } from '@emotion/react';
 
-
 const styles = {
   avatar: css`
     width: 40px;
     height: 40px;
-  `
-}
+  `,
+};
+
+const filterTx = (transactions?: any[]) => {
+  return transactions?.filter((tx) => {
+    if (!tx.inToken || !tx.outToken) {
+      return false;
+    }
+
+    return true;
+  });
+};
 
 type TransactionsProps = {
   tokenFilter?: string;
@@ -31,6 +40,7 @@ type TransactionsProps = {
 export function Transactions({ tokenFilter }: TransactionsProps) {
   const events = useEventsProvider();
   const { data: userData } = useUserData();
+  console.log({ userData });
 
   const transactions = useMemo(() => {
     const filteredTxs = tokenFilter
@@ -147,9 +157,10 @@ export function Transactions({ tokenFilter }: TransactionsProps) {
     );
   }
 
+
   return (
     <List mode="select" title="TRANSACTION HISTORY">
-      {transactions.map((tx) => {
+      {filterTx(transactions)?.map((tx) => {
         let StartIcon = null;
         let CardTitle = null;
         let CardData = null;
