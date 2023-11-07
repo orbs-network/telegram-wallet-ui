@@ -12,12 +12,11 @@ export function TradeTokenSelect({ isIn }: { isIn?: boolean }) {
   const { data, dataUpdatedAt } = useUserData();
   const navigate = useNavigate();
   const { setInToken, setOutToken, inToken, outToken } = useTradeStore();
-  const {resetButton} = useMainButtonStore()
+  const { resetButton } = useMainButtonStore();
 
   useEffect(() => {
-   resetButton();
+    resetButton();
   }, [resetButton]);
-  
 
   const tokens = useMemo(() => {
     return Object.values(data?.tokens || {});
@@ -33,25 +32,19 @@ export function TradeTokenSelect({ isIn }: { isIn?: boolean }) {
   };
 
   const selected = isIn ? inToken : outToken;
-  const disabledToken = isIn ? outToken : inToken;
+  const filteredToken = isIn ? outToken : inToken;
 
   return (
     <Page secondaryBackground>
       <Container size="sm" pt={4}>
         <TokensList
-          disabledTokens={[disabledToken || '']}
+          disabledTokens={['TON']}
           selected={selected}
-          tokens={tokens}
+          tokens={tokens.filter((t) => t.symbol !== filteredToken)}
           mode="select"
           onSelect={onSelect}
-          css={{
-            '.token-list-item-disabled': {
-               display: 'none'
-            }
-          }}
         />
       </Container>
     </Page>
   );
 }
-

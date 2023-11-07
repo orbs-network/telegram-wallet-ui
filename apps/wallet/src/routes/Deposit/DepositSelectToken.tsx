@@ -39,7 +39,8 @@ export function DepositSelectToken() {
           <TokensList
             onSelect={onSelect}
             tokens={Object.values(data?.tokens || {})}
-            mode='select'
+            mode="select"
+            disabledTokens={['TON']}
           />
         </VStack>
       </Container>
