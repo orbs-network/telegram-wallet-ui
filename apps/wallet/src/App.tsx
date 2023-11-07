@@ -15,8 +15,12 @@ import { WalletSpinner } from './components';
 import { useMainButtonStore } from './store/main-button-store';
 import Twa from '@twa-dev/sdk';
 import { useNavigatorOnLine, useWebApp } from './hooks';
-export const queryClient = new QueryClient();
+import { bridgeProvider } from './config';
+
+import { ErrInsufficentEtherBalance } from './lib/BridgeProvider';
 const Router = lazy(() => import('./router/Router'));
+
+export const queryClient = new QueryClient();
 
 document.getElementById('loader')?.remove();
 
@@ -38,6 +42,17 @@ const App = () => {
       toast.close('offline-toast');
     }
   }, [isOnline, toast]);
+
+  useEffect(() => {
+    bridgeProvider.checkBridgeProgress().catch((err) => {
+      if (err instanceof ErrInsufficentEtherBalance) {
+        console.warn(err.message);
+        console.warn("Not enough Ether for bridge's gas fees. Exiting...");
+      } else {
+        console.error("Unexpected error while checking bridge's progress", err);
+      }
+    });
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

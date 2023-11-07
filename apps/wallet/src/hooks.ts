@@ -61,8 +61,6 @@ export const useMultiplyPriceByAmount = (
 
     const amount = new BN(_amount);
 
-    console.log(price, coin);
-
     return amount.multipliedBy(price).toString();
   }, [_amount, price]);
 };

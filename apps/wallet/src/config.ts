@@ -7,8 +7,12 @@ import { SwapProvider } from './lib/SwapProvider';
 import { Permit2Provider } from './lib/Permit2Provider';
 import { LocalStorageProvider } from './lib/LocalStorageProvider';
 import { EventsProvider } from './lib/EventsProvider';
+import { BridgeProvider } from './lib/BridgeProvider';
+
+import BN from 'bignumber.js';
 
 export const isMumbai = import.meta.env.VITE_IS_MUMBAI === '1';
+export const isSepolia = import.meta.env.VITE_IS_SEPOLIA === 'true';
 
 export const disabledTokens = ['TON'];
 
@@ -19,6 +23,12 @@ export const w3 = new web3(
         import.meta.env.VITE_ALCHEMY_API_KEY
       }`
     : 'https://nd-629-499-152.p2pify.com/9d54c0800de991110a4e8e5dc6300b3a'
+);
+
+export const ethW3 = new web3(
+  `https://eth-${isSepolia ? 'sepolia' : 'mainnet'}.g.alchemy.com/v2/${
+    import.meta.env.VITE_ALCHEMY_API_KEY
+  }`
 );
 
 export const TRANSAK_API_KEY = import.meta.env.VITE_TRANSAK_API_KEY;
@@ -34,12 +44,14 @@ export const liqHubProvider = new LiquihubProvider(web3Provider);
 
 export const coinsProvider = new CoinsProvider();
 
+export const localStorageProvider = new LocalStorageProvider();
+
 export const permit2Provider = new Permit2Provider(
   web3Provider,
-  new LocalStorageProvider()
+  localStorageProvider
 );
 
-export const eventsProvider = new EventsProvider(new LocalStorageProvider());
+export const eventsProvider = new EventsProvider(localStorageProvider);
 
 export const swapProvider = new SwapProvider(
   coinsProvider,
@@ -48,6 +60,14 @@ export const swapProvider = new SwapProvider(
   eventsProvider,
   web3Provider
 );
+
+export const bridgeProvider = new BridgeProvider({
+  ethW3Provider: new Web3Provider(ethW3, account),
+  polyW3Provider: web3Provider,
+  eventsProvider,
+  storage: new LocalStorageProvider(),
+  MIN_REQUIRED_ETHER_BALANCE: BN(w3.utils.toWei('0.01', 'ether')),
+});
 
 // TODO: remove this
 export type CryptoAsset = 'MATIC' | 'ETH' | 'USDC';
