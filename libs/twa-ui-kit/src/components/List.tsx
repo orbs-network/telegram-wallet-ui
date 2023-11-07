@@ -1,4 +1,4 @@
-import { Box, Skeleton, Text, VStack } from '@chakra-ui/react';
+import { Skeleton, Text, VStack } from '@chakra-ui/react';
 import { css, Interpolation } from '@emotion/react';
 import React, { CSSProperties } from 'react';
 import { colors } from '../theme';
@@ -16,17 +16,17 @@ interface Props {
 
 const styles = {
   select: css`
-  gap: 0px;
-  padding: 0px;
-  border-radius: 10px;
-  
-  & > .chakra-card__body {
+    gap: 0px;
     padding: 0px;
-  }
-    .list-item {
-    .chakra-card__body {
-  position: relative;
-    &::after {
+    border-radius: 10px;
+
+    & > .chakra-card__body {
+      padding: 0px;
+    }
+    .list-item .chakra-card__body {
+      position: relative;
+    }
+    .list-item-content::after {
       content: '';
       position: absolute;
       bottom: 0px;
@@ -34,24 +34,22 @@ const styles = {
       right: 0px;
       height: 1px;
       background: ${colors.secondary_bg_color};
-    },    
-},
- &:last-of-type {
-    .chakra-card__body::after {
-        display: none;
     }
-   }
-},
-a{
-   &:last-child {
-    .chakra-card__body::after {
-        display: none;
-    }
-   }
-}
-}
 
-  }`,
+    &:last-of-type {
+      .chakra-card__body::after {
+        display: none;
+      }
+    }
+
+    a {
+      &:last-child {
+        .chakra-card__body::after {
+          display: none;
+        }
+      }
+    }
+  `,
   display: css`
     gap: 6px;
     padding: 0px;
