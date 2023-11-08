@@ -8,6 +8,7 @@ import { useMainButtonStore } from '../../store/main-button-store';
 import { TokenData } from '../../types';
 import { useTradeStore } from './store';
 import { disabledTokens } from '../../config';
+import { balancesAsList } from '../../utils/utils';
 
 export function TradeTokenSelect({ isIn }: { isIn?: boolean }) {
   const { data, dataUpdatedAt } = useBalances();
@@ -20,7 +21,7 @@ export function TradeTokenSelect({ isIn }: { isIn?: boolean }) {
   }, [resetButton]);
 
   const tokens = useMemo(() => {
-    return Object.values(data ?? {});
+    return balancesAsList(data ?? {});
   }, [dataUpdatedAt]);
 
   const onSelect = (token: TokenData) => {
@@ -39,7 +40,7 @@ export function TradeTokenSelect({ isIn }: { isIn?: boolean }) {
     <Page secondaryBackground>
       <Container size="sm" pt={4}>
         <TokensList
-        showMoreBtn={true}
+          showMoreBtn={true}
           disabledTokens={disabledTokens}
           selected={selected}
           tokens={tokens.filter((t) => t.symbol !== filteredToken)}

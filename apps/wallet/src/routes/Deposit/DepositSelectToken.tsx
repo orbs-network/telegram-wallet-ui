@@ -7,6 +7,7 @@ import { useMainButtonStore } from '../../store/main-button-store';
 import { TokenData } from '../../types';
 import { disabledTokens, faucetProvider, permit2Provider } from '../../config';
 import { useParams } from 'react-router-dom';
+import { balancesAsList } from '../../utils/utils';
 
 export function DepositSelectToken() {
   const { data } = useBalances();
@@ -37,7 +38,7 @@ export function DepositSelectToken() {
           <TokensList
             showMoreBtn={true}
             onSelect={onSelect}
-            tokens={Object.values(data || {})}
+            tokens={balancesAsList(data || {})}
             mode="select"
             disabledTokens={disabledTokens}
           />
