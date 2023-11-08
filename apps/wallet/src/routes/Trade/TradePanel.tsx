@@ -1,5 +1,11 @@
 import { Box, Container, Flex, useToast, VStack } from '@chakra-ui/react';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   useDebouncedCallback,
   useFormatNumber,
@@ -214,24 +220,27 @@ const SwitchTokens = () => {
 };
 
 const SrcTokenPanel = () => {
-  const { setInAmount } = useTradeStore();
+  const { setInAmount, inAmount } = useTradeStore();
   const store = useTradeStore();
   const { inToken, outToken } = useTokens();
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(inAmount);
   const validations = useValidations();
+  const timeoutRef = useRef<any>();
 
-  const onUpdateInAmount = useDebouncedCallback(() => setInAmount(value));
-
-  useEffect(() => {
-    onUpdateInAmount();
-  }, [onUpdateInAmount]);
+  const onChange = (value: string) => {
+    setValue(value);
+    clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      setInAmount(value);
+    }, 300);
+  };
 
   return (
     <TokenPanel
       onTokenSelect={(token) => store.setInToken(token.symbol)}
       token={inToken}
       value={value}
-      onChange={setValue}
+      onChange={onChange}
       isInToken={true}
       error={validations.inAmount(value)}
       otherTokenSymbol={outToken?.symbol}

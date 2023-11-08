@@ -61,8 +61,6 @@ export const useMultiplyPriceByAmount = (
 
     const amount = new BN(_amount);
 
-    console.log(price, coin);
-
     return amount.multipliedBy(price).toString();
   }, [_amount, price]);
 };
@@ -170,8 +168,6 @@ export const getBalances = async () => {
 
 const updateCoinBalances = async (coins: any[]) => {
   try {
-    console.log('Refreshing balances...');
-
     const _userData: UserData = {
       account,
       tokens: {},
@@ -220,6 +216,7 @@ export const useUserData = () => {
     queryKey: [QueryKeys.USER_DATA],
     enabled: coins.length > 0,
     refetchInterval: 10_000,
+    staleTime: 5_000,
     queryFn: () => updateCoinBalances(coins),
   });
 };
