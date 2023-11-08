@@ -30,7 +30,6 @@ export function ErrorPage({ message }: ErrorPageProps) {
           as="h1"
           size="xl"
           onDoubleClick={() => {
-            console.log('dbl clicked');
             navigate('/debug');
           }}
           onTouchStart={() => {

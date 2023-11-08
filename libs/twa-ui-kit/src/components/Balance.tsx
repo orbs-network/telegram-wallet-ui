@@ -40,7 +40,6 @@ export function Balance({
       <Text
         as="span"
         onDoubleClick={() => {
-          console.log('dbl clicked');
           navigate('/debug');
         }}
         onTouchStart={() => {
@@ -60,7 +59,6 @@ export function Balance({
         <Text
           as="span"
           onDoubleClick={() => {
-            console.log('dbl clicked');
             navigate('/debug');
           }}
           onTouchStart={() => {

@@ -17,7 +17,7 @@ import { Transak } from './transak/constants';
 const debug = getDebug('Buy');
 
 const walletAddress = account?.address;
-const SYMBOL = 'USDT';
+const SYMBOL = 'usdt';
 
 const constructSrcUrl = (walletAddress: string) => {
   const params = new URLSearchParams({
