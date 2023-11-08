@@ -38,7 +38,7 @@ export function Withdraw() {
             <Text>Deposit now to trade and withdraw</Text>
           </VStack>
         ) : (
-          <VStack spacing={6} alignItems="stretch">
+          <VStack alignItems="stretch">
             <PageHeading>Choose asset to withdraw</PageHeading>
             <TokensList
               tokens={tokens}
