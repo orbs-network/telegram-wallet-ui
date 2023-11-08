@@ -66,7 +66,7 @@ export function TransactionHistoryItem({
               +<TransactionAmount amount={dTx.amount} />{' '}
               {dTx.token?.symbolDisplay}
             </Text>
-            <Text fontSize={12}>Received</Text>
+            <Text fontSize="sm">Received</Text>
           </Box>
         );
         break;
@@ -97,7 +97,7 @@ export function TransactionHistoryItem({
               <TransactionAmount amount={wTx.amount} />{' '}
               {wTx.token?.symbolDisplay}
             </Text>
-            <Text fontSize={12}>Sent</Text>
+            <Text fontSize="sm">Sent</Text>
           </Box>
         );
         break;
@@ -138,7 +138,7 @@ export function TransactionHistoryItem({
               {!isIn && '+'}
               <TransactionAmount amount={amount} /> {token?.symbolDisplay ?? ''}
             </Text>
-            <Text fontSize={12}>{!isIn ? 'Received' : 'Traded'}</Text>
+            <Text fontSize="sm">{!isIn ? 'Received' : 'Traded'}</Text>
           </Box>
         );
         break;
@@ -158,7 +158,7 @@ export function TransactionHistoryItem({
       StartTextSlot={
         <Box>
           {CardTitle}
-          <Text variant="hint" fontSize="xs">
+          <Text variant="hint" fontSize="sm">
             {formatDateTime(tx.date)}
           </Text>
         </Box>
