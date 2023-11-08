@@ -5,7 +5,7 @@ import { getDebug } from './utils/debug';
 
 const debug = getDebug('CoinsProvider');
 
-const coins = [
+const _coins = [
   {
     symbol: 'BTC',
     name: 'Bitcoin',
@@ -107,8 +107,8 @@ const coins = [
 ];
 
 export class CoinsProvider {
-  async fetchCoins() {
-    return coins;
+  coins() {
+    return _coins;
   }
 
   toRawAmount(token: Token, quantity: BNComparable) {

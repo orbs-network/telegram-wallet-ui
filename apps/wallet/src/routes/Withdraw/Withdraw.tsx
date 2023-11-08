@@ -1,13 +1,13 @@
 import { Container, Heading, Text, VStack } from '@chakra-ui/react';
 import { Page, TokensList } from '../../components';
 import { useNavigation } from '../../router/hooks';
-import { useUserData } from '../../hooks';
+import { useBalances } from '../../hooks';
 import { useMainButtonStore } from '../../store/main-button-store';
 import { useEffect, useMemo } from 'react';
 
 export function Withdraw() {
   const { withdrawAddress, deposit } = useNavigation();
-  const { data } = useUserData();
+  const { data } = useBalances();
 
   const { resetButton, setButton } = useMainButtonStore();
 

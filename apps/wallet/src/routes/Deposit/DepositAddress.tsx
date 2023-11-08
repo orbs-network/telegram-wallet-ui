@@ -8,7 +8,7 @@ import {
   useToast,
   VStack,
 } from '@chakra-ui/react';
-import { useGetTokenFromList, useUserData } from '../../hooks';
+import { useGetTokenFromList, useBalances } from '../../hooks';
 import { Button, Card, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import { QRCodeSVG } from 'qrcode.react';
 import { css } from '@emotion/react';
@@ -18,7 +18,7 @@ import { useParams } from 'react-router-dom';
 import { URLParams } from '../../types';
 import { BiSolidCopy } from 'react-icons/bi';
 import { useEffect } from 'react';
-import { faucetProvider, permit2Provider } from '../../config';
+import { account, faucetProvider, permit2Provider } from '../../config';
 
 const QR_SIZE = 190;
 const isShareSupported = navigator.share !== undefined;
@@ -69,7 +69,7 @@ const styles = {
 };
 
 export function DepositAddress() {
-  const { data: userData } = useUserData();
+  const { data: userData } = useBalances();
   const { assetId } = useParams<URLParams>();
   const token = useGetTokenFromList(assetId);
   const mode = useColorMode().colorMode;
@@ -81,7 +81,7 @@ export function DepositAddress() {
     }
   }, [token]);
 
-  if (!userData?.account.address) {
+  if (!account.address) {
     return (
       <Page>
         <Container size="sm" pt={4}>
@@ -91,7 +91,7 @@ export function DepositAddress() {
     );
   }
 
-  const address = userData.account.address;
+  const address = account.address;
 
   return (
     <Page>

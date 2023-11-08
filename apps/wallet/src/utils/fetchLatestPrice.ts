@@ -2,6 +2,15 @@ import { Fetcher } from './fetcher';
 
 const API_URL = 'https://api.coingecko.com/api/v3/simple/price';
 
+// TODO refactor
+export function getInitialPrices(): Record<string, number> | undefined {
+  const prices = localStorage.getItem('prices');
+
+  if (prices) {
+    return JSON.parse(prices);
+  }
+}
+
 export async function fetchLatestPrices(
   coin: string,
   vsCurrencies = 'usd'
@@ -24,12 +33,6 @@ export async function fetchLatestPrices(
     // TODO this will allow the app to continue working even if the price fetch fails, but the prices would seem strange
     // discuss with sukh
 
-    const prices = localStorage.getItem('prices');
-
-    if (prices) {
-      return JSON.parse(prices);
-    }
-
-    return undefined;
+    return getInitialPrices();
   }
 }

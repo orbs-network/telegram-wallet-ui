@@ -1,4 +1,4 @@
-import { useUserData } from '../hooks';
+import { useBalances } from '../hooks';
 import BN from 'bignumber.js';
 import { TokensList } from './TokensList';
 import { useNavigation } from '../router/hooks';
@@ -8,19 +8,19 @@ import { disabledTokens } from '../config';
 
 export function TokenBalances() {
   const { asset } = useNavigation();
-  const { data: userData, dataUpdatedAt } = useUserData();
+  const { data: userData, dataUpdatedAt } = useBalances();
 
   // filter out zero balances and at least show usdt
   const tokens = useMemo(() => {
-    const tokensWithBalances = Object.values(userData?.tokens ?? {}).filter(
+    const tokensWithBalances = Object.values(userData ?? {}).filter(
       (t) => BN(t.balance).gt(0)
     );
 
     if (userData) {
       if (tokensWithBalances?.length === 0) {
-        tokensWithBalances.push(userData.tokens.USDT);
+        tokensWithBalances.push(userData.USDT);
       }
-      tokensWithBalances.push(userData.tokens.TON);
+      tokensWithBalances.push(userData.TON);
     }
 
     return [...tokensWithBalances];

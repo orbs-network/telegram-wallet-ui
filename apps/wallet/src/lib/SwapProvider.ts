@@ -94,7 +94,7 @@ export class SwapProvider {
     const isSuccessful = await this.web3Provider.waitForTransaction(txHash);
     if (!isSuccessful) throw new Error('Swap failed, Please try again');
 
-    const tokens = await this.coinsProvider.fetchCoins();
+    const tokens = this.coinsProvider.coins();
 
     const tokenIn = tokens.find((t) => t.address === quote.inToken);
     const tokenOut = tokens.find((t) => t.address === quote.outToken);

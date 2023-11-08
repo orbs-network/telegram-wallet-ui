@@ -10,7 +10,7 @@ import {
 import { useMemo } from 'react';
 import { amountUi } from '../../utils/conversion';
 import BN from 'bignumber.js';
-import { useUserData } from '../../hooks';
+import { useBalances } from '../../hooks';
 import { TransactionHistoryItem } from './TransactionHistoryItem';
 
 const filterTx = (transactions?: TransactionEvent[]) => {
@@ -46,7 +46,7 @@ type TransactionsProps = {
 
 export function TransactionHistory({ tokenFilter }: TransactionsProps) {
   const events = useEventsProvider();
-  const { data: userData } = useUserData();
+  const { data: userData } = useBalances();
 
   const transactions = useMemo(() => {
     const filteredTxs = tokenFilter
@@ -54,7 +54,7 @@ export function TransactionHistory({ tokenFilter }: TransactionsProps) {
           switch (tx.type) {
             case 'deposit':
             case 'withdrawal': {
-              const token = Object.values(userData?.tokens || []).find(
+              const token = Object.values(userData ?? {}).find(
                 (t) =>
                   t.address ===
                   (tx as DepositTransactionEvent | WithdrawalTransactionEvent)
@@ -70,11 +70,11 @@ export function TransactionHistory({ tokenFilter }: TransactionsProps) {
             case 'trade': {
               const tradeTx = tx as TradeTransactionEvent;
 
-              const inToken = Object.values(userData?.tokens || []).find(
+              const inToken = Object.values(userData ?? {}).find(
                 (t) => t.address === tradeTx.inToken
               );
 
-              const outToken = Object.values(userData?.tokens || []).find(
+              const outToken = Object.values(userData ?? {}).find(
                 (t) => t.address === tradeTx.outToken
               );
 
@@ -103,7 +103,7 @@ export function TransactionHistory({ tokenFilter }: TransactionsProps) {
         case 'deposit': {
           const dTx = tx as DepositTransactionEvent;
 
-          const token = Object.values(userData?.tokens || []).find(
+          const token = Object.values(userData ?? {}).find(
             (token) => token.address === dTx.token
           );
 
@@ -115,7 +115,7 @@ export function TransactionHistory({ tokenFilter }: TransactionsProps) {
         }
         case 'withdrawal': {
           const wTx = tx as WithdrawalTransactionEvent;
-          const token = Object.values(userData?.tokens || []).find(
+          const token = Object.values(userData ?? {}).find(
             (token) => token.address === wTx.token
           );
           return {
@@ -126,10 +126,10 @@ export function TransactionHistory({ tokenFilter }: TransactionsProps) {
         }
         case 'trade': {
           const tradeTx = tx as TradeTransactionEvent;
-          const inToken = Object.values(userData?.tokens || []).find(
+          const inToken = Object.values(userData ?? {}).find(
             (token) => token.address === tradeTx.inToken
           );
-          const outToken = Object.values(userData?.tokens || []).find(
+          const outToken = Object.values(userData ?? {}).find(
             (token) => token.address === tradeTx.outToken
           );
           return {
