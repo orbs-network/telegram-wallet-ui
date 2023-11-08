@@ -1,5 +1,5 @@
 import { Container, VStack, Box } from '@chakra-ui/react';
-import { TotalBalance, setTwaBg, Twa } from '@telegram-wallet-ui/twa-ui-kit';
+import { TotalBalance, setTwaBg } from '@telegram-wallet-ui/twa-ui-kit';
 import {
   MainActionMenu,
   Page,
@@ -47,7 +47,7 @@ export function Home() {
       <Container
         size="sm"
         style={{
-          height: Twa.viewportStableHeight || window.innerHeight,
+          height: '100%',
           position: 'relative',
         }}
       >
