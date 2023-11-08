@@ -5,6 +5,7 @@ import { useNavigation } from '../router/hooks';
 import { VStack } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { disabledTokens } from '../config';
+import { balancesAsList } from '../utils/utils';
 
 export function TokenBalances() {
   const { asset } = useNavigation();
@@ -12,15 +13,15 @@ export function TokenBalances() {
 
   // filter out zero balances and at least show usdt
   const tokens = useMemo(() => {
-    const tokensWithBalances = Object.values(userData ?? {}).filter(
-      (t) => BN(t.balance).gt(0)
+    const tokensWithBalances = balancesAsList(userData ?? {}).filter((t) =>
+      BN(t.balance).gt(0)
     );
 
     if (userData) {
       if (tokensWithBalances?.length === 0) {
         tokensWithBalances.push(userData.USDT);
       }
-      tokensWithBalances.push(userData.TON);
+      tokensWithBalances.unshift(userData.TON);
     }
 
     return [...tokensWithBalances];
