@@ -4,6 +4,7 @@ import { useNavigation } from '../../router/hooks';
 import { useBalances } from '../../hooks';
 import { useMainButtonStore } from '../../store/main-button-store';
 import { useEffect, useMemo } from 'react';
+import { balancesAsList } from '../../utils/utils';
 
 export function Withdraw() {
   const { withdrawAddress, deposit } = useNavigation();
@@ -12,7 +13,7 @@ export function Withdraw() {
   const { resetButton, setButton } = useMainButtonStore();
 
   const tokens = useMemo(() => {
-    return Object.values(data || {}).filter((t) => t.balanceBN.gt(0));
+    return balancesAsList(data || {}).filter((t) => t.balanceBN.gt(0));
   }, [data]);
 
   useEffect(() => {

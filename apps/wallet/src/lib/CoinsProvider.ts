@@ -17,6 +17,15 @@ export type Coin = {
 
 const _coins: Coin[] = [
   {
+    coingeckoId: 'ton-coin',
+    name: 'Toncoin',
+    symbol: 'TON',
+    logoURI: 'https://s2.coinmarketcap.com/static/img/coins/128x128/11419.png',
+    address: '',
+    decimals: 9,
+    chainId: 137,
+  },
+  {
     symbol: 'BTC',
     name: 'Bitcoin',
     address: '0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6',
@@ -105,15 +114,6 @@ const _coins: Coin[] = [
     chainId: 137,
     logoURI: 'https://s2.coinmarketcap.com/static/img/coins/128x128/5805.png',
     coingeckoId: 'avalanche-2',
-  },
-  {
-    coingeckoId: 'ton-coin',
-    name: 'Toncoin',
-    symbol: 'TON',
-    logoURI: 'https://s2.coinmarketcap.com/static/img/coins/128x128/11419.png',
-    address: '',
-    decimals: 9,
-    chainId: 137,
   },
 ];
 

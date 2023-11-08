@@ -11,7 +11,6 @@ import { ROUTES } from './router/routes';
 import styled from '@emotion/styled';
 import { lazy, Suspense, useEffect } from 'react';
 import { usePersistedStore } from './store/persisted-store';
-import { WalletSpinner } from './components';
 import { useMainButtonStore } from './store/main-button-store';
 import { useNavigatorOnLine, useWebApp } from './hooks';
 export const queryClient = new QueryClient();
@@ -63,19 +62,19 @@ const ColorMode = () => {
   return <div />;
 };
 
-const Fallback = () => {
-  return (
-    <Container
-      size="sm"
-      style={{
-        height: '100%',
-        position: 'relative',
-      }}
-    >
-      <WalletSpinner />
-    </Container>
-  );
-};
+// const Fallback = () => {
+//   return (
+//     <Container
+//       size="sm"
+//       style={{
+//         height: '100%',
+//         position: 'relative',
+//       }}
+//     >
+//       <WalletSpinner />
+//     </Container>
+//   );
+// };
 
 const AppContainer = styled('div')({
   display: 'flex',

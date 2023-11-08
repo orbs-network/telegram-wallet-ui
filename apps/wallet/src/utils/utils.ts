@@ -1,3 +1,6 @@
+import { coinsProvider } from '../config';
+import { UserData } from '../types';
+
 export function makeElipsisAddress(address?: string, padding = 6): string {
   if (!address) return '';
   return `${address.substring(0, padding)}...${address.substring(
@@ -49,4 +52,16 @@ export function formatDateTime(timestamp: Date) {
     year:
       current.getFullYear() !== timestamp.getFullYear() ? 'numeric' : undefined,
   });
+}
+
+export function balancesAsList(balances: UserData) {
+  const coins = coinsProvider.coins();
+
+  return Object.values(balances).sort(
+    (a, b) =>
+      coins.findIndex(
+        (c) => c.symbol.toLowerCase() === a.symbol.toLowerCase()
+      ) -
+      coins.findIndex((c) => c.symbol.toLowerCase() === b.symbol.toLowerCase())
+  );
 }

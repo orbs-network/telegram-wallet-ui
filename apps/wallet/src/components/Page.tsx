@@ -3,6 +3,7 @@ import { ReactNode, useMemo } from 'react';
 import { colors, Twa } from '@telegram-wallet-ui/twa-ui-kit';
 import { useAnimatedRouterContext } from '../router/AnimatedRouter';
 import { motion, Variants } from 'framer-motion';
+import { Container } from '@chakra-ui/react';
 
 const transition = { ease: 'easeInOut', duration: 0.3 };
 
@@ -32,7 +33,7 @@ const useVariants = () => {
           : {}),
       },
       initial: {
-        transform: `translateX(${isPush ? '100%' : '-25%'})`,
+        transform: `translateX(${isPush ? '100%' : '-100%'})`,
         transition,
         // keep top "layer" of animation as a fixed position
         ...(isPush
@@ -47,7 +48,7 @@ const useVariants = () => {
       },
 
       exit: {
-        transform: `translateX(${isPop ? '100%' : '-10%'})`,
+        transform: `translateX(${isPop ? '100%' : '-100%'})`,
         zIndex: isPop ? 1 : -1,
         transition: {
           ...transition,
@@ -89,12 +90,14 @@ export const Page = ({
       variants={childVariants as Variants}
       style={{ flex: 1 }}
     >
-      <AnimatedRouteContainer
-        $secondaryBackground={secondaryBackground}
-        className={className}
-      >
-        {children}
-      </AnimatedRouteContainer>
+      <Container size="sm" p={0} height="100%">
+        <AnimatedRouteContainer
+          $secondaryBackground={secondaryBackground}
+          className={className}
+        >
+          {children}
+        </AnimatedRouteContainer>
+      </Container>
     </motion.main>
   );
 };

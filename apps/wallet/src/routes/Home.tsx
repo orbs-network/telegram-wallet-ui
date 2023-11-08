@@ -1,4 +1,4 @@
-import { Container, VStack, Box } from '@chakra-ui/react';
+import { VStack, Box, Container } from '@chakra-ui/react';
 import { TotalBalance, setTwaBg } from '@telegram-wallet-ui/twa-ui-kit';
 import { MainActionMenu, Page, TokenBalances } from '../components';
 import { useFormatNumber, usePortfolioUsdValue } from '../hooks';
@@ -26,8 +26,6 @@ export function Home() {
   }, [resetButton]);
 
   useEffect(() => {
-    const staticLoader = document.querySelector('.loader-container');
-    staticLoader?.parentNode?.removeChild(staticLoader);
     setTwaBg(false);
   }, []);
 
@@ -38,12 +36,12 @@ export function Home() {
   });
 
   if (error) {
-    <ErrorPage message={error.message} />;
+    return <ErrorPage message={error.message} />;
   }
 
   return (
     <Page>
-      <Container size="sm" pt={8}>
+      <Container pt={8}>
         <VStack spacing={4} alignItems="stretch">
           <VStack spacing={4}>
             <TotalBalance

@@ -79,11 +79,10 @@ export function TradeReview() {
   const setInAmount = useTradeStore().setInAmount;
 
   useEffect(() => {
-  setTimeout(() => {
-     setInAmount('');
-  }, 300);
+    setTimeout(() => {
+      setInAmount('');
+    }, 300);
   }, [setInAmount]);
-  
 
   return (
     <Page>
@@ -156,12 +155,16 @@ const OutTokenBalanceAfter = () => {
 };
 
 const ExchangeRate = () => {
+  const quote = useQuote();
   const params = useParams<URLParams>();
   const inToken = useGetTokenFromList(params.inToken);
   const outToken = useGetTokenFromList(params.outToken);
 
-  const rate = useExchangeRate(params.inToken, params.outToken);
-  const formattedValue = useFormatNumber({ value: rate });
+  const amountIn = new BN(params.inAmount ?? '0');
+  const amountOut = new BN(quote.amountOut ?? '0');
+
+  const rate = amountOut.div(amountIn).toString();
+  const formattedValue = useFormatNumber({ value: quote.amountOut && rate });
 
   const value = `1 ${inToken?.symbolDisplay} ≈ ${formattedValue} ${outToken?.symbolDisplay}`;
 

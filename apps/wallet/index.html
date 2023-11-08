@@ -28,18 +28,11 @@
         }
       }
 
-      html,
       body {
         padding: 0;
         margin: 0;
         transition: background 0.5s;
         background-color: var(--tg-theme-secondary-bg-color, 'transparent');
-        position: relative;
-      }
-
-      #root {
-        position: relative;
-        z-index: 100;
       }
       .loader-container {
         display: block;
@@ -92,8 +85,6 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
       window.Telegram.WebApp.ready();
-      window.Telegram.WebApp.document.body.style.backgroundColor =
-        window.Telegram.WebApp.themeParams.secondary_bg_color;
       window.Telegram.WebApp.setHeaderColor('secondary_bg_color');
     </script>
     <script type="module" src="/src/main.tsx" async></script>
