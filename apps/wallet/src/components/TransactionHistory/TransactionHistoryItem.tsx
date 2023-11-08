@@ -1,7 +1,7 @@
 import { Avatar, Heading, Box, Text } from '@chakra-ui/react';
 import { ListItem, colors } from '@telegram-wallet-ui/twa-ui-kit';
 
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   TransactionEvent,
   DepositTransactionEvent,
@@ -31,6 +31,8 @@ export function TransactionHistoryItem({
   tx,
   tokenFilter,
 }: TransactionHistoryItemProps) {
+  const navigate = useNavigate();
+
   const { StartIcon, CardTitle, CardData } = useMemo(() => {
     let StartIcon = null;
     let CardTitle = null;
@@ -149,19 +151,19 @@ export function TransactionHistoryItem({
   }, [tokenFilter, tx]);
 
   return (
-    <Link key={tx.id} to={`/transaction/${tx.id}`}>
-      <ListItem
-        StartIconSlot={StartIcon}
-        StartTextSlot={
-          <Box>
-            {CardTitle}
-            <Text variant="hint" fontSize="xs">
-              {formatDateTime(tx.date)}
-            </Text>
-          </Box>
-        }
-        EndTextSlot={CardData}
-      />
-    </Link>
+    <ListItem
+      key={tx.id}
+      onClick={() => navigate(`/transaction/${tx.id}`)}
+      StartIconSlot={StartIcon}
+      StartTextSlot={
+        <Box>
+          {CardTitle}
+          <Text variant="hint" fontSize="xs">
+            {formatDateTime(tx.date)}
+          </Text>
+        </Box>
+      }
+      EndTextSlot={CardData}
+    />
   );
 }
