@@ -3,8 +3,6 @@ import Lottie from 'lottie-react';
 import SuccessLottie from '../assets/lottie/success.json';
 import { css } from '@emotion/react';
 import { Page } from './Page';
-import { setTwaBg } from '@telegram-wallet-ui/twa-ui-kit';
-import { useEffect } from 'react';
 
 const styles = {
   container: css`
@@ -20,22 +18,12 @@ const styles = {
 export function SuccessPage({
   children,
   className = '',
-  secondaryBackground = false,
 }: {
   children: React.ReactNode;
   className?: string;
-  secondaryBackground?: boolean;
 }) {
-  useEffect(() => {
-    setTwaBg(true);
-
-    return () => {
-      setTwaBg(false);
-    };
-  }, []);
-
   return (
-    <Page className={className} secondaryBackground={secondaryBackground}>
+    <Page className={className} secondaryBackground={true}>
       <Container
         css={styles.container}
         size="sm"

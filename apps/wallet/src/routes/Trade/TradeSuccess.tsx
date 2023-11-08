@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SuccessPage } from '../../components';
 import { POLYGON_EXPLORER } from '../../consts';
-import { useFormatNumber, useGetTokenFromList, useUserData } from '../../hooks';
+import { useFormatNumber, useGetTokenFromList } from '../../hooks';
 import { useUpdateMainButton } from '../../store/main-button-store';
 import { URLParams } from '../../types';
 import { colors } from '@telegram-wallet-ui/twa-ui-kit';
@@ -34,8 +34,7 @@ export function TradeSuccess() {
 
   const formattedOutAmount = useFormatNumber({ value: outAmount });
   const navigate = useNavigate();
-  const token = useGetTokenFromList(outToken)
-
+  const token = useGetTokenFromList(outToken);
 
   const onClick = useCallback(() => {
     navigate('/');
@@ -49,7 +48,7 @@ export function TradeSuccess() {
   });
 
   return (
-    <SuccessPage secondaryBackground>
+    <SuccessPage>
       <Text css={styles.title}>Exchange completed</Text>
       <Text>
         <strong>

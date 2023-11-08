@@ -16,7 +16,6 @@ import { useNavigation } from '../../router/hooks';
 import { styles } from './styles';
 import { useUpdateMainButton } from '../../store/main-button-store';
 import { Page } from '../../components';
-import { setTwaBg } from '@telegram-wallet-ui/twa-ui-kit';
 import { INSUFFICIENT_FUNDS_ERROR } from '../../consts';
 import { StringParam, useQueryParam } from 'use-query-params';
 import { useTradeStore } from './store';
@@ -264,14 +263,6 @@ const DstTokenPanel = () => {
 export function TradePanel() {
   useInitialTokens();
   const [disableMainButtonUpdate, setDisableMainButtonUpdate] = useState(false);
-
-  useEffect(() => {
-    setTwaBg(true);
-
-    return () => {
-      setTwaBg(false);
-    };
-  }, []);
 
   return (
     <TradeContext.Provider
