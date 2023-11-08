@@ -36,14 +36,8 @@ const styles = {
       background: ${colors.secondary_bg_color};
     }
 
-    .list-item-content:last-child::after {
+    .list-item:last-child .list-item-content::after {
       display: none;
-    }
-
-    &:last-of-type {
-      .chakra-card__body::after {
-        display: none;
-      }
     }
 
     a {
