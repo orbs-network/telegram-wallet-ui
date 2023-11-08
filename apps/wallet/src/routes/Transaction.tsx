@@ -127,7 +127,7 @@ export function Transaction() {
           {txAmount !== '' && txToken && tx ? (
             <Heading
               as="h2"
-              size="2xl"
+              size="3xl"
               color={tx.direction === 'incoming' ? colors.success : 'inherit'}
             >
               {txAmount}{' '}
