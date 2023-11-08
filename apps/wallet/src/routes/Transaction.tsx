@@ -41,7 +41,7 @@ export function Transaction() {
   const { data: userData } = useBalances();
 
   let txToken = null;
-  let txDescription = '';
+  let txDescription: React.ReactNode = '';
   let txAmount = '';
   let TxDetails = null;
 
@@ -62,7 +62,14 @@ export function Transaction() {
         (token) => token.address === wTx.token
       );
 
-      txDescription = `Withdrawal to ${wTx.toAddress.slice(0, 8)}...`;
+      txDescription = (
+        <>
+          Withdrawal to{' '}
+          <Text as="span" fontWeight={500}>
+            {wTx.toAddress.slice(0, 8)}...
+          </Text>
+        </>
+      );
       txAmount = `-${amountUi(txToken, BN(wTx.amount), 5)}`;
       TxDetails = (
         <Card>
@@ -81,7 +88,18 @@ export function Transaction() {
         (token) => token.address === tTx.outToken
       );
       txToken = outToken;
-      txDescription = `Trade ${inToken?.symbolDisplay} to ${outToken?.symbolDisplay}`;
+      txDescription = (
+        <>
+          Buy{' '}
+          <Text as="span" fontWeight={500}>
+            {outToken?.symbolDisplay}
+          </Text>{' '}
+          with{' '}
+          <Text as="span" fontWeight={500}>
+            {inToken?.symbolDisplay}
+          </Text>
+        </>
+      );
       txAmount = `+${amountUi(txToken, BN(tTx.amountOut), 5)}`;
       TxDetails = (
         <Card>
@@ -121,7 +139,7 @@ export function Transaction() {
             {txDescription === '' ? (
               <SkeletonText />
             ) : (
-              <Text size="sm">{txDescription}</Text>
+              <Text>{txDescription}</Text>
             )}
           </HStack>
           {txAmount !== '' && txToken && tx ? (
