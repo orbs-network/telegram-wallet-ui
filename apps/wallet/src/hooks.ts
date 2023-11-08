@@ -63,8 +63,6 @@ export const useMultiplyPriceByAmount = (
 
     const amount = new BN(_amount);
 
-    console.log(price, coin);
-
     return amount.multipliedBy(price).toString();
   }, [_amount, price]);
 };
@@ -126,8 +124,6 @@ export const usePortfolioUsdValue = () => {
   const { data, dataUpdatedAt: userDataUpdatedAt, error } = useBalances();
   const { data: usdPrices, dataUpdatedAt: coinsDataUpdatedAt } =
     useCoinsLastPrice();
-
-  console.log('usePortfolioUsdValue', data, usdPrices);
 
   return useMemo(() => {
     if (error) {
@@ -199,7 +195,7 @@ const initialCoinBalances = (coins: Coin[]): UserData | undefined => {
 
 const updateCoinBalances = async (coins: Coin[]) => {
   try {
-    console.log('Refreshing balances...');
+    debug('Refreshing balances...');
 
     const _userData: UserData = {};
 
@@ -229,6 +225,7 @@ export const useBalances = () => {
     queryKey: [QueryKeys.BALANCES],
     enabled: coins.length > 0,
     refetchInterval: 10_000,
+    staleTime: 5_000,
     queryFn: () => updateCoinBalances(coins),
     initialData: initialCoinBalances(coins),
   });
