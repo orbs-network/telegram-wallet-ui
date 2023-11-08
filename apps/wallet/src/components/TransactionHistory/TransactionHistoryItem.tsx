@@ -62,7 +62,7 @@ export function TransactionHistoryItem({
               color: colors.success,
             }}
           >
-            <Text noOfLines={1}>
+            <Text variant="bodyText" noOfLines={1}>
               +<TransactionAmount amount={dTx.amount} />{' '}
               {dTx.token?.symbolDisplay}
             </Text>
@@ -93,7 +93,7 @@ export function TransactionHistoryItem({
               textAlign: 'right',
             }}
           >
-            <Text noOfLines={1}>
+            <Text variant="bodyText" noOfLines={1}>
               <TransactionAmount amount={wTx.amount} />{' '}
               {wTx.token?.symbolDisplay}
             </Text>
@@ -134,7 +134,7 @@ export function TransactionHistoryItem({
               color: isIn ? 'inherit' : colors.success,
             }}
           >
-            <Text noOfLines={1}>
+            <Text variant="bodyText" noOfLines={1}>
               {!isIn && '+'}
               <TransactionAmount amount={amount} /> {token?.symbolDisplay ?? ''}
             </Text>

@@ -110,7 +110,8 @@ export const theme = extendTheme({
     Heading: defineStyleConfig({
       variants: {
         bodyTitle: {
-          fontSize: '1rem',
+          // 17px to rem
+          fontSize: '1.0625rem',
           fontWeight: 'medium',
         },
       },
@@ -126,7 +127,10 @@ export const theme = extendTheme({
       variants: {
         hint: {
           color: colors.hint_color,
-          fontSize: '0.875rem',
+          fontSize: '0.9375rem',
+        },
+        bodyText: {
+          fontSize: '1.0625rem',
         },
       },
     }),

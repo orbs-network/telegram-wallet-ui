@@ -94,7 +94,7 @@ function TokenListItem({
       EndTextSlot={<USD token={token} />}
       StartTextSlot={
         <VStack alignItems="flex-start" gap="1px">
-          <Heading fontSize='17px' as="h3" variant="bodyTitle">
+          <Heading fontSize="17px" as="h3" variant="bodyTitle">
             {token.name}
           </Heading>
           <Balance token={token} />
@@ -124,7 +124,9 @@ const USD = ({ token }: { token: TokenData }) => {
   }
 
   return (
-    <Text size="sm">${BN(formattedAmount).toFixed(2, BN.ROUND_HALF_UP)}</Text>
+    <Text variant="bodyText">
+      ${BN(formattedAmount).toFixed(2, BN.ROUND_HALF_UP)}
+    </Text>
   );
 };
 
