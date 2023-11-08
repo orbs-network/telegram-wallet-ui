@@ -46,11 +46,7 @@ export function Asset() {
     decimalScale: 5,
   });
 
-  if (!assetId) {
-    return <Loader />;
-  }
-
-  if (!tokenData) {
+  if (!assetId || !tokenData) {
     return <Loader />;
   }
 
