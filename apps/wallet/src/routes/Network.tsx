@@ -1,28 +1,25 @@
-import { Avatar, Container, Heading, Text, VStack } from "@chakra-ui/react";
-import { css } from "@emotion/react";
-import { List, ListItem } from "@telegram-wallet-ui/twa-ui-kit";
-import _ from "lodash";
-import { useNavigate, useParams } from "react-router-dom";
-import { Page } from "../components";
-import { NETWORKS } from "../consts";
-import { useGetTokenFromList } from "../hooks";
-import { usePersistedStore } from "../store/persisted-store";
-import { Network as NetworkType, TokenData, URLParams } from "../types";
-
+import { Avatar, Container, Heading, Text, VStack } from '@chakra-ui/react';
+import { css } from '@emotion/react';
+import { List, ListItem } from '@telegram-wallet-ui/twa-ui-kit';
+import _ from 'lodash';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Page } from '../components';
+import { NETWORKS } from '../consts';
+import { useGetTokenFromList } from '../hooks';
+import { usePersistedStore } from '../store/persisted-store';
+import { Network as NetworkType, TokenData, URLParams } from '../types';
 
 const styles = {
   list: css`
     width: 100%;
   `,
-
 };
 
 export function Network({ className = '' }: { className?: string }) {
   const { network: selectedNetwork, setNetwork } = usePersistedStore();
-  const {assetId} = useParams<URLParams>()
+  const { assetId } = useParams<URLParams>();
   const navigate = useNavigate();
   const token = useGetTokenFromList(assetId);
-  
 
   const onSelect = (network: string) => {
     navigate(-1);
@@ -53,7 +50,6 @@ export function Network({ className = '' }: { className?: string }) {
   );
 }
 
-
 interface NetworkProps {
   network: NetworkType;
   onClick: () => void;
@@ -61,9 +57,31 @@ interface NetworkProps {
   token?: TokenData;
 }
 
+function NetworkListItem({ network, onClick, selected, token }: NetworkProps) {
+  let tokenDisplayName = '';
+  if (token) {
+    const isNativeTokenOfAnyNetwork = NETWORKS.some(
+      (n) =>
+        n.nativeTokenSymbol.toLowerCase() === token.symbol.toLowerCase() ||
+        token.symbol.toLowerCase() === 'btc'
+    );
 
+    const isNativeTokenOfCurrentNetwork =
+      network.nativeTokenSymbol.toLowerCase() === token.symbol.toLowerCase();
 
-function NetworkListItem({ network, onClick, selected }: NetworkProps) {
+    if (isNativeTokenOfCurrentNetwork) {
+      tokenDisplayName = token.symbol.toUpperCase();
+    } else if (isNativeTokenOfAnyNetwork || network.alwaysUsePrefix) {
+      tokenDisplayName = `${
+        network.wrappedTokenPrefix
+      }${token.symbol.toUpperCase()} ${network.tokenSuffix}`;
+    } else {
+      tokenDisplayName = `${
+        network.alwaysUsePrefix ? network.wrappedTokenPrefix : ''
+      }${token.symbol.toUpperCase()} ${network.tokenSuffix}`;
+    }
+  }
+
   return (
     <ListItem
       css={{
@@ -79,10 +97,9 @@ function NetworkListItem({ network, onClick, selected }: NetworkProps) {
           <Heading as="h3" variant="bodyTitle">
             {network.displayName}
           </Heading>
-          <Text variant="hint">{network.symbol}</Text>
+          <Text variant="hint">{tokenDisplayName}</Text>
         </VStack>
       }
     />
   );
 }
-

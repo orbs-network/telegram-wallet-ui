@@ -15,6 +15,7 @@ import { useNumericFormat } from 'react-number-format';
 import { create } from 'zustand';
 import { queryClient } from './App';
 import { Twa } from '@telegram-wallet-ui/twa-ui-kit';
+import { Coin } from './lib/CoinsProvider';
 
 export enum QueryKeys {
   FETCH_LAST_PRICE = 'useFetchLatestPrice',
@@ -166,9 +167,9 @@ export const getBalances = async () => {
   );
 };
 
-const transformBalances = (coins: any, balances: any) => {
+const transformBalances = (coins: Coin[], balances: Record<string, string>) => {
   return Object.fromEntries(
-    coins.map((token: any) => {
+    coins.map((token: Coin) => {
       const balance = new BN(balances[token.address] ?? 0);
       return [
         token.symbol.toUpperCase(),
@@ -185,7 +186,7 @@ const transformBalances = (coins: any, balances: any) => {
   );
 };
 
-const initialCoinBalances = (coins: any[]): UserData | undefined => {
+const initialCoinBalances = (coins: Coin[]): UserData | undefined => {
   let balances;
   if (localStorage.getItem('balances')) {
     balances = JSON.parse(localStorage.getItem('balances')!);
@@ -196,7 +197,7 @@ const initialCoinBalances = (coins: any[]): UserData | undefined => {
   return transformBalances(coins, balances);
 };
 
-const updateCoinBalances = async (coins: any[]) => {
+const updateCoinBalances = async (coins: Coin[]) => {
   try {
     console.log('Refreshing balances...');
 
