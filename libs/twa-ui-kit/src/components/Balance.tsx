@@ -73,7 +73,7 @@ export function Balance({
   return (
     <Stat textAlign="center">
       <StatLabel as="label">{label}</StatLabel>
-      <StatNumber fontSize="2xl">{PrimaryAmount}</StatNumber>
+      <StatNumber fontSize="28px">{PrimaryAmount}</StatNumber>
       <Text as="label" variant="hint">
         {secondaryAmount} {secondaryCurrencyCode}
       </Text>
