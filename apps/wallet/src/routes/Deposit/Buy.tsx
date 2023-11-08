@@ -17,7 +17,7 @@ import { Transak } from './transak/constants';
 const debug = getDebug('Buy');
 
 const walletAddress = account?.address;
-const SYMBOL = 'USDT';
+const SYMBOL = 'usdt';
 
 const constructSrcUrl = (walletAddress: string) => {
   const params = new URLSearchParams({
@@ -37,6 +37,7 @@ export const Buy = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const navigate = useNavigate();
   const usdtToken = useGetTokenFromList(SYMBOL);
+  console.log(usdtToken?.name, 'SHSHSH');
 
   useEffect(() => {
     if (usdtToken) {
