@@ -26,7 +26,7 @@ export function Home() {
   }, [resetButton]);
 
   useEffect(() => {
-    const staticLoader = document.querySelector('.loader');
+    const staticLoader = document.querySelector('.loader-container');
     staticLoader?.parentNode?.removeChild(staticLoader);
     setTwaBg(false);
   }, []);
