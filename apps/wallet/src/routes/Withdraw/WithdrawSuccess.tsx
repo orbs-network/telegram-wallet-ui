@@ -1,4 +1,4 @@
-import { Heading, Text, VStack } from '@chakra-ui/react';
+import { Code, Heading, Text, VStack } from '@chakra-ui/react';
 import { useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SuccessPage } from '../../components';
@@ -40,9 +40,13 @@ export function WithdrawSuccess() {
           <Text variant="hint" mt={8}>
             {amount} {symbol.toUpperCase()} has been sent to{' '}
           </Text>
-          <Text style={{ wordBreak: 'break-all' }} maxWidth="75%">
+          <Code
+            background="transparent"
+            style={{ wordBreak: 'break-all' }}
+            maxWidth="75%"
+          >
             {recipient}
-          </Text>
+          </Code>
         </VStack>
       </VStack>
     </SuccessPage>
