@@ -79,7 +79,7 @@ export const colors = {
     twaMode(tgColors.light.text_color, tgColors.dark.text_color),
   border_color: twaMode('rgb(239, 239, 243);', '#3d3d3f'),
   button_disabed_color: twaMode('#999999', '#333333'),
-  success: twaMode('#38A169', '#4cd964'),
+  success: twaMode('#34c759', '#4cd964'),
 };
 
 const config: ThemeConfig = {

@@ -23,6 +23,13 @@ import BN from 'bignumber.js';
 import { useParams } from 'react-router-dom';
 import { Card, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import { formatDateTime } from '../utils/utils';
+import { css } from '@emotion/react';
+
+const styles = {
+  mainText: css`
+    font-size: 1.125rem;
+  `,
+};
 
 export function Transaction() {
   const { txId } = useParams<{ txId: string }>();
@@ -60,7 +67,7 @@ export function Transaction() {
       TxDetails = (
         <Card>
           <Text variant="hint">To</Text>
-          <Text>{wTx.toAddress}</Text>
+          <Text css={styles.mainText}>{wTx.toAddress}</Text>
         </Card>
       );
       break;
@@ -81,14 +88,14 @@ export function Transaction() {
           <VStack alignItems="flex-start">
             <Box>
               <Text variant="hint">Paid</Text>
-              <Text>
+              <Text css={styles.mainText}>
                 {amountUi(inToken, BN(tTx.amountIn))} {inToken?.symbolDisplay}
               </Text>
             </Box>
             <Divider />
             <Box>
               <Text variant="hint">Exchange Rate</Text>
-              <Text>
+              <Text css={styles.mainText}>
                 1 {inToken?.symbolDisplay} ≈ {toUiDisplay(tTx.exchangeRate)}{' '}
                 {outToken?.symbolDisplay}
               </Text>
@@ -132,7 +139,9 @@ export function Transaction() {
             <SkeletonText />
           )}
           {tx ? (
-            <Text variant="hint">{formatDateTime(tx.date)}</Text>
+            <Text variant="hint" css={styles.mainText}>
+              {formatDateTime(tx.date)}
+            </Text>
           ) : (
             <SkeletonText />
           )}

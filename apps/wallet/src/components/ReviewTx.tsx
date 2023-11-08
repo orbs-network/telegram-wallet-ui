@@ -82,7 +82,7 @@ const styles = {
   `,
   sectionValue: css`
     font-weight: 500;
-    font-size: 17px;
+    font-size: 18px;
   `,
   sectionTitle: css`
     color: ${colors.hint_color};
