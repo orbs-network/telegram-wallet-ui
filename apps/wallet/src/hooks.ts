@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { TokenData, UserData } from './types';
 import { fetchLatestPrices, getInitialPrices } from './utils/fetchLatestPrice';
 import BN from 'bignumber.js';
-import { account, coinsProvider, swapProvider, web3Provider } from './config';
+import { coinsProvider, swapProvider, web3Provider } from './config';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getDebug } from './lib/utils/debug';
 import { amountUi } from './utils/conversion';
