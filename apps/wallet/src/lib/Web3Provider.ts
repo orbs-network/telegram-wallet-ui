@@ -184,7 +184,7 @@ export class Web3Provider {
       Object.entries(results.results).map(([token, result]) => {
         return [
           token,
-          BN(result.callsReturnContext[0].returnValues[0]?.hex ?? 0).toString(),
+          BN(result.callsReturnContext[0].returnValues[0]?.hex ?? 0),
         ];
       })
     );
