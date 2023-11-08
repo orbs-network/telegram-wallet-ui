@@ -225,6 +225,7 @@ export const useBalances = () => {
     queryKey: [QueryKeys.BALANCES],
     enabled: coins.length > 0,
     refetchInterval: 10_000,
+    staleTime: 5_000,
     queryFn: () => updateCoinBalances(coins),
     initialData: initialCoinBalances(coins),
   });

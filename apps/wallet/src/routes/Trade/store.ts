@@ -11,7 +11,10 @@ interface Store {
 
 export const useTradeStore = create<Store>((set) => ({
   inAmount: '',
-  setInAmount: (value) => set({ inAmount: value }),
+  setInAmount: (value) => {
+    console.log(value)
+    set({ inAmount: value });
+  },
   inToken: undefined,
   outToken: undefined,
   setInToken: (inToken) => set({ inToken }),

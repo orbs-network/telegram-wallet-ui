@@ -1,5 +1,5 @@
 import { VStack, Flex, Text, Box } from '@chakra-ui/react';
-import { CSSProperties, ReactNode, useEffect, useMemo } from 'react';
+import { CSSProperties, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import {
   useMultiplyPriceByAmount,
   useFormatNumber,
@@ -13,7 +13,7 @@ import { NumericFormat } from 'react-number-format';
 import { useAnimate } from 'framer-motion';
 import { Twa, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import { ERROR_COLOR } from '../consts';
-
+const INPUT_FONT_SIZE = 55;
 const styles = {
   inputContainer: css`
     position: relative;
@@ -57,7 +57,6 @@ const styles = {
 };
 
 const StyledNumericFormat = styled(NumericFormat)({
-  fontSize: '55px',
   fontWeight: 700,
   outline: 'none',
   caretColor: colors.button_color,
@@ -81,6 +80,7 @@ type CryptoAmountInputProps = {
   otherTokenSymbol?: string;
   sideContent?: ReactNode;
   errorComponent?: ReactNode;
+  css?: Interpolation<CSSProperties>;
 };
 
 function CryptoAmountInput({
@@ -93,9 +93,12 @@ function CryptoAmountInput({
   otherTokenSymbol,
   sideContent,
   errorComponent,
+  css = {},
 }: CryptoAmountInputProps) {
   const token = useGetTokenFromList(tokenSymbol);
-
+  const containerRef = useRef<HTMLDivElement>(null);
+  const sideContentRef = useRef<HTMLDivElement>(null);
+  const [ready, setReady] = useState(false)
   const calculatedPrice = useMultiplyPriceByAmount(
     token?.coingeckoId || 'ethereum',
     Number(value)
@@ -105,11 +108,18 @@ function CryptoAmountInput({
   const formattedPriceCompare = useFormatNumber({
     value: priceCompare,
   });
-  const formattedAmount = useFormatNumber({ value, decimalScale: 18 });
+  const formattedAmount = useFormatNumber({ value, decimalScale: 18});
   const formattedUsdPrice = useFormatNumber({
     value: calculatedPrice,
     prefix: '$',
   });
+
+  useEffect(() => {
+   if(containerRef.current && sideContentRef.current) {
+      setReady(true)
+   }
+  }, [])
+  
 
   const bottomContent = useMemo(() => {
     if (error) {
@@ -135,15 +145,6 @@ function CryptoAmountInput({
     errorComponent,
   ]);
 
-  const textSizePX = useMemo(() => {
-    const size = getTextSizeInPixels({
-      text: formattedAmount || '',
-      fontSize: 55,
-      fontWeight: 700,
-    });
-    return size < window.innerWidth ? size : window.innerWidth;
-  }, [formattedAmount]);
-
   const [scope, animate] = useAnimate();
   useEffect(() => {
     if (error) {
@@ -160,14 +161,53 @@ function CryptoAmountInput({
     }
   }, [animate, error, name]);
 
+  const { fontSize, inputWidth } = useMemo(() => {
+    if (!ready) {
+      return {
+        fontSize: INPUT_FONT_SIZE,
+        inputWidth: 0,
+      };
+    }
+      const maxWidth =
+        (containerRef.current?.offsetWidth || 0) -
+        (sideContentRef.current?.offsetWidth || 0);
+    let _fontSize = INPUT_FONT_SIZE;
+    const _inputWidth = getTextSizeInPixels({
+      text: formattedAmount || '',
+      fontSize: _fontSize,
+      fontWeight: 700,
+    });
+
+    console.log({ _inputWidth, maxWidth });
+
+    if (_inputWidth > maxWidth) {
+      const dif = maxWidth / _inputWidth;
+      console.log('dif', dif, maxWidth, _inputWidth, formattedAmount);
+
+      _fontSize = _fontSize * dif * 0.94;
+    }
+    return {
+      fontSize: Math.max(_fontSize, 22),
+      inputWidth: _inputWidth >= maxWidth ? maxWidth : _inputWidth,
+    };
+  }, [formattedAmount, ready]);
+
   return (
-    <VStack alignItems="flex-start" gap="0px">
+    <VStack
+      css={css}
+      alignItems="flex-start"
+      gap="0px"
+      ref={containerRef}
+      width="100%"
+    >
       <Flex
         css={styles.inputContainer}
         alignItems="center"
         justifyContent="flex-start"
         ref={scope}
         gap="10px"
+        width="100%"
+        className="input-container"
       >
         <StyledNumericFormat
           id={name}
@@ -181,21 +221,22 @@ function CryptoAmountInput({
           style={{
             pointerEvents: editable ? 'auto' : 'none',
             color: error ? ERROR_COLOR : '',
+            fontSize: `${fontSize}px`,
+            width: Math.max(inputWidth, 32),
           }}
           readOnly={!editable}
         />
-        {sideContent || (
-          <Symbol
-            symbol={token?.symbolDisplay}
-            css={{
-              position: 'absolute',
-              bottom: '10px',
-              pointerEvents: 'none',
-              left: !value ? 50 : textSizePX + 12,
-              color: error ? ERROR_COLOR : '',
-            }}
-          />
-        )}
+        <div ref={sideContentRef}>
+          {sideContent || (
+            <Symbol
+              symbol={token?.symbolDisplay}
+              css={{
+                pointerEvents: 'none',
+                color: error ? ERROR_COLOR : '',
+              }}
+            />
+          )}
+        </div>
       </Flex>
       <Box css={styles.bottonContent}>{bottomContent}</Box>
     </VStack>

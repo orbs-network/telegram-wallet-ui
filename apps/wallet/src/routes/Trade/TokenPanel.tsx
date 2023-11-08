@@ -65,10 +65,6 @@ const TokenPanelHeader = ({
   isInToken?: boolean;
   onChange?: (value: string) => void;
 }) => {
-  const formattedBalance = useFormatNumber({
-    value: token?.balance,
-    decimalScale: 4,
-  });
 
   return (
     <Flex css={styles.header}>
@@ -95,8 +91,6 @@ export const TokenPanel = ({
   quotePending,
   value,
   onChange,
-  onTokenSelect,
-  filterTokenSymbol,
   token,
   isInToken,
   error,
@@ -136,14 +130,14 @@ export const TokenPanel = ({
   }, [isInToken]);
 
   return (
-    <VStack css={styles.container}>
+    <VStack css={styles.container} width='100%'>
       <TokenPanelHeader
         onChange={onChange}
         token={token}
         isInToken={isInToken}
       />
 
-      <Flex css={quotePending && outAmountStyles}>
+      <Flex css={quotePending && outAmountStyles} width='100%'>
         <CryptoAmountInput
           otherTokenSymbol={otherTokenSymbol}
           value={value}
@@ -151,6 +145,14 @@ export const TokenPanel = ({
           onChange={onChange}
           editable={!!isInToken}
           name={name}
+          css={{
+            ".input-container" :{
+              justifyContent: 'space-between',
+            },
+            'input': {
+              flex: 1,
+            }
+          }}
           error={error}
           errorComponent={handleErorrComponent}
           sideContent={
