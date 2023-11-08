@@ -159,7 +159,7 @@ export function TransactionHistory({ tokenFilter }: TransactionsProps) {
 
   if (!transactions || transactions.length === 0) {
     return (
-      <Card>
+      <Card css={{ minHeight: '72px' }}>
         <Text variant="hint">NO TRANSACTIONS</Text>
       </Card>
     );
