@@ -42,7 +42,7 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <ChakraProvider theme={theme}>
         <AppContainer style={{ height }}>
-          <Suspense fallback={<Fallback />}>
+          <Suspense>
             <ColorMode />
             <Router />
           </Suspense>
