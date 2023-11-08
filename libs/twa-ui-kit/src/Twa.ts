@@ -1,2 +1,9 @@
-// TODO: workaround for declaration file
-export const Twa = (window as any).Telegram.WebApp;
+declare global {
+  interface Window {
+    Telegram: {
+      WebApp: any;
+    };
+  }
+}
+
+export const Twa = window.Telegram.WebApp;
