@@ -239,7 +239,7 @@ function CryptoAmountInput({
             pointerEvents: editable ? 'auto' : 'none',
             color: error ? ERROR_COLOR : '',
             fontSize: `${fontSize}px`,
-            width: Math.max(inputWidth, 32),
+            width: Math.max(inputWidth, 38),
           }}
           readOnly={!editable}
         />
