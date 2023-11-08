@@ -1,8 +1,11 @@
-import { Container, VStack } from '@chakra-ui/react';
+import { Container, Link, Text, VStack } from '@chakra-ui/react';
 import Lottie from 'lottie-react';
 import SuccessLottie from '../assets/lottie/success.json';
 import { css } from '@emotion/react';
 import { Page } from './Page';
+import { ReactNode } from 'react';
+import { colors } from '@telegram-wallet-ui/twa-ui-kit';
+import { POLYGON_EXPLORER } from '../consts';
 
 const styles = {
   container: css`
@@ -13,9 +16,22 @@ const styles = {
     justify-content: center;
     text-align: center;
   `,
+  title: css`
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  `,
+  text: css`
+    font-size: 17px;
+  `,
+  link: css`
+    color: ${colors.link_color};
+    margin-top: 16px;
+    text-decoration: unset;
+  `,
 };
 
-export function SuccessPage({
+function SuccessPage({
   children,
   className = '',
 }: {
@@ -27,10 +43,10 @@ export function SuccessPage({
       <Container
         css={styles.container}
         size="sm"
-        pt={4}
+        gap='0px'
         justifyContent="stretch"
       >
-        <VStack spacing={4} justifyContent="space-between">
+        <VStack gap='0px' justifyContent="space-between">
           <Lottie
             animationData={SuccessLottie}
             loop={true}
@@ -42,3 +58,31 @@ export function SuccessPage({
     </Page>
   );
 }
+
+const Title = ({text}:{text: string}) => {
+  return <Text as='h1' css={styles.title}>{text}</Text>
+}
+
+const SuccessLink = ({ text, txHash }: { text: string; txHash?: string }) => {
+  return (
+    <Link
+      css={styles.link}
+      href={`${POLYGON_EXPLORER}/tx/${txHash}`}
+      target="_blank"
+    >
+      {text}
+    </Link>
+  );
+};
+
+const SuccessText = ({text}:{text: ReactNode}) => {
+  return <Text css={styles.text}>{text}</Text>
+}
+
+
+SuccessPage.Title = Title;
+SuccessPage.Text = SuccessText; 
+SuccessPage.Link = SuccessLink;
+
+
+export default SuccessPage

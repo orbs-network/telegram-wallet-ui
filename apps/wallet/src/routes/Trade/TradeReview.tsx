@@ -69,8 +69,7 @@ const useMainButton = () => {
 
   useUpdateMainButton({
     text: 'CONFIRM AND TRADE',
-    progress: isPending || isFetching,
-    disabled: !amountOut || !inToken || isFetching,
+    disabled: !amountOut || !inToken || isFetching || isPending,
     onClick: mutateAsync,
   });
 };

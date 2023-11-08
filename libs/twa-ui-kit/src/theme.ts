@@ -70,10 +70,14 @@ export const colors = {
       tgColors.light.secondary_bg_color,
       tgColors.dark.secondary_bg_color
     ),
+  secondary_bg_color2: twaMode(
+    'rgba(116, 116, 128, 0.08)',
+    'rgba(116, 116, 128, 0.18);'
+  ),
   text_color:
     Twa.themeParams.text_color ||
     twaMode(tgColors.light.text_color, tgColors.dark.text_color),
-  border_color: twaMode('#c8c7cb', '#3d3d3f'),
+  border_color: twaMode('rgb(239, 239, 243);', '#3d3d3f'),
   button_disabed_color: twaMode('#999999', '#333333'),
   success: twaMode('#38A169', '#4cd964'),
 };

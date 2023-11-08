@@ -5,7 +5,6 @@ import styled from '@emotion/styled';
 import { useMemo } from 'react';
 import { BsChevronCompactRight } from 'react-icons/bs';
 import { CryptoAmountInput } from '../../components';
-import { useFormatNumber } from '../../hooks';
 import { TokenData } from '../../types';
 import { colors } from '@telegram-wallet-ui/twa-ui-kit';
 import { flash } from '../../styles';
@@ -21,6 +20,7 @@ const outAmountStyles = css`
 const styles = {
   container: css`
     align-items: flex-start;
+    gap: 0px;
   `,
   header: css`
     align-items: center;
@@ -69,9 +69,10 @@ const TokenPanelHeader = ({
   return (
     <Flex css={styles.header}>
       <Flex alignItems="center" gap="8px">
-        <Avatar width={30} height={30} src={token?.logoURI} />
-        {isInToken && <Text fontSize="14px">You pay</Text>}
-        {!isInToken && <Text fontSize="14px">You receive</Text>}
+        <Avatar width="32px" height="32px" src={token?.logoURI} />
+
+        {isInToken && <Text fontSize="17px">You pay</Text>}
+        {!isInToken && <Text fontSize="17px">You receive</Text>}
       </Flex>
       {isInToken && onChange && token && (
         <CryptoAmountInput.MaxButton
@@ -107,7 +108,7 @@ export const TokenPanel = ({
   error?: string;
   otherTokenSymbol?: string;
   name: string;
-}) => {
+}) => {  
   const { setDisableMainButtonUpdate } = useTradeContext();
   const handleErorrComponent = useMemo(() => {
     if (error === INSUFFICIENT_FUNDS_ERROR && token?.balance) {

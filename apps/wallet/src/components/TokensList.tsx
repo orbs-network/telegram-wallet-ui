@@ -99,8 +99,8 @@ function TokenListItem({
       EndIconSlot={EndIconSlot}
       EndTextSlot={<USD token={token} />}
       StartTextSlot={
-        <VStack alignItems="flex-start" gap="2px">
-          <Heading as="h3" variant="bodyTitle">
+        <VStack alignItems="flex-start" gap="1px">
+          <Heading fontSize='17px' as="h3" variant="bodyTitle">
             {token.name}
           </Heading>
           <Balance token={token} />

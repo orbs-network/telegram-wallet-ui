@@ -10,52 +10,79 @@ const styles = {
   container: css``,
   tokenDisplayContainer: css`
     width: 100%;
-    gap: 5px;
+    gap: 4px;
     position: relative;
   `,
   tokenDisplayContainerArrow: css`
     padding: 1px;
     border-radius: 50%;
-    background-color: ${colors.button_color};
+    background-color: ${colors.border_color};
     position: absolute;
     z-index: 1;
     top: 50%;
     transform: translateY(-50%);
     left: 23px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     svg {
       color: white;
-      width: 20px;
-      height: 20px;
+      font-size: 23px;
+      color: ${colors.text_color};
     }
   `,
   category: css`
     width: 100%;
     align-items: flex-start;
     gap: 0px;
+
+    .chakra-card {
+      min-height: unset;
+    }
+    .chakra-card__body {
+      padding: 10px 16px;
+    }
+    ,
     .review-tx-section {
-      border-bottom: 1px solid ${colors.border_color};
-      padding-bottom: 10px;
+      padding-bottom: 6px;
+      position: relative;
+
+      &:after {
+        content: '';
+        left: 0px;
+        position: absolute;
+        width: calc(100% + 20px);
+        bottom: 0px;
+        height: 1px;
+        background-color: ${colors.border_color};
+      }
       &:last-child {
-        border-bottom: none;
         padding-bottom: 0px;
+      }
+      &:last-child:after  {
+        display: none;
       }
     }
   `,
   categoryTitle: css`
     color: ${colors.hint_color};
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
-    padding-left: 18px;
-    margin-bottom: 10px;
+    padding-left: 16px;
+    margin-bottom: 4px;
+    margin-top: 6px;
+    text-transform: uppercase;
   `,
   section: css`
     width: 100%;
     align-items: flex-start;
-    gap: 2px;
+    gap: 0px;
   `,
   sectionValue: css`
     font-weight: 500;
-    font-size: 15px;
+    font-size: 17px;
   `,
   sectionTitle: css`
     color: ${colors.hint_color};
@@ -71,7 +98,7 @@ const styles = {
   `,
   tokenDisplay: css`
     align-items: center;
-    gap: 12px;
+    gap: 10px;
   `,
   tokenDisplayLoader: css`
     width: 80px;
@@ -81,8 +108,14 @@ const styles = {
   tokenDisplayAmount: css`
     position: relative;
   `,
+  tokenDisplayCard: css`
+    background-color: ${colors.secondary_bg_color2};
+    .chakra-card__body {
+      padding: 12px 15px;
+    }
+  `,
   tokenAmount: css`
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 600;
   `,
   refetching: css`
@@ -91,7 +124,7 @@ const styles = {
 };
 
 export const ReviewTx = ({ children }: { children: ReactNode }) => {
-  return <VStack gap="20px">{children}</VStack>;
+  return <VStack gap="24px">{children}</VStack>;
 };
 
 const Category = ({
@@ -116,7 +149,7 @@ const Category = ({
 
 const Section = ({ title, value }: { title: string; value?: string }) => {
   return (
-    <VStack css={styles.section} className="review-tx-section">
+    <VStack css={styles.section} className="review-tx-section" >
       <Text css={styles.sectionTitle}>{title}</Text>
 
       {value ? (
@@ -143,10 +176,10 @@ const TokenDisplay = ({
   const formattedAmount = useFormatNumber({ value: amount });
 
   return (
-    <Card>
+    <Card css={styles.tokenDisplayCard}>
       <Flex align="center" css={styles.tokenDisplay}>
-        <Avatar width="44px" height="44px" src={token?.logoURI} />
-        <VStack gap="1px">
+        <Avatar width="36px" height="36px" src={token?.logoURI} />
+        <VStack gap="0px">
           <Text css={styles.sectionTitle}>
             {isInToken ? 'You pay' : 'You recieve'}
           </Text>
