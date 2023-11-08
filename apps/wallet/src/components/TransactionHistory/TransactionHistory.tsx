@@ -147,7 +147,7 @@ export function TransactionHistory({ tokenFilter }: TransactionsProps) {
     });
 
     return filterTx(mappedTxs);
-  }, [events, tokenFilter, userData?.tokens]);
+  }, [events, tokenFilter, userData]);
 
   if (!userData) {
     return (

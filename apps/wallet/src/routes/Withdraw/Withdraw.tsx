@@ -12,8 +12,8 @@ export function Withdraw() {
   const { resetButton, setButton } = useMainButtonStore();
 
   const tokens = useMemo(() => {
-    return Object.values(data?.tokens || {}).filter((t) => t.balanceBN.gt(0));
-  }, [data?.tokens]);
+    return Object.values(data || {}).filter((t) => t.balanceBN.gt(0));
+  }, [data]);
 
   useEffect(() => {
     if (tokens.length === 0) {
