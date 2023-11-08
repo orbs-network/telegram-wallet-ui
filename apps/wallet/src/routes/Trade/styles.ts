@@ -11,12 +11,20 @@ export const styles = {
     &:after {
       content: '';
       position: absolute;
-      width: calc(100% + 32px);
+      width: calc(100% - 28px);
       height: 2px;
       background-color: ${colors.border_color};
       top: 50%;
-      transform: translate(-50%);
-      left: 50%;
+      left: -20px;
+    }
+    &:before {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 2px;
+      background-color: ${colors.border_color};
+      top: 50%;
+      right: -19px;
     }
   `,
   switchTokensButton: css`
@@ -25,7 +33,7 @@ export const styles = {
     height: 48px;
     z-index: 1;
     padding: 0px;
-    background-color: #ebf3fa;
+    background-color: rgba(46, 166, 255, 0.1);
     display: flex;
     justify-content: center;
     align-items: center;
