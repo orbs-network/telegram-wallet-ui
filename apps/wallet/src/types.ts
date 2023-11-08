@@ -102,6 +102,9 @@ export interface Network {
   name: string;
   displayName: string;
   logo: string;
-  symbol: string;
+  nativeTokenSymbol: string;
   enabled: boolean;
+  wrappedTokenPrefix: string;
+  tokenSuffix: string;
+  alwaysUsePrefix: boolean;
 }
