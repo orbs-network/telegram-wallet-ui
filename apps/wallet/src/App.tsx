@@ -107,6 +107,8 @@ const ButtonContainer = styled(Container)({
   position: 'absolute',
   zIndex: 10,
   bottom: 10,
+  left: '50%',
+  transform: 'translateX(-50%)',
 });
 
 export default App;
