@@ -1,4 +1,4 @@
-import { Container, Heading, Text, VStack } from '@chakra-ui/react';
+import { Container, Text, VStack } from '@chakra-ui/react';
 import { Page, PageHeading, TokensList } from '../../components';
 import { useNavigation } from '../../router/hooks';
 import { useBalances } from '../../hooks';
