@@ -1,8 +1,7 @@
 import { HStack } from '@chakra-ui/react';
-import { IconButtonWithLabel } from '@telegram-wallet-ui/twa-ui-kit';
+import { IconButtonWithLabel, Twa } from '@telegram-wallet-ui/twa-ui-kit';
 import { Link } from 'react-router-dom';
 import { DepositIcon, TradeIcon, WithdrawIcon } from './icons';
-import Twa from '@twa-dev/sdk';
 import { ROUTES } from '../router/routes';
 
 function handleClick() {

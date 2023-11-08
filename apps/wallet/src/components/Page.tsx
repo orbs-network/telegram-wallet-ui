@@ -1,9 +1,8 @@
 import styled from '@emotion/styled';
 import { ReactNode, useMemo } from 'react';
-import { colors } from '@telegram-wallet-ui/twa-ui-kit';
+import { colors, Twa } from '@telegram-wallet-ui/twa-ui-kit';
 import { useAnimatedRouterContext } from '../router/AnimatedRouter';
 import { motion, Variants } from 'framer-motion';
-import Telegram from '@twa-dev/sdk';
 
 const transition = { ease: 'easeInOut', duration: 0.3 };
 
@@ -112,7 +111,7 @@ const AnimatedRouteContainer = styled('div')<{ $secondaryBackground: boolean }>(
       flexDirection: 'column',
       height: '100%',
       overflowX: 'hidden',
-      paddingBottom: !Telegram.initData ? 60 : 20,
+      paddingBottom: !Twa.initData ? 60 : 20,
     };
   }
 );

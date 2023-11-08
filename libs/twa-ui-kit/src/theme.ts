@@ -4,10 +4,10 @@ import {
   defineStyleConfig,
   extendTheme,
 } from '@chakra-ui/react';
-import Twa from '@twa-dev/sdk';
 import { inputAnatomy } from '@chakra-ui/anatomy';
 import { createMultiStyleConfigHelpers } from '@chakra-ui/react';
 import { adjustBrightness, hexToRgba } from './utils';
+import { Twa } from './Twa';
 
 const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(inputAnatomy.keys);
