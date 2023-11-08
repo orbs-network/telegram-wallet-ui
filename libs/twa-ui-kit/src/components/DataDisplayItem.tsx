@@ -33,9 +33,9 @@ export function DataDisplayItem({
         {StartIconSlot}
         {StartTextSlot}
       </HStack>
-      <HStack spacing={4} alignItems="center">
+      <HStack spacing={4} alignItems="center"> 
         {EndTextSlot}
-        {EndIconSlot}
+      {EndIconSlot}
       </HStack>
     </HStack>
   );

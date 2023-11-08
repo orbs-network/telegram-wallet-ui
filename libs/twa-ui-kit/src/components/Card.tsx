@@ -7,7 +7,7 @@ const styles = css`
   border-radius: 0.875rem;
   min-height: 72px;
   width: 100%;
-  box-shadow: unset;
+  box-shadow: rgba(0, 0, 0, 0.04) 0px 2px 8px 0px;
   background-color: ${colors.bg_color};
   color: ${colors.text_color};
 `;

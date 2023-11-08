@@ -56,7 +56,7 @@ export const useMultiplyPriceByAmount = (
   coin?: string,
   _amount?: number | string
 ) => {
-  const price = useFetchLatestPrice(coin);
+  const price = useFetchLatestPrice(coin);  
 
   return useMemo(() => {
     if (_amount === undefined || price === undefined) return '-';
@@ -236,11 +236,13 @@ export const useFormatNumber = ({
   decimalScale = 4,
   prefix,
   suffix,
+  thousandSeparator = ',',
 }: {
   value?: string | number;
   decimalScale?: number;
   prefix?: string;
   suffix?: string;
+  thousandSeparator?: string;
 }) => {
   const decimals = useMemo(() => {
     if (!value) return 0;
@@ -249,20 +251,20 @@ export const useFormatNumber = ({
     const arr = decimal.split('');
     let count = 0;
 
-    arr.forEach((item) => {
-      if (item === '0') {
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i] === '0') {
         count++;
       } else {
-        return;
+        break;
       }
-    });
+    }
 
     return !count ? decimalScale : count + decimalScale;
   }, [value, decimalScale]);
 
   const result = useNumericFormat({
     allowLeadingZeros: true,
-    thousandSeparator: ',',
+    thousandSeparator,
     displayType: 'text',
     value: value || '',
     decimalScale: decimals,

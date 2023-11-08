@@ -38,26 +38,35 @@ const useTransferTx = () => {
         throw new Error('Amount not found');
       }
 
+      const txHash = await web3Provider.transfer(
+        token.address,
+        recipient,
+        amountBN(token, amount).toString()
+      );
+
       eventsProvider.withdrawal({
         amount: amountBN(token, amount).toString(),
         token: token.address,
         toAddress: recipient,
       });
 
-      return web3Provider.transfer(
-        token.address,
-        recipient,
-        amountBN(token, amount).toString()
-      );
+      return txHash;
     },
     onSuccess: () => {
       withdrawSuccess(assetId!, recipient!, amount!);
     },
     onError: (error) => {
       console.log(error);
+      let errorMsg = String(error);
+      if ('reason' in error) {
+        errorMsg = error.reason as string;
+      } else if ('message' in error) {
+        errorMsg = error.message as string;
+      }
+
       toast({
         title: 'Error',
-        description: error instanceof Error ? error.message : error,
+        description: errorMsg,
         status: 'error',
         duration: 5000,
         isClosable: true,

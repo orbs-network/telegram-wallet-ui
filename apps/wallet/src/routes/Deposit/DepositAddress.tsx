@@ -34,8 +34,8 @@ const styles = {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 18px;
-      padding: 30px 30px 20px 30px;
+      gap: 35px;
+      padding: 40px 40px 20px 40px;
     }
   `,
   address: css`
@@ -43,17 +43,17 @@ const styles = {
     width: 100%;
     line-break: anywhere;
     text-align: center;
-    font-size: 13px;
-    line-height: 18px;
+    font-size: 14px;
+    line-height: 20px;
   `,
   network: css`
-    font-size: 14px;
+    font-size: 15px;
     width: 100%;
     text-align: center;
     color: ${colors.hint_color};
   `,
   warning: css`
-    font-size: 15px;
+    font-size: 16px;
     width: 100%;
     text-align: center;
   `,
@@ -95,15 +95,16 @@ export function DepositAddress() {
   return (
     <Page>
       <Container size="sm" pt={6} css={styles.container}>
-        <VStack spacing={6} flex="1">
+        <VStack gap='20px' css={{marginBottom:'26px'}}>
           <NetworkSelector assetId={assetId || ''} />
           <Heading as="h1" size="md" textAlign="center">
             Deposit {token?.symbolDisplay}
           </Heading>
+        </VStack>
           <VStack
             justifyContent="center"
             alignItems="center"
-            gap="20px"
+            gap="24px"
             flex="1"
           >
             <Card css={styles.qr}>
@@ -122,7 +123,7 @@ export function DepositAddress() {
                 }}
               />
               <VStack gap="4px">
-                <Text style={{ maxWidth: QR_SIZE - 20 }} css={styles.address}>
+                <Text style={{ maxWidth: QR_SIZE - 10 }} css={styles.address}>
                   {address}
                 </Text>
                 <Text css={styles.network}>Your Polygon address</Text>
@@ -135,7 +136,7 @@ export function DepositAddress() {
               <ShareButton address={address} />
             </HStack>
           </VStack>
-        </VStack>
+
       </Container>
     </Page>
   );

@@ -33,16 +33,14 @@ export function DepositSelectToken() {
   return (
     <Page>
       <Container size="sm" pt={4}>
-        <VStack alignItems="stretch">
-          <PageHeading>Choose asset to deposit</PageHeading>
-          <TokensList
-            showMoreBtn={true}
-            onSelect={onSelect}
-            tokens={balancesAsList(data || {})}
-            mode="select"
-            disabledTokens={disabledTokens}
-          />
-        </VStack>
+        <PageHeading>Choose asset to deposit</PageHeading>
+        <TokensList
+          showMoreBtn={true}
+          onSelect={onSelect}
+          tokens={balancesAsList(data || {})}
+          mode="select"
+          disabledTokens={disabledTokens}
+        />
       </Container>
     </Page>
   );
