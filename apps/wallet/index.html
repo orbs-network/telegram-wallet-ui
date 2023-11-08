@@ -33,7 +33,10 @@
         margin: 0;
         background-color: var(--tg-theme-secondary-bg-color, #fff);
       }
-
+      #root {
+        position: relative;
+        z-index: 1;
+      }
       .loader-container {
         display: block;
         position: fixed;
@@ -42,6 +45,7 @@
         height: var(--tg-viewport-height, 100vh);
         top: 0;
         left: 0;
+        background-color: var(--tg-theme-secondary-bg-color, #fff);
       }
       .loader {
         display: block;
