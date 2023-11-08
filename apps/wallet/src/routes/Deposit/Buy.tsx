@@ -1,5 +1,4 @@
-import { colors } from '@telegram-wallet-ui/twa-ui-kit';
-import { MainButton } from '@twa-dev/sdk/react';
+import { MainButton, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ErrorPage } from '../../ErrorPage';
