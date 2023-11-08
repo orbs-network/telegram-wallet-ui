@@ -12,10 +12,9 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import Telegram from '@twa-dev/sdk';
 import Web3 from 'web3';
 import { LuScanLine } from 'react-icons/lu';
-import { ListItem, colors } from '@telegram-wallet-ui/twa-ui-kit';
+import { ListItem, colors, Twa } from '@telegram-wallet-ui/twa-ui-kit';
 import { useNavigation } from '../../router/hooks';
 import { NetworkSelector, Page } from '../../components';
 import { css } from '@emotion/react';
@@ -51,13 +50,13 @@ export function WithdrawAddress() {
   const addressError = useMemo(() => {
     const valid = validateAddress(address);
 
-    if (!address) return 
-      if (!valid) {
-        return {
-          title: ' Invalid Address',
-          subtitle: 'Enter a valid Polygon address',
-        };
-      }
+    if (!address) return;
+    if (!valid) {
+      return {
+        title: ' Invalid Address',
+        subtitle: 'Enter a valid Polygon address',
+      };
+    }
 
     if (eqIgnoreCase(address, account?.address || '')) {
       return {
@@ -98,24 +97,29 @@ export function WithdrawAddress() {
   );
 }
 
-
-const AddressError = ({ title, subtitle }: { title: string; subtitle: string }) => {
-   return (
-     <ListItem
-       StartIconSlot={<Icon as={AiFillWarning} />}
-       StartTextSlot={
-         <Box>
-           <Heading as="h3" variant="bodyTitle">
-             {title}
-           </Heading>
-           <Text variant="hint" fontSize="xs">
-             {subtitle}
-           </Text>
-         </Box>
-       }
-     />
-   );
-}
+const AddressError = ({
+  title,
+  subtitle,
+}: {
+  title: string;
+  subtitle: string;
+}) => {
+  return (
+    <ListItem
+      StartIconSlot={<Icon as={AiFillWarning} />}
+      StartTextSlot={
+        <Box>
+          <Heading as="h3" variant="bodyTitle">
+            {title}
+          </Heading>
+          <Text variant="hint" fontSize="xs">
+            {subtitle}
+          </Text>
+        </Box>
+      }
+    />
+  );
+};
 
 const AddressInput = ({
   address,
@@ -202,19 +206,19 @@ const AddressInput = ({
 
 const ScanQR = ({ setAddress }: { setAddress: (value: string) => void }) => {
   const onScan = () => {
-    Telegram.showScanQrPopup({}, (value) => {
+    Twa.showScanQrPopup({}, (value: string) => {
       try {
         const result = value.substring(value.indexOf('0x'));
         setAddress(result);
       } catch (error) {
         console.error(error);
       } finally {
-        Telegram.closeScanQrPopup();
+        Twa.closeScanQrPopup();
       }
     });
   };
 
-  if (!Telegram.initData) {
+  if (!Twa.initData) {
     return null;
   }
 

@@ -4,7 +4,7 @@ import {
   useColorMode,
   useToast,
 } from '@chakra-ui/react';
-import { MainButton, theme } from '@telegram-wallet-ui/twa-ui-kit';
+import { MainButton, theme, Twa } from '@telegram-wallet-ui/twa-ui-kit';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useLocation } from 'react-router-dom';
 import { ROUTES } from './router/routes';
@@ -13,7 +13,6 @@ import { lazy, Suspense, useEffect } from 'react';
 import { usePersistedStore } from './store/persisted-store';
 import { WalletSpinner } from './components';
 import { useMainButtonStore } from './store/main-button-store';
-import Twa from '@twa-dev/sdk';
 import { useNavigatorOnLine, useWebApp } from './hooks';
 export const queryClient = new QueryClient();
 const Router = lazy(() => import('./router/Router'));

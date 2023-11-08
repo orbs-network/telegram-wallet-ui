@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Token, TokenData, UserData } from './types';
+import { TokenData, UserData } from './types';
 import { fetchLatestPrices } from './utils/fetchLatestPrice';
 import BN from 'bignumber.js';
 import { account, coinsProvider, swapProvider, web3Provider } from './config';
@@ -13,8 +13,8 @@ import { ROUTES } from './router/routes';
 import _ from 'lodash';
 import { useNumericFormat } from 'react-number-format';
 import { create } from 'zustand';
-import Twa from '@twa-dev/sdk';
 import { queryClient } from './App';
+import { Twa } from '@telegram-wallet-ui/twa-ui-kit';
 
 export enum QueryKeys {
   FETCH_LAST_PRICE = 'useFetchLatestPrice',

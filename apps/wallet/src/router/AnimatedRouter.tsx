@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext } from 'react';
 import {
   NavigationType,
   Route,
@@ -23,10 +23,7 @@ const AnimatedRouter = ({ routes }: { routes: RouteObject[] }) => {
   const location = useLocation();
   const navigationType = useNavigationType();
 
-
-const homePage = location.pathname === ROUTES.root;
-  
-
+  const homePage = location.pathname === ROUTES.root;
 
   return (
     <Context.Provider value={{ navigationType }}>

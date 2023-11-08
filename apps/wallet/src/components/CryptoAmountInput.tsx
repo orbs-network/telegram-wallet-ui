@@ -11,8 +11,7 @@ import { css, Interpolation } from '@emotion/react';
 import styled from '@emotion/styled';
 import { NumericFormat } from 'react-number-format';
 import { useAnimate } from 'framer-motion';
-import { colors } from '@telegram-wallet-ui/twa-ui-kit';
-import Twa from '@twa-dev/sdk';
+import { Twa, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import { ERROR_COLOR } from '../consts';
 
 const styles = {

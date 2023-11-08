@@ -1,5 +1,5 @@
 import { Container, VStack, Box } from '@chakra-ui/react';
-import { TotalBalance, setTwaBg } from '@telegram-wallet-ui/twa-ui-kit';
+import { TotalBalance, setTwaBg, Twa } from '@telegram-wallet-ui/twa-ui-kit';
 import {
   MainActionMenu,
   Page,
@@ -11,7 +11,6 @@ import { faucetProvider, permit2Provider } from '../config';
 import { TransactionHistory } from '../components/TransactionHistory';
 import { useMainButtonStore } from '../store/main-button-store';
 import { useEffect } from 'react';
-import Twa from '@twa-dev/sdk';
 import { ErrorPage } from '../ErrorPage';
 import { useEventsProvider } from '../lib/EventsProvider';
 import { DepositOptions } from '../components/DepositOptions';

@@ -1,7 +1,7 @@
 import { MainButton as BaseMainButton } from '@twa-dev/sdk/react';
-import Telegram from '@twa-dev/sdk';
 import { colors } from '../theme';
 import { Button } from './Button';
+import { Twa } from '../Twa';
 
 interface MainButtonProps {
   disabled?: boolean;
@@ -14,7 +14,7 @@ interface MainButtonProps {
 
 export function MainButton(props: MainButtonProps) {
   // if not webapp
-  if (!Telegram.initData) {
+  if (!Twa.initData) {
     return (
       <Button
         style={{
@@ -31,7 +31,11 @@ export function MainButton(props: MainButtonProps) {
   return (
     <BaseMainButton
       {...props}
-      color={props.disabled || props.progress ? colors.button_disabed_color : colors.button_color}
+      color={
+        props.disabled || props.progress
+          ? colors.button_disabed_color
+          : colors.button_color
+      }
       text={props.text?.toUpperCase()}
     />
   );
