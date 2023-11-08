@@ -36,7 +36,7 @@ const useSwap = () => {
       });
     },
     onSuccess: (txHash) => {
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.USER_DATA] });
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.BALANCES] });
       tradeSuccess(outTokenSymbol!, amountOut, txHash);
     },
     onSettled: () => {

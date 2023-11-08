@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { TokenData, UserData } from './types';
-import { fetchLatestPrices } from './utils/fetchLatestPrice';
+import { fetchLatestPrices, getInitialPrices } from './utils/fetchLatestPrice';
 import BN from 'bignumber.js';
 import { account, coinsProvider, swapProvider, web3Provider } from './config';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -15,12 +15,13 @@ import { useNumericFormat } from 'react-number-format';
 import { create } from 'zustand';
 import { queryClient } from './App';
 import { Twa } from '@telegram-wallet-ui/twa-ui-kit';
+import { Coin } from './lib/CoinsProvider';
 
 export enum QueryKeys {
   FETCH_LAST_PRICE = 'useFetchLatestPrice',
   COIN_LAST_PRICE = 'useCoinsLastPrice',
   COINS_LIST = 'useCoinsList',
-  USER_DATA = 'useUserData',
+  BALANCES = 'useBalances',
   PORTFOLIO_USD_VALUE = 'usePortfolioUsdValue',
   QUOTE = 'useQuote',
 }
@@ -28,17 +29,18 @@ export enum QueryKeys {
 const debug = getDebug('hooks');
 
 export const useCoinsLastPrice = () => {
-  const { data } = useCoinsList();
+  const coins = coinsProvider.coins();
 
   return useQuery({
     queryKey: [QueryKeys.COIN_LAST_PRICE],
     queryFn: async () => {
-      const ids = _.map(data || {}, 'coingeckoId').join(',');
+      const ids = _.map(coins || {}, 'coingeckoId').join(',');
       return fetchLatestPrices(ids);
     },
-    enabled: !!data,
+    enabled: !!coins,
     refetchInterval: 10_000,
     staleTime: 5_000,
+    initialData: getInitialPrices(),
   });
 };
 
@@ -89,18 +91,15 @@ export const useCoinsList = () => {
   return useQuery({
     queryKey: [QueryKeys.COINS_LIST],
     queryFn: async () => {
-      return coinsProvider.fetchCoins();
+      return coinsProvider.coins();
     },
   });
 };
 
 export const useGetTokenFromList = (symbol?: string) => {
-  const { data, dataUpdatedAt } = useUserData();
+  const { data, dataUpdatedAt } = useBalances();
 
-  return useMemo(
-    () => _.find(data?.tokens, { symbol }),
-    [dataUpdatedAt, symbol]
-  );
+  return useMemo(() => _.find(data, { symbol }), [dataUpdatedAt, symbol]);
 };
 
 export const useInterval = (callback: VoidFunction, delay: number | null) => {
@@ -122,9 +121,11 @@ export const useInterval = (callback: VoidFunction, delay: number | null) => {
 };
 
 export const usePortfolioUsdValue = () => {
-  const { data, dataUpdatedAt: userDataUpdatedAt, error } = useUserData();
+  const { data, dataUpdatedAt: userDataUpdatedAt, error } = useBalances();
   const { data: usdPrices, dataUpdatedAt: coinsDataUpdatedAt } =
     useCoinsLastPrice();
+
+  console.log('usePortfolioUsdValue', data, usdPrices);
 
   return useMemo(() => {
     if (error) {
@@ -138,7 +139,7 @@ export const usePortfolioUsdValue = () => {
     const getPrice = (coingeckoId: string) =>
       usdPrices![coingeckoId as keyof typeof usdPrices];
 
-    const tokenWithBalance = Object.values(data?.tokens ?? {}).filter(
+    const tokenWithBalance = Object.values(data ?? {}).filter(
       (it) => !new BN(it.balance).isZero()
     );
 
@@ -155,23 +156,48 @@ export const usePortfolioUsdValue = () => {
 };
 
 export const getBalances = async () => {
-  const coins = await coinsProvider.fetchCoins();
+  const coins = coinsProvider.coins();
   return (
-    (
-      await queryClient.fetchQuery({
-        queryKey: [QueryKeys.USER_DATA],
-        queryFn: () => updateCoinBalances(coins),
-      })
-    )?.tokens ?? {}
+    (await queryClient.fetchQuery({
+      queryKey: [QueryKeys.BALANCES],
+      queryFn: () => updateCoinBalances(coins),
+    })) ?? {}
   );
 };
 
-const updateCoinBalances = async (coins: any[]) => {
+const transformBalances = (coins: Coin[], balances: Record<string, string>) => {
+  return Object.fromEntries(
+    coins.map((token: Coin) => {
+      const balance = new BN(balances[token.address] ?? 0);
+      return [
+        token.symbol.toUpperCase(),
+        {
+          ...token,
+          name: token.name,
+          symbolDisplay: token.symbol.toUpperCase(),
+          symbol: token.symbol.toLowerCase(),
+          balanceBN: balance,
+          balance: amountUi(token, balance) || '0',
+        },
+      ];
+    })
+  );
+};
+
+const initialCoinBalances = (coins: Coin[]): UserData | undefined => {
+  let balances;
+  if (localStorage.getItem('balances')) {
+    balances = JSON.parse(localStorage.getItem('balances')!);
+  } else {
+    balances = Object.fromEntries(coins.map((token) => [token.address, '0']));
+  }
+
+  return transformBalances(coins, balances);
+};
+
+const updateCoinBalances = async (coins: Coin[]) => {
   try {
-    const _userData: UserData = {
-      account,
-      tokens: {},
-    };
+    const _userData: UserData = {};
 
     if (coins.length === 0) return _userData;
 
@@ -182,42 +208,26 @@ const updateCoinBalances = async (coins: any[]) => {
     coins
       .filter((c) => c.address === '')
       .forEach((c) => {
-        balances[c.address] = new BN(0);
+        balances[c.address] = '0';
       });
 
-    coins.forEach((token) => {
-      if (token.symbol.toUpperCase() === 'MATIC') {
-        return;
-      }
+    localStorage.setItem('balances', JSON.stringify(balances));
 
-      _userData.tokens[token.symbol] = {
-        ...token,
-        name: token.name,
-        symbolDisplay:
-          token.symbol.toUpperCase().charAt(0) === 'W'
-            ? token.symbol.toUpperCase().slice(1)
-            : token.symbol.toUpperCase(),
-        symbol: token.symbol.toLowerCase(),
-        balanceBN: balances[token.address],
-        balance: amountUi(token, balances[token.address]) || '0',
-      };
-    });
-
-    return _userData;
+    return transformBalances(coins, balances);
   } catch (e) {
     debug(e);
-    // console.error(e);
   }
 };
 
-export const useUserData = () => {
-  const { data: coins = [] } = useCoinsList();
+export const useBalances = () => {
+  const coins = coinsProvider.coins();
   return useQuery({
-    queryKey: [QueryKeys.USER_DATA],
+    queryKey: [QueryKeys.BALANCES],
     enabled: coins.length > 0,
     refetchInterval: 10_000,
     staleTime: 5_000,
     queryFn: () => updateCoinBalances(coins),
+    initialData: initialCoinBalances(coins),
   });
 };
 

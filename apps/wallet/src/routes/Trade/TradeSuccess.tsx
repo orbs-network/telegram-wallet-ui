@@ -49,7 +49,9 @@ export function TradeSuccess() {
 
   return (
     <SuccessPage>
-      <Text css={styles.title}>Exchange completed</Text>
+      <Text as="h1" css={styles.title}>
+        Exchange completed
+      </Text>
       <Text>
         <strong>
           {formattedOutAmount} {`${token?.symbolDisplay || ''} `}

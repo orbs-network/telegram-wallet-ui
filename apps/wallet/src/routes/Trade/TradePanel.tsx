@@ -13,7 +13,7 @@ import {
   useMultiplyPriceByAmount,
   useOptimizedGetMinAmountOut,
   useQuoteQuery,
-  useUserData,
+  useBalances,
 } from '../../hooks';
 import { TokenPanel } from './TokenPanel';
 import BN from 'bignumber.js';
@@ -33,7 +33,7 @@ import { TradeContext, useTradeContext } from './context';
 const MIN_USD_VALUE_TO_SWAP = 0.5;
 
 const useInitialTokens = () => {
-  const { data, dataUpdatedAt } = useUserData();
+  const { data, dataUpdatedAt } = useBalances();
   const [inTokenSymbol] = useQueryParam('inToken', StringParam);
   const store = useTradeStore();
   return useEffect(() => {
@@ -41,7 +41,7 @@ const useInitialTokens = () => {
       return undefined;
     }
     const withoutInToken = _.filter(
-      data?.tokens,
+      data,
       (it) => it.symbol !== inTokenSymbol
     );
     const tokensWithBalance = _.filter(withoutInToken, (it) =>

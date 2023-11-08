@@ -19,10 +19,7 @@ export type TokenData = {
   symbolDisplay: string;
 } & Token;
 
-export type UserData = {
-  account: Web3Account;
-  tokens: Record<string, TokenData>;
-};
+export type UserData = Record<string, TokenData>;
 
 export type TokenListResponse = {
   symbol: string;
@@ -101,12 +98,13 @@ export type TokensListProps = {
   showMoreBtn?: boolean;
 };
 
-
-
 export interface Network {
   name: string;
   displayName: string;
   logo: string;
-  symbol: string;
+  nativeTokenSymbol: string;
   enabled: boolean;
+  wrappedTokenPrefix: string;
+  tokenSuffix: string;
+  alwaysUsePrefix: boolean;
 }

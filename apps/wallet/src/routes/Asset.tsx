@@ -7,7 +7,7 @@ import { CoinActionMenu, Page, WalletSpinner } from '../components';
 import {
   useFormatNumber,
   useMultiplyPriceByAmount,
-  useUserData,
+  useBalances,
 } from '../hooks';
 import { useMainButtonStore } from '../store/main-button-store';
 import { motion } from 'framer-motion';
@@ -23,8 +23,8 @@ function Loader() {
 export function Asset() {
   const { assetId } = useParams<{ assetId: string }>();
 
-  const { data: userData } = useUserData();
-  const tokenData = assetId ? userData?.tokens[assetId.toUpperCase()] : null;
+  const { data: userData } = useBalances();
+  const tokenData = assetId ? userData?.[assetId.toUpperCase()] : null;
   const price = useMultiplyPriceByAmount(
     tokenData?.coingeckoId || '',
     tokenData?.balance
@@ -46,11 +46,7 @@ export function Asset() {
     decimalScale: 5,
   });
 
-  if (!assetId) {
-    return <Loader />;
-  }
-
-  if (!tokenData) {
+  if (!assetId || !tokenData) {
     return <Loader />;
   }
 

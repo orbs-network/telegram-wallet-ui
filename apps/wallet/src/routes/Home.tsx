@@ -1,11 +1,6 @@
 import { Container, VStack, Box } from '@chakra-ui/react';
 import { TotalBalance, setTwaBg } from '@telegram-wallet-ui/twa-ui-kit';
-import {
-  MainActionMenu,
-  Page,
-  TokenBalances,
-  WalletSpinner,
-} from '../components';
+import { MainActionMenu, Page, TokenBalances } from '../components';
 import { useFormatNumber, usePortfolioUsdValue } from '../hooks';
 import { faucetProvider, permit2Provider } from '../config';
 import { TransactionHistory } from '../components/TransactionHistory';
@@ -41,20 +36,6 @@ export function Home() {
   const primaryAmount = useFormatNumber({
     value: usdValue || 0,
   });
-
-  if (usdValue === null && error === null) {
-    return (
-      <Container
-        size="sm"
-        style={{
-          height: '100%',
-          position: 'relative',
-        }}
-      >
-        <WalletSpinner />
-      </Container>
-    );
-  }
 
   if (error) {
     <ErrorPage message={error.message} />;

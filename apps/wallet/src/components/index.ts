@@ -10,3 +10,4 @@ export * from './SuccessPage';
 export * from './MainActionMenu';
 export * from './CoinActionMenu';
 export * from './NetworkSelector';
+export * from './PageHeading';

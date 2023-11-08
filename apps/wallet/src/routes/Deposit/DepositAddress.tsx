@@ -8,7 +8,7 @@ import {
   useToast,
   VStack,
 } from '@chakra-ui/react';
-import { useGetTokenFromList, useUserData } from '../../hooks';
+import { useGetTokenFromList } from '../../hooks';
 import { Button, Card, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import { QRCodeSVG } from 'qrcode.react';
 import { css } from '@emotion/react';
@@ -18,7 +18,7 @@ import { useParams } from 'react-router-dom';
 import { URLParams } from '../../types';
 import { BiSolidCopy } from 'react-icons/bi';
 import { useEffect } from 'react';
-import { faucetProvider, permit2Provider } from '../../config';
+import { account, faucetProvider, permit2Provider } from '../../config';
 
 const QR_SIZE = 190;
 const isShareSupported = navigator.share !== undefined;
@@ -69,7 +69,6 @@ const styles = {
 };
 
 export function DepositAddress() {
-  const { data: userData } = useUserData();
   const { assetId } = useParams<URLParams>();
   const token = useGetTokenFromList(assetId);
   const mode = useColorMode().colorMode;
@@ -81,7 +80,7 @@ export function DepositAddress() {
     }
   }, [token]);
 
-  if (!userData?.account.address) {
+  if (!account.address) {
     return (
       <Page>
         <Container size="sm" pt={4}>
@@ -91,7 +90,7 @@ export function DepositAddress() {
     );
   }
 
-  const address = userData.account.address;
+  const address = account.address;
 
   return (
     <Page>
@@ -126,9 +125,7 @@ export function DepositAddress() {
                 <Text style={{ maxWidth: QR_SIZE - 20 }} css={styles.address}>
                   {address}
                 </Text>
-                <Text css={styles.network}>
-                  Your {token?.symbolDisplay || ''} address
-                </Text>
+                <Text css={styles.network}>Your Polygon address</Text>
               </VStack>
             </Card>
             <Warning />
@@ -212,8 +209,7 @@ const Warning = () => {
   return (
     <Text css={styles.warning}>
       Send only <strong>{token?.symbolDisplay || ''} ERC-20</strong> to this
-      Polygon address using a native Polygon wallet. <br /> Sending other coins
-      may result in permanent loss.
+      address. Sending other coins may result in permanent loss.
     </Text>
   );
 };
