@@ -5,7 +5,17 @@ import { getDebug } from './utils/debug';
 
 const debug = getDebug('CoinsProvider');
 
-const _coins = [
+export type Coin = {
+  symbol: string;
+  name: string;
+  address: string;
+  decimals: number;
+  chainId: number;
+  logoURI: string;
+  coingeckoId: string;
+};
+
+const _coins: Coin[] = [
   {
     symbol: 'BTC',
     name: 'Bitcoin',
@@ -103,6 +113,7 @@ const _coins = [
     logoURI: 'https://s2.coinmarketcap.com/static/img/coins/128x128/11419.png',
     address: '',
     decimals: 9,
+    chainId: 137,
   },
 ];
 
