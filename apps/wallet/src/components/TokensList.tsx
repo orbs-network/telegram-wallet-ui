@@ -34,7 +34,7 @@ export function TokensList({
   const isLoading = !tokens || _.isEmpty(tokens);
 
   return (
-    <VStack spacing={3}>
+    <VStack spacing={3} alignItems="stretch">
       <List css={css} className={className} mode={mode} isLoading={isLoading}>
         {_.map(tokens, (token) => {
           const isDisabled = disabledTokens

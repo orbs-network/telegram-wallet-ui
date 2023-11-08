@@ -8,22 +8,21 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import {
-  colors,
-  List,
-  ListItem,
-} from '@telegram-wallet-ui/twa-ui-kit';
+import { colors, List, ListItem } from '@telegram-wallet-ui/twa-ui-kit';
 import { AiOutlineCreditCard } from 'react-icons/ai';
 import { BiChevronRight } from 'react-icons/bi';
 import { RiApps2Line } from 'react-icons/ri';
 import { Link, generatePath } from 'react-router-dom';
-import { Page } from '../../components';
+import { Page, PageHeading } from '../../components';
 
 import { ROUTES } from '../../router/routes';
 
 const styles = {
   list: css`
     gap: 10px;
+  `,
+  subtitle: css`
+    line-height: 1.2;
   `,
 };
 
@@ -34,10 +33,10 @@ export function DepositMethods() {
         <ListItem
           StartTextSlot={
             <Box>
-              <Heading as="h3" variant="bodyTitle">
+              <Heading as="h3" variant="bodyTitle" mb={1}>
                 Bank Card
               </Heading>
-              <Text variant="hint">
+              <Text css={styles.subtitle} variant="hint">
                 Purchase USD stablecoin with a debit/credit card
               </Text>
             </Box>
@@ -71,10 +70,10 @@ export function DepositMethods() {
           }
           StartTextSlot={
             <Box>
-              <Heading as="h3" variant="bodyTitle">
+              <Heading as="h3" variant="bodyTitle" mb={1}>
                 External Wallet
               </Heading>
-              <Text variant="hint">
+              <Text css={styles.subtitle} variant="hint">
                 Deposit crypto from any external wallet on any chain
               </Text>
             </Box>
@@ -97,9 +96,7 @@ export function SelectMethod() {
     <Page>
       <Container size="sm" pt={4}>
         <VStack spacing={8} alignItems="stretch">
-          <Heading as="h1" size="md" textAlign="center">
-            How would you like to deposit crypto?
-          </Heading>
+          <PageHeading>How would you like to deposit crypto?</PageHeading>
           <DepositMethods />
         </VStack>
       </Container>

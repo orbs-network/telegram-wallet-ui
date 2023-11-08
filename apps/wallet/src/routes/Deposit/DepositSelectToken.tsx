@@ -1,6 +1,6 @@
-import { Container, Heading, VStack } from '@chakra-ui/react';
+import { Container, VStack } from '@chakra-ui/react';
 import { useEffect } from 'react';
-import { Page, TokensList } from '../../components';
+import { Page, PageHeading, TokensList } from '../../components';
 import { useBalances } from '../../hooks';
 import { useNavigation } from '../../router/hooks';
 import { useMainButtonStore } from '../../store/main-button-store';
@@ -33,11 +33,9 @@ export function DepositSelectToken() {
     <Page>
       <Container size="sm" pt={4}>
         <VStack spacing={6} alignItems="stretch">
-          <Heading as="h1" size="md" textAlign="center">
-            Choose asset to deposit
-          </Heading>
+          <PageHeading>Choose asset to deposit</PageHeading>
           <TokensList
-          showMoreBtn={true}
+            showMoreBtn={true}
             onSelect={onSelect}
             tokens={Object.values(data || {})}
             mode="select"
