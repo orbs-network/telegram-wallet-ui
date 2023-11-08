@@ -1,11 +1,5 @@
 import { Avatar, Box, Heading, Skeleton, Text, VStack } from '@chakra-ui/react';
-import {
-  Card,
-  colors,
-  List,
-  ListItem,
-  Twa,
-} from '@telegram-wallet-ui/twa-ui-kit';
+import { colors, List, ListItem, Twa } from '@telegram-wallet-ui/twa-ui-kit';
 import _ from 'lodash';
 import { useFormatNumber, useMultiplyPriceByAmount } from '../hooks';
 import { TokenData, TokensListProps } from '../types';
