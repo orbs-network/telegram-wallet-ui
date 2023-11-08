@@ -6,9 +6,7 @@ import {
   VStack,
   useToast,
 } from '@chakra-ui/react';
-import { css } from '@emotion/react';
 import { useMutation } from '@tanstack/react-query';
-import { Card, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import { useParams } from 'react-router-dom';
 import { Page, ReviewTx } from '../../components';
 import { eventsProvider, web3Provider } from '../../config';
@@ -16,7 +14,7 @@ import { useFormatNumber, useGetTokenFromList } from '../../hooks';
 import { useNavigation } from '../../router/hooks';
 import { URLParams } from '../../types';
 import { Recipient } from './Components';
-import { amountBN, amountUi } from '../../utils/conversion';
+import { amountBN } from '../../utils/conversion';
 import { useUpdateMainButton } from '../../store/main-button-store';
 import BN from 'bignumber.js';
 
@@ -100,13 +98,15 @@ export function WithdrawSummary() {
     <Page>
       <Container size="sm" pt={4}>
         <VStack spacing={6} alignItems="stretch" height="100%">
-          <Recipient />
-          <Heading as="h2" size="3xl">
-            {amount}{' '}
-            <Text as="span" variant="hint" fontSize="3xl">
-              {symbol}
-            </Text>
-          </Heading>
+          <Box>
+            <Recipient />
+            <Heading as="h2" size="3xl">
+              {amount}{' '}
+              <Text as="span" variant="hint" fontSize="3xl">
+                {symbol}
+              </Text>
+            </Heading>
+          </Box>
           <ReviewTx>
             <ReviewTx.Category bottomText="Your funds may be lost if sent to the wrong network">
               <ReviewTx.Section title="Recipient address" value={recipient!} />
@@ -129,28 +129,3 @@ export function WithdrawSummary() {
     </Page>
   );
 }
-
-const styles = {
-  container: css`
-    border-bottom: 1px solid ${colors.border_color};
-    width: 100%;
-    padding-bottom: 5px;
-    &:last-child {
-      border-bottom: none;
-      padding-bottom: 0px;
-    }
-  `,
-
-  sectionValue: css`
-    word-break: break-all;
-  `,
-};
-
-const Section = ({ title, value }: { title: string; value: string }) => {
-  return (
-    <VStack css={styles.container} gap="2px" alignItems="stretch">
-      <Text variant="hint">{title}</Text>
-      <Text css={styles.sectionValue}>{value}</Text>
-    </VStack>
-  );
-};

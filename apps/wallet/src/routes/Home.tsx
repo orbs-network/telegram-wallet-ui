@@ -43,7 +43,7 @@ export function Home() {
     <Page>
       <Container pt={8}>
         <VStack spacing={4} alignItems="stretch">
-          <VStack spacing={4}>
+          <VStack spacing={3.5}>
             <TotalBalance
               currencySymbol="$"
               amount={primaryAmount}

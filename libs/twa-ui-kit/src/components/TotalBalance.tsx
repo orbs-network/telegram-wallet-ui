@@ -90,7 +90,7 @@ export function TotalBalance({
       <StatLabel as="label" fontSize="17px" fontWeight={400}>
         {label}
       </StatLabel>
-      <StatNumber fontSize="5xl" lineHeight="1.3">
+      <StatNumber fontSize="5xl" lineHeight="1.2">
         {amount === undefined ? <SkeletonText /> : PrimaryAmount}
       </StatNumber>
     </Stat>

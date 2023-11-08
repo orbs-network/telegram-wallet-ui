@@ -54,7 +54,7 @@ export function WithdrawAmount() {
   const { withdrawSummary: navigateToWithdrawSummary } = useNavigation();
 
   const token = useGetTokenFromList(assetId);
-  
+
   const formattedBalance = useFormatNumber({
     value: token?.balance,
   });
@@ -81,7 +81,7 @@ export function WithdrawAmount() {
   return (
     <StyledPage>
       <Container size="sm" pt={4} css={styles.mainContainer}>
-        <VStack alignItems="stretch" style={{ flex: 1 }}>
+        <VStack spacing={0} alignItems="stretch" style={{ flex: 1 }}>
           <Recipient />
           {/* TODO: handle undefined assetId better */}
           <VStack gap="0px">

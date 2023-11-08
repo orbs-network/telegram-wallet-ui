@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 const styles = css`
   font-size: 28px;
   text-align: center;
-  padding: 44px 16px 50px 16px;
+  padding: 28px 16px 50px 16px;
 `;
 
 export function PageHeading({ children }: { children: React.ReactNode }) {

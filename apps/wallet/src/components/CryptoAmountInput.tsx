@@ -44,13 +44,13 @@ const styles = {
     svg {
       color: ${colors.hint_color};
     }
-    ,
+
     svg {
       font-size: 35px;
       position: absolute;
       right: -10px;
     }
-    ,
+
     p {
       font-size: 40px;
       font-weight: 700;
@@ -217,7 +217,7 @@ function CryptoAmountInput({
     >
       <Flex
         css={styles.inputContainer}
-        alignItems="center"
+        alignItems="baseline"
         justifyContent="flex-start"
         ref={scope}
         gap="10px"

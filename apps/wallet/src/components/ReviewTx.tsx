@@ -44,7 +44,7 @@ const styles = {
     .chakra-card__body {
       padding: 10px 16px;
     }
-    ,
+
     .review-tx-section {
       padding-bottom: 6px;
       position: relative;
@@ -61,7 +61,7 @@ const styles = {
       &:last-child {
         padding-bottom: 0px;
       }
-      &:last-child:after  {
+      &:last-child:after {
         display: none;
       }
     }
@@ -142,18 +142,24 @@ const Category = ({
       <Card>
         <VStack gap="10px">{children}</VStack>
       </Card>
-      {bottomText && <Text mt={2} variant="hint">{bottomText}</Text>}
+      {bottomText && (
+        <Text mt={2} variant="hint">
+          {bottomText}
+        </Text>
+      )}
     </VStack>
   );
 };
 
 const Section = ({ title, value }: { title: string; value?: string }) => {
   return (
-    <VStack css={styles.section} className="review-tx-section" >
+    <VStack css={styles.section} className="review-tx-section">
       <Text css={styles.sectionTitle}>{title}</Text>
 
       {value ? (
-        <Text css={styles.sectionValue} wordBreak='break-all'>{value}</Text>
+        <Text css={styles.sectionValue} wordBreak="break-all">
+          {value}
+        </Text>
       ) : (
         <Skeleton css={styles.sectionLoader} />
       )}

@@ -22,7 +22,6 @@ import { useParams } from 'react-router-dom';
 import { URLParams } from '../../types';
 import { useUpdateMainButton } from '../../store/main-button-store';
 import { AiFillCloseCircle, AiFillWarning } from 'react-icons/ai';
-import { useBalances } from '../../hooks';
 import { eqIgnoreCase } from '@defi.org/web3-candies';
 import { account } from '../../config';
 
@@ -77,7 +76,7 @@ export function WithdrawAddress() {
   });
 
   return (
-    <Page>
+    <Page secondaryBackground>
       <Container size="sm" pt={4} css={styles.container}>
         <VStack spacing={4} alignItems="stretch" height="100%">
           <NetworkSelector assetId={assetId || ''} />

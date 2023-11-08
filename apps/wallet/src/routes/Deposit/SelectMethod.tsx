@@ -1,16 +1,7 @@
-import {
-  Avatar,
-  Box,
-  Container,
-  Heading,
-  Icon,
-  VStack,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Container, Heading, Icon, Text } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { colors, List, ListItem } from '@telegram-wallet-ui/twa-ui-kit';
 import { BiChevronRight } from 'react-icons/bi';
-import { RiApps2Line } from 'react-icons/ri';
 import { Link, generatePath } from 'react-router-dom';
 import { Page, PageHeading } from '../../components';
 import { BankCardSvg, ExternalWalletSvg } from './svg';

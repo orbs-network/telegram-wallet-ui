@@ -67,6 +67,8 @@ export function Asset() {
               name={tokenData.symbol}
               src={tokenData.logoURI}
               colorScheme="telegram"
+              width="66px"
+              height="66px"
             />
           </motion.div>
 
