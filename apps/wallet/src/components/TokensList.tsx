@@ -18,6 +18,8 @@ const styles = {
     font-size: 15px;
     font-weight: 500;
     cursor: pointer;
+    color: ${colors.button_color};
+    padding: 1rem 1rem 0.5rem 1rem;
   `,
 };
 
@@ -52,17 +54,15 @@ export function TokensList({
             />
           );
         })}
-      </List>
-      {showMoreBtn && (
-        <Box
-          css={styles.showMoreBtn}
-          onClick={() => Twa.showAlert('Coming soon')}
-        >
-          <Card css={{ minHeight: 'auto', color: colors.button_color }}>
+        {showMoreBtn && (
+          <Box
+            css={styles.showMoreBtn}
+            onClick={() => Twa.showAlert('Coming soon')}
+          >
             Show more
-          </Card>
-        </Box>
-      )}
+          </Box>
+        )}
+      </List>
     </VStack>
   );
 }
