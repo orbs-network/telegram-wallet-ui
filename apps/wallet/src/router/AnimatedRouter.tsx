@@ -47,6 +47,11 @@ const AnimatedRouter = ({ routes }: { routes: RouteObject[] }) => {
     }
   }, [match]);
 
+  useEffect(() => {
+    const staticLoader = document.querySelector('.loader-container');
+    staticLoader?.parentNode?.removeChild(staticLoader);
+  }, []);
+
   return (
     <Context.Provider value={{ navigationType }}>
       <Back />

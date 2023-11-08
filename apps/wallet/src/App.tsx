@@ -37,11 +37,6 @@ const App = () => {
     }
   }, [isOnline, toast]);
 
-  useEffect(() => {
-    const staticLoader = document.querySelector('.loader-container');
-    staticLoader?.parentNode?.removeChild(staticLoader);
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       <ChakraProvider theme={theme}>
