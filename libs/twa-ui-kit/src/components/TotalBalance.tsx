@@ -46,7 +46,6 @@ export function TotalBalance({
         color={colors.hint_color}
         fontWeight="normal"
         onDoubleClick={() => {
-          console.log('dbl clicked');
           navigate('/debug');
         }}
         onTouchStart={() => {
@@ -75,7 +74,6 @@ export function TotalBalance({
           color={colors.hint_color}
           fontWeight="normal"
           onDoubleClick={() => {
-            console.log('dbl clicked');
             navigate('/debug');
           }}
           onTouchStart={() => {

@@ -125,8 +125,6 @@ export const usePortfolioUsdValue = () => {
   const { data: usdPrices, dataUpdatedAt: coinsDataUpdatedAt } =
     useCoinsLastPrice();
 
-  console.log('usePortfolioUsdValue', data, usdPrices);
-
   return useMemo(() => {
     if (error) {
       return { error };
@@ -197,6 +195,8 @@ const initialCoinBalances = (coins: Coin[]): UserData | undefined => {
 
 const updateCoinBalances = async (coins: Coin[]) => {
   try {
+    debug('Refreshing balances...');
+
     const _userData: UserData = {};
 
     if (coins.length === 0) return _userData;

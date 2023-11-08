@@ -46,7 +46,6 @@ export function setTwaBg(isAlt: boolean) {
   const color = isAlt ? 'bg_color' : 'secondary_bg_color';
   Twa.setHeaderColor(color);
   Twa.setBackgroundColor(color);
-  console.log('setTwaBg', color);
 }
 
 export const colors = {
