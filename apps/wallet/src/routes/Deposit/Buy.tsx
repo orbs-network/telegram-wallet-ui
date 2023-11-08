@@ -37,7 +37,6 @@ export const Buy = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const navigate = useNavigate();
   const usdtToken = useGetTokenFromList(SYMBOL);
-  console.log(usdtToken?.name, 'SHSHSH');
 
   useEffect(() => {
     if (usdtToken) {
