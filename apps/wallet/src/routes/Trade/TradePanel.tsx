@@ -1,4 +1,4 @@
-import { Box, Container, Flex, useToast, VStack } from '@chakra-ui/react';
+import { Box, Container, Flex, useColorMode, useToast, VStack } from '@chakra-ui/react';
 import React, {
   useCallback,
   useEffect,
@@ -205,6 +205,7 @@ const SwitchTokens = () => {
   const store = useTradeStore();
   const { inToken, outToken } = useTokens();
 
+
   const onClick = useCallback(() => {
     store.setInToken(outToken?.symbol);
     store.setOutToken(inToken?.symbol);
@@ -252,7 +253,7 @@ const SrcTokenPanel = () => {
 const DstTokenPanel = () => {
   const amountOut = useOutAmount();
   const { isLoading, isFetching } = useTradeQuote();
-  const formattedAmount = useFormatNumber({ value: amountOut });
+  const formattedAmount = useFormatNumber({ value: amountOut, thousandSeparator:'' });
 
   const store = useTradeStore();
   const { inToken, outToken } = useTokens();
@@ -292,7 +293,7 @@ export function TradePanel() {
 const TradeForm = () => {
   useSubmitButton();
   return (
-    <VStack>
+    <VStack gap='0px'>
       <SrcTokenPanel />
       <SwitchTokens />
       <DstTokenPanel />

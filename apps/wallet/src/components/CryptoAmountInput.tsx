@@ -20,28 +20,40 @@ import { NumericFormat } from 'react-number-format';
 import { useAnimate } from 'framer-motion';
 import { Twa, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import { ERROR_COLOR } from '../consts';
-const INPUT_FONT_SIZE = 55;
+const INPUT_FONT_SIZE = 56;
 const styles = {
   inputContainer: css`
     position: relative;
   `,
   max: css`
     color: ${colors.link_color};
+    font-size: 17px;
   `,
   balance: css`
-    font-size: 14px;
     align-items: center;
     gap: 4px;
     p {
       color: ${colors.hint_color};
+      font-size: 17px;
     }
   `,
   inputSymbol: css`
+    position: relative;
+    padding-right: 20px;
     p,
     svg {
-      font-size: 34px;
-      font-weight: 700;
       color: ${colors.hint_color};
+    }
+    ,
+    svg {
+      font-size: 35px;
+      position: absolute;
+      right: -10px;
+    }
+    ,
+    p {
+      font-size: 40px;
+      font-weight: 700;
     }
   `,
   usd: css`
@@ -57,7 +69,7 @@ const styles = {
     position: relative;
     * {
       color: ${colors.hint_color};
-      font-size: 16px;
+      font-size: 17px;
       font-weight: 400;
     }
   `,
@@ -69,7 +81,7 @@ const StyledNumericFormat = styled(NumericFormat)({
   caretColor: colors.button_color,
   width: '100%',
   overflow: 'hidden',
-  height: '75px',
+  height: '66px',
   backgroundColor: 'transparent',
   color: colors.text_color,
   '::placeholder': {
@@ -177,22 +189,18 @@ function CryptoAmountInput({
     const maxWidth =
       (containerRef.current?.offsetWidth || 0) -
       (sideContentRef.current?.offsetWidth || 0);
-    let _fontSize = INPUT_FONT_SIZE
+    let _fontSize = INPUT_FONT_SIZE;
 
-  
     const _inputWidth = getTextSizeInPixels({
-      text: value.endsWith('.')
-        ? `${formattedAmount}.`
-        : formattedAmount || '',
+      text: value.endsWith('.') ? `${formattedAmount}.` : formattedAmount || '',
       fontSize: _fontSize,
       fontWeight: 700,
     });
 
-    
-      if (_inputWidth > maxWidth) {
-        const dif = maxWidth / _inputWidth;
-        _fontSize = _fontSize * dif * 0.94;
-      }
+    if (_inputWidth > maxWidth) {
+      const dif = maxWidth / _inputWidth;
+      _fontSize = _fontSize * dif * 0.94;
+    }
     return {
       fontSize: Math.max(_fontSize, 22),
       inputWidth: _inputWidth >= maxWidth ? maxWidth : _inputWidth,
@@ -223,7 +231,9 @@ function CryptoAmountInput({
           thousandSeparator={true}
           inputMode="decimal"
           value={value}
-          onValueChange={({ value }) => onChange && onChange(value)}
+          onValueChange={(values) => {
+            onChange && onChange(values.floatValue?.toString() || '');
+          }}
           contentEditable={editable}
           style={{
             pointerEvents: editable ? 'auto' : 'none',

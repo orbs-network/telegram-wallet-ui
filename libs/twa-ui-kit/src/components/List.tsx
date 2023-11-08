@@ -25,6 +25,7 @@ const styles = {
     }
     .list-item .chakra-card__body {
       position: relative;
+      padding: 10px 16px;
     }
     .list-item-content::after {
       content: '';
@@ -33,7 +34,7 @@ const styles = {
       left: 65px;
       right: 0px;
       height: 1px;
-      background: ${colors.secondary_bg_color};
+      background: ${colors.border_color};
     }
 
     .list-item:last-child .list-item-content::after {
@@ -50,9 +51,8 @@ const styles = {
   `,
   display: css`
     gap: 6px;
-    padding: 0px;
     .chakra-card__body {
-      padding: 10px;
+      padding: 10px 16px;
     }
   `,
   title: css`
