@@ -3,14 +3,14 @@ import { Container } from '@chakra-ui/react';
 import React, { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Page, TokensList } from '../../components';
-import { useUserData } from '../../hooks';
+import { useBalances } from '../../hooks';
 import { useMainButtonStore } from '../../store/main-button-store';
 import { TokenData } from '../../types';
 import { useTradeStore } from './store';
 import { disabledTokens } from '../../config';
 
 export function TradeTokenSelect({ isIn }: { isIn?: boolean }) {
-  const { data, dataUpdatedAt } = useUserData();
+  const { data, dataUpdatedAt } = useBalances();
   const navigate = useNavigate();
   const { setInToken, setOutToken, inToken, outToken } = useTradeStore();
   const { resetButton } = useMainButtonStore();
@@ -20,7 +20,7 @@ export function TradeTokenSelect({ isIn }: { isIn?: boolean }) {
   }, [resetButton]);
 
   const tokens = useMemo(() => {
-    return Object.values(data?.tokens || {});
+    return Object.values(data ?? {});
   }, [dataUpdatedAt]);
 
   const onSelect = (token: TokenData) => {

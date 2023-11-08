@@ -17,7 +17,7 @@ import {
   WithdrawalTransactionEvent,
   useEventsProvider,
 } from '../lib/EventsProvider';
-import { useUserData } from '../hooks';
+import { useBalances } from '../hooks';
 import { amountUi, toUiDisplay } from '../utils/conversion';
 import BN from 'bignumber.js';
 import { useParams } from 'react-router-dom';
@@ -31,7 +31,7 @@ export function Transaction() {
 
   const tx = events.find((tx) => tx.id === txId);
 
-  const { data: userData } = useUserData();
+  const { data: userData } = useBalances();
 
   let txToken = null;
   let txDescription = '';
@@ -41,7 +41,7 @@ export function Transaction() {
   switch (tx?.type) {
     case 'deposit': {
       const dTx = tx as DepositTransactionEvent;
-      txToken = Object.values(userData?.tokens || []).find(
+      txToken = Object.values(userData ?? {}).find(
         (token) => token.address === dTx.token
       );
       txDescription = 'Deposit';
@@ -51,7 +51,7 @@ export function Transaction() {
     }
     case 'withdrawal': {
       const wTx = tx as WithdrawalTransactionEvent;
-      txToken = Object.values(userData?.tokens || []).find(
+      txToken = Object.values(userData ?? {}).find(
         (token) => token.address === wTx.token
       );
 
@@ -67,10 +67,10 @@ export function Transaction() {
     }
     case 'trade': {
       const tTx = tx as TradeTransactionEvent;
-      const inToken = Object.values(userData?.tokens || []).find(
+      const inToken = Object.values(userData ?? {}).find(
         (token) => token.address === tTx.inToken
       );
-      const outToken = Object.values(userData?.tokens || []).find(
+      const outToken = Object.values(userData ?? {}).find(
         (token) => token.address === tTx.outToken
       );
       txToken = outToken;

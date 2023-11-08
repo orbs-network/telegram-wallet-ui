@@ -121,11 +121,11 @@ export class EventsProvider {
 }
 
 export function useEventsProvider() {
-  const [events, setEvents] = useState<TransactionEvent[]>([]);
+  const [events, setEvents] = useState<TransactionEvent[]>(
+    eventsProvider.events()
+  );
 
   useEffect(() => {
-    setEvents(eventsProvider.events());
-
     const listener = () => {
       setEvents(eventsProvider.events());
     };

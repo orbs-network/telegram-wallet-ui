@@ -42,19 +42,20 @@ export function Home() {
     value: usdValue || 0,
   });
 
-  if (usdValue === null && error === null) {
-    return (
-      <Container
-        size="sm"
-        style={{
-          height: '100%',
-          position: 'relative',
-        }}
-      >
-        <WalletSpinner />
-      </Container>
-    );
-  }
+  // TODO sukh - do we need this?
+  // if (usdValue === null && error === null) {
+  //   return (
+  //     <Container
+  //       size="sm"
+  //       style={{
+  //         height: '100%',
+  //         position: 'relative',
+  //       }}
+  //     >
+  //       <WalletSpinner />
+  //     </Container>
+  //   );
+  // }
 
   if (error) {
     <ErrorPage message={error.message} />;

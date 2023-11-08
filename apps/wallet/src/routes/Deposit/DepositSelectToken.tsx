@@ -1,7 +1,7 @@
 import { Container, Heading, VStack } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { Page, TokensList } from '../../components';
-import { useUserData } from '../../hooks';
+import { useBalances } from '../../hooks';
 import { useNavigation } from '../../router/hooks';
 import { useMainButtonStore } from '../../store/main-button-store';
 import { TokenData } from '../../types';
@@ -9,7 +9,7 @@ import { disabledTokens, faucetProvider, permit2Provider } from '../../config';
 import { useParams } from 'react-router-dom';
 
 export function DepositSelectToken() {
-  const { data } = useUserData();
+  const { data } = useBalances();
   const { method } = useParams<{ method: string }>();
   const { depositBuy, depositCrypto } = useNavigation();
 
@@ -39,7 +39,7 @@ export function DepositSelectToken() {
           <TokensList
           showMoreBtn={true}
             onSelect={onSelect}
-            tokens={Object.values(data?.tokens || {})}
+            tokens={Object.values(data || {})}
             mode="select"
             disabledTokens={disabledTokens}
           />

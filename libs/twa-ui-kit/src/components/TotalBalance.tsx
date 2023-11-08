@@ -27,7 +27,7 @@ export function TotalBalance({
   const navigate = useNavigate();
 
   const amountDisplay =
-    amount && isPrimaryCrypto
+    amount !== undefined && isPrimaryCrypto
       ? amount.split('.')
       : BN(amount || 0)
           .toFixed(2)
@@ -93,7 +93,7 @@ export function TotalBalance({
         {label}
       </StatLabel>
       <StatNumber fontSize="5xl" lineHeight="1.3">
-        {!amount ? <SkeletonText /> : PrimaryAmount}
+        {amount === undefined ? <SkeletonText /> : PrimaryAmount}
       </StatNumber>
     </Stat>
   );
