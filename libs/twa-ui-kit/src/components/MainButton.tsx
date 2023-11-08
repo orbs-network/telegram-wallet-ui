@@ -1,7 +1,7 @@
-import { MainButton as BaseMainButton } from '@twa-dev/sdk/react';
 import { colors } from '../theme';
 import { Button } from './Button';
 import { Twa } from '../Twa';
+import { TwaMainButton } from './TwaMainButton';
 
 interface MainButtonProps {
   disabled?: boolean;
@@ -29,7 +29,7 @@ export function MainButton(props: MainButtonProps) {
     );
   }
   return (
-    <BaseMainButton
+    <TwaMainButton
       {...props}
       color={
         props.disabled || props.progress

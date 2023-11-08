@@ -10,9 +10,9 @@ import {
 } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { ErrorPage } from '../ErrorPage';
-import { BackButton } from '@twa-dev/sdk/react';
 import { ROUTES } from './routes';
 import { useCurrentPath } from '../hooks';
+import { BackButton } from '@telegram-wallet-ui/twa-ui-kit';
 
 type ContextType = {
   navigationType: NavigationType;

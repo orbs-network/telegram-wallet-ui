@@ -7,3 +7,4 @@ export * from './TotalBalance';
 export * from './MainButton';
 export * from './Balance';
 export * from './List';
+export * from './BackButton';

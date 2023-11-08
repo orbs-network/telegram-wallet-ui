@@ -8,9 +8,9 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { Fetcher } from '../../utils/fetcher';
 import BN from 'bignumber.js';
-import { BackButton } from '@twa-dev/sdk/react';
 import Web3 from 'web3';
 import { getBalances } from '../../hooks';
+import { BackButton } from '@telegram-wallet-ui/twa-ui-kit';
 
 function setCurrentW3Provider(provider: 'chainstack' | 'alchemy') {
   localStorage.setItem('currentProvider', provider);
