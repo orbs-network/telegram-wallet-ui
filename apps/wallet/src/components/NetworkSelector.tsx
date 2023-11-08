@@ -14,7 +14,6 @@ const styles = {
   `,
   selector: css`
     width: 100%;
-    background-color: ${colors.secondary_bg_color};
     min-height: unset;
     .chakra-card__body {
       display: flex;
@@ -33,17 +32,29 @@ const styles = {
   `,
 };
 
-export const NetworkSelector = ({ assetId }: { assetId: string }) => {
+export const NetworkSelector = ({
+  assetId,
+  secondaryBg,
+}: {
+  assetId: string;
+  secondaryBg?: boolean;
+}) => {
   const { network } = usePersistedStore();
 
   const selected = _.find(NETWORKS, { name: network });
+
+  const selectorBg = css`
+    background-color: ${secondaryBg
+      ? colors.secondary_bg_color
+      : colors.bg_color};
+  `;
 
   return (
     <Link
       to={ROUTES.networkSelect.replace(':assetId', assetId || '')}
       style={{ width: '100%' }}
     >
-      <Card css={styles.selector}>
+      <Card css={[styles.selector, selectorBg]}>
         <Text>Network</Text>
         <Flex alignItems="center" css={styles.selectorRight}>
           <Text variant="hint">{selected?.displayName}</Text>
