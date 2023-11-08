@@ -1,5 +1,11 @@
-import { Avatar, Heading, Skeleton, Text, VStack } from '@chakra-ui/react';
-import { colors, List, ListItem, Twa } from '@telegram-wallet-ui/twa-ui-kit';
+import { Avatar, Box, Heading, Skeleton, Text, VStack } from '@chakra-ui/react';
+import {
+  Card,
+  colors,
+  List,
+  ListItem,
+  Twa,
+} from '@telegram-wallet-ui/twa-ui-kit';
 import _ from 'lodash';
 import { useFormatNumber, useMultiplyPriceByAmount } from '../hooks';
 import { TokenData, TokensListProps } from '../types';
@@ -8,12 +14,10 @@ import { css } from '@emotion/react';
 
 const styles = {
   showMoreBtn: css`
-    color: ${colors.button_color};
+    width: 100%;
     font-size: 15px;
     font-weight: 500;
-    padding-left: 10px;
-    margin-top: 5px;
-    margin-bottom: 10px;
+    cursor: pointer;
   `,
 };
 
@@ -30,32 +34,36 @@ export function TokensList({
   const isLoading = !tokens || _.isEmpty(tokens);
 
   return (
-    <List css={css} className={className} mode={mode} isLoading={isLoading}>
-      {_.map(tokens, (token) => {
-        const isDisabled = disabledTokens
-          ?.map((t) => t.toLowerCase())
-          .includes(token.symbol.toLowerCase());
-        const isSelected = selected === token.symbol;
-        return (
-          <TokenListItem
-            disabled={isDisabled}
-            selected={isSelected}
-            balance={token.balance}
-            onClick={() => onSelect(token)}
-            key={token.address}
-            token={token}
-          />
-        );
-      })}
+    <VStack spacing={3}>
+      <List css={css} className={className} mode={mode} isLoading={isLoading}>
+        {_.map(tokens, (token) => {
+          const isDisabled = disabledTokens
+            ?.map((t) => t.toLowerCase())
+            .includes(token.symbol.toLowerCase());
+          const isSelected = selected === token.symbol;
+          return (
+            <TokenListItem
+              disabled={isDisabled}
+              selected={isSelected}
+              balance={token.balance}
+              onClick={() => onSelect(token)}
+              key={token.address}
+              token={token}
+            />
+          );
+        })}
+      </List>
       {showMoreBtn && (
-        <Text
+        <Box
           css={styles.showMoreBtn}
           onClick={() => Twa.showAlert('Coming soon')}
         >
-          Show more
-        </Text>
+          <Card css={{ minHeight: 'auto', color: colors.button_color }}>
+            Show more
+          </Card>
+        </Box>
       )}
-    </List>
+    </VStack>
   );
 }
 type TokenListItemProps = {
