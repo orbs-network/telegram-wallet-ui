@@ -172,16 +172,31 @@ export const theme = extendTheme({
       variants: {
         filled: definePartsStyle({
           field: {
-            backgroundColor: colors.bg_color,
+            backgroundColor: colors.secondary_bg_color,
             borderRadius: '0.875rem',
             _placeholder: {
               color: colors.hint_color,
             },
             _hover: {
-              backgroundColor: adjustBrightness(colors.bg_color, -0.07),
+              backgroundColor: adjustBrightness(
+                colors.secondary_bg_color,
+                -0.07
+              ),
+            },
+            _active: {
+              backgroundColor: adjustBrightness(
+                colors.secondary_bg_color,
+                -0.07
+              ),
+            },
+            _focus: {
+              backgroundColor: adjustBrightness(
+                colors.secondary_bg_color,
+                -0.07
+              ),
             },
             _dark: {
-              backgroundColor: colors.bg_color,
+              backgroundColor: colors.secondary_bg_color,
             },
           },
         }),

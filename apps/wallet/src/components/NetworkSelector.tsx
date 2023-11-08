@@ -1,7 +1,4 @@
-import {
-  Flex,
-  Text,
-} from '@chakra-ui/react';
+import { Flex, Text } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { Card, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import _ from 'lodash';
@@ -17,6 +14,7 @@ const styles = {
   `,
   selector: css`
     width: 100%;
+    background-color: ${colors.secondary_bg_color};
     min-height: unset;
     .chakra-card__body {
       display: flex;
@@ -35,7 +33,7 @@ const styles = {
   `,
 };
 
-export const NetworkSelector = ({assetId}:{assetId: string}) => {
+export const NetworkSelector = ({ assetId }: { assetId: string }) => {
   const { network } = usePersistedStore();
 
   const selected = _.find(NETWORKS, { name: network });
@@ -55,4 +53,3 @@ export const NetworkSelector = ({assetId}:{assetId: string}) => {
     </Link>
   );
 };
-
