@@ -95,7 +95,7 @@ export function SelectMethod() {
   return (
     <Page>
       <Container size="sm" pt={4}>
-        <VStack spacing={8} alignItems="stretch">
+        <VStack alignItems="stretch">
           <PageHeading>How would you like to deposit crypto?</PageHeading>
           <DepositMethods />
         </VStack>

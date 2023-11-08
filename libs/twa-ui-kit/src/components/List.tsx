@@ -82,7 +82,11 @@ export function List({
       {isLoading ? <Loader /> : children}
     </Card>
   ) : (
-    <VStack css={[styles.display, css]} className={className}>
+    <VStack
+      css={[styles.display, css]}
+      className={className}
+      alignItems="stretch"
+    >
       <Title title={title} />
       {isLoading ? <Loader /> : children}
     </VStack>

@@ -32,7 +32,7 @@ export function DepositSelectToken() {
   return (
     <Page>
       <Container size="sm" pt={4}>
-        <VStack spacing={6} alignItems="stretch">
+        <VStack alignItems="stretch">
           <PageHeading>Choose asset to deposit</PageHeading>
           <TokensList
             showMoreBtn={true}
