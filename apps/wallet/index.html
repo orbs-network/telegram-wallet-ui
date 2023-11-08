@@ -34,6 +34,7 @@
         margin: 0;
         transition: background 0.5s;
         background-color: var(--tg-theme-secondary-bg-color, 'transparent');
+        position: relative;
       }
 
       #root {
@@ -42,12 +43,17 @@
       }
       .loader-container {
         display: block;
+        position: fixed;
+        width: 100%;
+        z-index: 0;
+        height: var(--tg-viewport-height, 100vh);
+      }
+      .loader {
+        display: block;
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translateX(-50%) translateY(-50%);
-      }
-      .loader {
         width: 80px;
         height: auto;
         animation: pulse 1s linear infinite;
@@ -56,7 +62,7 @@
     </style>
   </head>
   <body>
-    <div id="spinner" class="loader-container">
+    <div class="loader-container">
       <div class="loader">
         <svg
           fill="currentColor"
@@ -89,8 +95,6 @@
       window.Telegram.WebApp.document.body.style.backgroundColor =
         window.Telegram.WebApp.themeParams.secondary_bg_color;
       window.Telegram.WebApp.setHeaderColor('secondary_bg_color');
-
-      document.body.style.height = window.Telegram.WebApp.viewportHeight;
     </script>
     <script type="module" src="/src/main.tsx" async></script>
   </body>
