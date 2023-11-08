@@ -8,7 +8,7 @@ import {
   useToast,
   VStack,
 } from '@chakra-ui/react';
-import { useGetTokenFromList, useBalances } from '../../hooks';
+import { useGetTokenFromList } from '../../hooks';
 import { Button, Card, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import { QRCodeSVG } from 'qrcode.react';
 import { css } from '@emotion/react';
@@ -69,7 +69,6 @@ const styles = {
 };
 
 export function DepositAddress() {
-  const { data: userData } = useBalances();
   const { assetId } = useParams<URLParams>();
   const token = useGetTokenFromList(assetId);
   const mode = useColorMode().colorMode;
@@ -126,9 +125,7 @@ export function DepositAddress() {
                 <Text style={{ maxWidth: QR_SIZE - 20 }} css={styles.address}>
                   {address}
                 </Text>
-                <Text css={styles.network}>
-                  Your {token?.symbolDisplay || ''} address
-                </Text>
+                <Text css={styles.network}>Your Polygon address</Text>
               </VStack>
             </Card>
             <Warning />
@@ -212,8 +209,7 @@ const Warning = () => {
   return (
     <Text css={styles.warning}>
       Send only <strong>{token?.symbolDisplay || ''} ERC-20</strong> to this
-      Polygon address using a native Polygon wallet. <br /> Sending other coins
-      may result in permanent loss.
+      address. Sending other coins may result in permanent loss.
     </Text>
   );
 };
