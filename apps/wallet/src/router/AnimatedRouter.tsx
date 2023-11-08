@@ -16,6 +16,7 @@ import { useCurrentPath } from '../hooks';
 import { BackButton, setTwaBg } from '@telegram-wallet-ui/twa-ui-kit';
 
 const routesToMatch = [
+  ROUTES.withdrawAddress,
   ROUTES.withdrawSuccess,
   ROUTES.tradeSuccess,
   ROUTES.trade,
