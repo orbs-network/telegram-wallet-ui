@@ -94,7 +94,7 @@ export function TransactionHistoryItem({
             }}
           >
             <Text variant="bodyText" noOfLines={1}>
-              <TransactionAmount amount={wTx.amount} />{' '}
+              -<TransactionAmount amount={wTx.amount} />{' '}
               {wTx.token?.symbolDisplay}
             </Text>
             <Text fontSize="sm">Sent</Text>
@@ -135,10 +135,10 @@ export function TransactionHistoryItem({
             }}
           >
             <Text variant="bodyText" noOfLines={1}>
-              {!isIn && '+'}
+              {isIn ? '-' : '+'}
               <TransactionAmount amount={amount} /> {token?.symbolDisplay ?? ''}
             </Text>
-            <Text fontSize="sm">{!isIn ? 'Received' : 'Traded'}</Text>
+            <Text fontSize="sm">{isIn ? 'Traded' : 'Received'}</Text>
           </Box>
         );
         break;
