@@ -85,6 +85,13 @@ export function WithdrawAmount() {
           <Recipient />
           {/* TODO: handle undefined assetId better */}
           <VStack gap="0px">
+            <CryptoAmountInput
+              name="withdrawalAmount"
+              value={amount}
+              onChange={setAmount}
+              tokenSymbol={assetId || ''}
+              error={isValidAmount ? undefined : 'Not enough coins'}
+            />
             <CryptoAmountInput.MaxButton
               tokenSymbol={assetId}
               onChange={setAmount}
@@ -92,13 +99,6 @@ export function WithdrawAmount() {
                 marginRight: 'auto',
                 marginTop: '10px',
               }}
-            />
-            <CryptoAmountInput
-              name="withdrawalAmount"
-              value={amount}
-              onChange={setAmount}
-              tokenSymbol={assetId || ''}
-              error={isValidAmount ? undefined : 'Not enough coins'}
             />
           </VStack>
           <Balance balance={formattedBalance} />

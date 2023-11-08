@@ -1,5 +1,12 @@
 import { VStack, Flex, Text, Box } from '@chakra-ui/react';
-import { CSSProperties, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  CSSProperties,
+  ReactNode,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   useMultiplyPriceByAmount,
   useFormatNumber,
@@ -98,7 +105,7 @@ function CryptoAmountInput({
   const token = useGetTokenFromList(tokenSymbol);
   const containerRef = useRef<HTMLDivElement>(null);
   const sideContentRef = useRef<HTMLDivElement>(null);
-  const [ready, setReady] = useState(false)
+  const [ready, setReady] = useState(false);
   const calculatedPrice = useMultiplyPriceByAmount(
     token?.coingeckoId || 'ethereum',
     Number(value)
@@ -108,18 +115,17 @@ function CryptoAmountInput({
   const formattedPriceCompare = useFormatNumber({
     value: priceCompare,
   });
-  const formattedAmount = useFormatNumber({ value, decimalScale: 18});
+  const formattedAmount = useFormatNumber({ value, decimalScale: 18 });
   const formattedUsdPrice = useFormatNumber({
     value: calculatedPrice,
     prefix: '$',
   });
 
   useEffect(() => {
-   if(containerRef.current && sideContentRef.current) {
-      setReady(true)
-   }
-  }, [])
-  
+    if (containerRef.current && sideContentRef.current) {
+      setReady(true);
+    }
+  }, []);
 
   const bottomContent = useMemo(() => {
     if (error) {
@@ -168,29 +174,30 @@ function CryptoAmountInput({
         inputWidth: 0,
       };
     }
-      const maxWidth =
-        (containerRef.current?.offsetWidth || 0) -
-        (sideContentRef.current?.offsetWidth || 0);
-    let _fontSize = INPUT_FONT_SIZE;
+    const maxWidth =
+      (containerRef.current?.offsetWidth || 0) -
+      (sideContentRef.current?.offsetWidth || 0);
+    let _fontSize = INPUT_FONT_SIZE
+
+  
     const _inputWidth = getTextSizeInPixels({
-      text: formattedAmount || '',
+      text: value.endsWith('.')
+        ? `${formattedAmount}.`
+        : formattedAmount || '',
       fontSize: _fontSize,
       fontWeight: 700,
     });
 
-    console.log({ _inputWidth, maxWidth });
-
-    if (_inputWidth > maxWidth) {
-      const dif = maxWidth / _inputWidth;
-      console.log('dif', dif, maxWidth, _inputWidth, formattedAmount);
-
-      _fontSize = _fontSize * dif * 0.94;
-    }
+    
+      if (_inputWidth > maxWidth) {
+        const dif = maxWidth / _inputWidth;
+        _fontSize = _fontSize * dif * 0.94;
+      }
     return {
       fontSize: Math.max(_fontSize, 22),
       inputWidth: _inputWidth >= maxWidth ? maxWidth : _inputWidth,
     };
-  }, [formattedAmount, ready]);
+  }, [formattedAmount, ready, value]);
 
   return (
     <VStack
