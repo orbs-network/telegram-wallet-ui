@@ -64,9 +64,9 @@ export const TwaMainButton: FC<TwaMainButtonProps> = ({
 
   useEffect(() => {
     if (onClick) {
-      Twa.MainButton.onClick(onClick);
+      mainButton.onClick(onClick);
       return () => {
-        Twa.MainButton.offClick(onClick);
+        mainButton.offClick(onClick);
       };
     }
   }, [onClick]);

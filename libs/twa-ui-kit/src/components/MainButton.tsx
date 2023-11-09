@@ -23,6 +23,7 @@ export function MainButton(props: MainButtonProps) {
         isLoading={props.progress}
         onClick={props.onClick}
         disabled={props.disabled}
+        variant="primary"
       >
         {props.text?.toUpperCase()}
       </Button>
