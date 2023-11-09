@@ -24,6 +24,7 @@ const INPUT_FONT_SIZE = 56;
 const styles = {
   inputContainer: css`
     position: relative;
+    height: 66px;
   `,
   max: css`
     color: ${colors.link_color};
@@ -39,7 +40,7 @@ const styles = {
   `,
   inputSymbol: css`
     position: relative;
-    padding-right: 20px;
+    height: 100%;
     p,
     svg {
       color: ${colors.hint_color};
@@ -56,13 +57,19 @@ const styles = {
       font-weight: 700;
     }
   `,
+  sideContent: css`
+    height: 100%;
+    display: flex;
+    align-items: center;
+    
+  `,
   usd: css`
     padding-left: 7px;
   `,
   error: css`
     color: ${ERROR_COLOR};
   `,
-  bottonContent: css`
+  bottomContent: css`
     width: 100%;
     height: 20px;
     top: -5px;
@@ -80,8 +87,9 @@ const StyledNumericFormat = styled(NumericFormat)({
   outline: 'none',
   caretColor: colors.button_color,
   width: '100%',
+  marginBottom: 'auto',
   overflow: 'hidden',
-  height: '66px',
+  height: '100%',
   backgroundColor: 'transparent',
   color: colors.text_color,
   '::placeholder': {
@@ -179,7 +187,7 @@ function CryptoAmountInput({
     }
   }, [animate, error, name]);
 
-  const { fontSize, inputWidth } = useMemo(() => {
+  const { fontSize, inputWidth, gap, isMaxWidth } = useMemo(() => {
     if (!ready) {
       return {
         fontSize: INPUT_FONT_SIZE,
@@ -188,22 +196,29 @@ function CryptoAmountInput({
     }
     const maxWidth =
       (containerRef.current?.offsetWidth || 0) -
-      (sideContentRef.current?.offsetWidth || 0);
+      (sideContentRef.current?.offsetWidth || 0) -
+      10;
+
     let _fontSize = INPUT_FONT_SIZE;
 
     const _inputWidth = getTextSizeInPixels({
-      text: value.endsWith('.') ? `${formattedAmount}.` : formattedAmount || '',
+      text: value.endsWith('.')
+        ? `${formattedAmount}.`
+        : formattedAmount || '0',
       fontSize: _fontSize,
       fontWeight: 700,
     });
 
-    if (_inputWidth > maxWidth) {
+    if (_inputWidth >= maxWidth) {
       const dif = maxWidth / _inputWidth;
-      _fontSize = _fontSize * dif * 0.94;
+      _fontSize = _fontSize * dif * 0.98;
     }
+
     return {
       fontSize: Math.max(_fontSize, 22),
       inputWidth: _inputWidth >= maxWidth ? maxWidth : _inputWidth,
+      gap: '0px',
+      isMaxWidth: _inputWidth >= maxWidth,
     };
   }, [formattedAmount, ready, value]);
 
@@ -220,7 +235,7 @@ function CryptoAmountInput({
         alignItems="baseline"
         justifyContent="flex-start"
         ref={scope}
-        gap="10px"
+        gap={gap}
         width="100%"
         className="input-container"
       >
@@ -243,8 +258,17 @@ function CryptoAmountInput({
           }}
           readOnly={!editable}
         />
-        <div ref={sideContentRef}>
-          {sideContent || (
+        {sideContent && (
+          <Box css={styles.sideContent} ref={sideContentRef}>
+            {sideContent}
+          </Box>
+        )}
+        {!sideContent && (
+          <Box
+            ref={sideContentRef}
+            css={styles.sideContent}
+            style={{ marginLeft: isMaxWidth ? 'auto' : '10px' }}
+          >
             <Symbol
               symbol={token?.symbolDisplay}
               css={{
@@ -252,10 +276,10 @@ function CryptoAmountInput({
                 color: error ? ERROR_COLOR : '',
               }}
             />
-          )}
-        </div>
+          </Box>
+        )}
       </Flex>
-      <Box css={styles.bottonContent}>{bottomContent}</Box>
+      <Box css={styles.bottomContent}>{bottomContent}</Box>
     </VStack>
   );
 }
@@ -272,11 +296,13 @@ function Symbol({
   return (
     <Box css={[styles.inputSymbol, css]}>
       {icon ? (
-        <Flex alignItems="center">
+        <Flex alignItems="center" height="100%">
           <Text>{symbol}</Text> {icon}
         </Flex>
       ) : (
-        <Text>{symbol}</Text>
+        <Flex height='100%'>
+          <Text css={{paddingTop: '5px'}}>{symbol}</Text>
+        </Flex>
       )}
     </Box>
   );

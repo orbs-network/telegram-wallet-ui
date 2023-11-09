@@ -1,4 +1,4 @@
-import { Box, Container, Flex, useColorMode, useToast, VStack } from '@chakra-ui/react';
+import { Box, Container, Flex, useToast, VStack } from '@chakra-ui/react';
 import React, {
   useCallback,
   useEffect,
@@ -7,7 +7,6 @@ import React, {
   useState,
 } from 'react';
 import {
-  useDebouncedCallback,
   useFormatNumber,
   useGetTokenFromList,
   useMultiplyPriceByAmount,

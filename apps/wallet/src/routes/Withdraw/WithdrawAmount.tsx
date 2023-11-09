@@ -73,7 +73,7 @@ export function WithdrawAmount() {
   }, [navigateToWithdrawSummary, assetId, recipient, amount]);
 
   useUpdateMainButton({
-    text: !isValidAmount ? 'Send' : `Send ${amount} ${token?.symbolDisplay}`,
+    text: `Send ${token?.symbolDisplay}`,
     disabled: !isValidAmount || amount === '' || BN(amount).isZero(),
     onClick: onSubmit,
   });

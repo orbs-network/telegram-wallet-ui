@@ -159,6 +159,9 @@ export const TokenPanel = ({
           sideContent={
             <Link to={tokenSelectPath} onClick={setDisableMainButtonUpdate}>
               <CryptoAmountInput.Symbol
+              css={{
+                paddingRight: '20px'
+              }}
                 symbol={token?.symbolDisplay || 'Select'}
                 icon={<BsChevronCompactRight />}
               />
