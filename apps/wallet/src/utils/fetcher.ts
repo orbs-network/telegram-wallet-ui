@@ -15,12 +15,13 @@ export class Fetcher {
   static async post<T = unknown>(
     url: string,
     body: any,
-    signal?: AbortSignal
+    signal?: AbortSignal,
+    headers?: Record<string, string>
   ): Promise<T> {
     const res = await fetch(url, {
       signal,
       method: 'POST',
-      headers: {
+      headers: headers ?? {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),

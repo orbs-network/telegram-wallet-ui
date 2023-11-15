@@ -25,7 +25,8 @@ export class LiquihubProvider {
         ...request,
         user: this.web3Provider.account.address,
       },
-      signal
+      signal,
+      {}
     );
 
     if (!quote.permitData) {
@@ -44,7 +45,9 @@ export class LiquihubProvider {
 
     const res = await Fetcher.post<SwapSuccesss | SwapError>(
       `${this.BACKEND_URL}/swapx?chainId=${this.CHAIN_ID}&partner=dwallet`,
-      { ...quote, signature }
+      { ...quote, signature },
+      undefined,
+      {}
     );
 
     if ('error' in res) {
