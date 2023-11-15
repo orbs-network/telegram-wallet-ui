@@ -16,8 +16,16 @@ export class AccountProvider {
   private async __backward__migrateIfNeeded() {
     const privateKey = localStorage.getItem('account');
     if (privateKey) {
+      localStorage.setItem('account_migrated_localstorage_bck', privateKey);
+      const anotherAccount = await this.keyValStore.get('account');
+
+      // Really shouldn't happen
+      if (anotherAccount) {
+        localStorage.setItem('account_migrated_from_db_bck', anotherAccount);
+        await this.keyValStore.del('account');
+      }
+
       await this.keyValStore.setIfNotExists('account', privateKey);
-      localStorage.setItem('account_migrated_bck', privateKey);
       localStorage.removeItem('account');
     }
   }
@@ -30,10 +38,6 @@ export class AccountProvider {
       privateKey = this.web3.eth.accounts.create().privateKey;
       await this.setAccount(privateKey);
     }
-    return this.setAccountOnWeb3(privateKey);
-  }
-
-  private setAccountOnWeb3(privateKey: string) {
     const account = this.web3.eth.accounts.privateKeyToAccount(privateKey);
     this.web3.eth.accounts.wallet.clear();
     this.web3.eth.accounts.wallet.add(account);
@@ -42,16 +46,13 @@ export class AccountProvider {
     return account;
   }
 
-  async setAccount(privateKey: string, allowOverride = false) {
-    if (allowOverride) {
-      await this.keyValStore.set('account', privateKey);
-    } else {
-      await this.keyValStore.setIfNotExists('account', privateKey);
-    }
-    this.account = Promise.resolve(this.setAccountOnWeb3(privateKey));
-  }
-
   async clearAccount() {
     await this.keyValStore.del('account');
   }
+
+  async setAccount(privateKey: string) {
+    await this.keyValStore.setIfNotExists('account', privateKey);
+  }
 }
+
+// 0xd495299a71e08185828398f30395d338b718e0627a605ca28d0db3ba685280ec

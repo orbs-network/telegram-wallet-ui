@@ -121,7 +121,8 @@ export const Debug = () => {
                 'New address is: ' + account.address + '. Are you sure?'
               )
             ) {
-              await config?.accountProvider.setAccount(newPrivateKey, true);
+              await config?.accountProvider.clearAccount();
+              await config?.accountProvider.setAccount(newPrivateKey);
               window.location.reload();
             }
           }
