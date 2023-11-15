@@ -73,7 +73,6 @@ export const Buy = () => {
       // Hook into TRANSAK_WIDGET_CLOSE event to navigate back to Wallet home page upon user successfully purchasing and tapping "Back to App"
       if (message.data.event_id === Transak.Events.TRANSAK_WIDGET_CLOSE) {
         debug("TRANSAK_WIDGET_CLOSE event received. Navigating to '/'");
-        console.log('hello2');
         navigate('/');
       }
     };

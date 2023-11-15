@@ -49,9 +49,6 @@ export const eventsProvider = new EventsProvider(new LocalStorageProvider());
 
 async function initialize() {
   const account = await accountProvider.account;
-  debug('the account is', account.address);
-
-  console.log("creating web3provider")
 
   const web3Provider = new Web3Provider(w3, account);
 
