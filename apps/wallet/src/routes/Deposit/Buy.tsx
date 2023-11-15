@@ -3,20 +3,13 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ErrorPage } from '../../ErrorPage';
 import { Page } from '../../components';
-import {
-  TRANSAK_API_KEY,
-  TRANSAK_URL,
-  account,
-  faucetProvider,
-  permit2Provider,
-} from '../../config';
+import { TRANSAK_API_KEY, TRANSAK_URL, useInitialize } from '../../config';
 import { useGetTokenFromList } from '../../hooks';
 import { getDebug } from '../../lib/utils/debug';
 import { Transak } from './transak/constants';
 
 const debug = getDebug('Buy');
 
-const walletAddress = account?.address;
 const SYMBOL = 'usdt';
 
 const constructSrcUrl = (walletAddress: string) => {
@@ -38,13 +31,15 @@ export const Buy = () => {
   const navigate = useNavigate();
   const usdtToken = useGetTokenFromList(SYMBOL);
 
+  const config = useInitialize();
+
   useEffect(() => {
     if (usdtToken) {
       debug('Triggering faucet and permit2');
-      faucetProvider.setProofErc20(usdtToken.address);
-      permit2Provider.addErc20(usdtToken.address);
+      config?.faucetProvider.setProofErc20(usdtToken.address);
+      config?.permit2Provider.addErc20(usdtToken.address);
     }
-  }, [usdtToken]);
+  }, [usdtToken, config]);
 
   useEffect(() => {
     const handleMessage = (message: {
@@ -90,9 +85,10 @@ export const Buy = () => {
     };
   }, [navigate]);
 
-  if (!walletAddress) return <ErrorPage message="Wallet not created." />;
+  if (!config?.account.address) throw new Error('shokoƒ');
+  // return <ErrorPage message="Wallet not created." />;
 
-  const src = constructSrcUrl(walletAddress);
+  const src = constructSrcUrl(config?.account.address ?? '');
 
   return (
     <Page>

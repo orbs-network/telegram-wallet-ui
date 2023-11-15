@@ -23,7 +23,7 @@ import { URLParams } from '../../types';
 import { useUpdateMainButton } from '../../store/main-button-store';
 import { AiFillCloseCircle, AiFillWarning } from 'react-icons/ai';
 import { eqIgnoreCase } from '@defi.org/web3-candies';
-import { account } from '../../config';
+import { useInitialize } from '../../config';
 
 const styles = {
   container: css`
@@ -45,6 +45,7 @@ export function WithdrawAddress() {
   const [address, setAddress] = useState('');
   const { withdrawAmount } = useNavigation();
   const { assetId } = useParams<URLParams>();
+  const config = useInitialize();
 
   const addressError = useMemo(() => {
     const valid = validateAddress(address);
@@ -57,13 +58,13 @@ export function WithdrawAddress() {
       };
     }
 
-    if (eqIgnoreCase(address, account.address || '')) {
+    if (eqIgnoreCase(address, config?.account.address || '')) {
       return {
         title: ' Invalid Address',
         subtitle: 'You cannot withdraw to your own address',
       };
     }
-  }, [address]);
+  }, [address, config?.account.address]);
 
   const onSubmit = useCallback(() => {
     withdrawAmount(assetId!, address);

@@ -40,10 +40,6 @@ export const useNavigation = () => {
   
 
 
-  const tempUtils = useCallback(() => {
-    navigate(ROUTES.tempUtils);
-  }, [navigate]);
-
   const asset = useCallback(
     (assetId: string) => {
       navigate(ROUTES.asset.replace(':assetId', assetId));
@@ -124,7 +120,6 @@ export const useNavigation = () => {
     deposit,
     depositBuy,
     depositCrypto,
-    tempUtils,
     asset,
     withdrawAddress,
     withdrawAmount,

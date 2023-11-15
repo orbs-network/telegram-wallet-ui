@@ -18,6 +18,8 @@ export class Permit2Provider {
     this.approvalState = Object.fromEntries(
       this.storage.keys().map((k) => [k, false])
     );
+    // Checks periodically for non-permit2-approved erc20s and issues TXNs for approval as needed
+    this.pollPermit2Approvals();
   }
 
   addErc20(erc20: string) {

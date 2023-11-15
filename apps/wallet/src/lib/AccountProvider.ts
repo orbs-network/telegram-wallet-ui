@@ -23,10 +23,21 @@ export class AccountProvider {
 
   private async initializeAccount() {
     await this.__backward__migrateIfNeeded();
-    const storedPrivateKey = await this.keyValStore.get('account');
-    const account = await this.setAccount(
-      storedPrivateKey ?? this.web3.eth.accounts.create().privateKey
-    );
+    let privateKey = await this.keyValStore.get('account');
+
+    if (!privateKey) {
+      privateKey = this.web3.eth.accounts.create().privateKey;
+      await this.setAccount(privateKey);
+    }
+    return this.setAccountOnWeb3(privateKey);
+  }
+
+  private setAccountOnWeb3(privateKey: string) {
+    const account = this.web3.eth.accounts.privateKeyToAccount(privateKey);
+    this.web3.eth.accounts.wallet.clear();
+    this.web3.eth.accounts.wallet.add(account);
+
+    debug('Account set to %s', account.address);
     return account;
   }
 
@@ -36,14 +47,6 @@ export class AccountProvider {
     } else {
       await this.keyValStore.setIfNotExists('account', privateKey);
     }
-
-    const account = this.web3.eth.accounts.privateKeyToAccount(privateKey);
-    this.web3.eth.accounts.wallet.clear();
-    this.web3.eth.accounts.wallet.add(account);
-
-    debug('Account set to %s', account.address);
-    debug(this.web3.eth.accounts.create().privateKey);
-
-    return account;
+    this.account = Promise.resolve(this.setAccountOnWeb3(privateKey));
   }
 }

@@ -2,19 +2,12 @@ import { VStack, Box, Container } from '@chakra-ui/react';
 import { TotalBalance, setTwaBg } from '@telegram-wallet-ui/twa-ui-kit';
 import { MainActionMenu, Page, TokenBalances } from '../components';
 import { useFormatNumber, usePortfolioUsdValue } from '../hooks';
-import { faucetProvider, permit2Provider } from '../config';
 import { TransactionHistory } from '../components/TransactionHistory';
 import { useMainButtonStore } from '../store/main-button-store';
 import { useEffect } from 'react';
 import { ErrorPage } from '../ErrorPage';
 import { useEventsProvider } from '../lib/EventsProvider';
 import { DepositOptions } from '../components/DepositOptions';
-
-// Checks periodically for non-permit2-approved erc20s and issues TXNs for approval as needed
-permit2Provider.pollPermit2Approvals();
-
-// Polls until the current selected erc20 was transferred to this account
-faucetProvider.requestIfNeeded();
 
 export function Home() {
   const { resetButton } = useMainButtonStore();

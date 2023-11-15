@@ -1,10 +1,5 @@
 import { Button, Container, Text } from '@chakra-ui/react';
-import {
-  accountProvider,
-  eventsProvider,
-  permit2Provider,
-  web3Provider,
-} from '../../config';
+import { eventsProvider, useInitialize } from '../../config';
 import { useQuery } from '@tanstack/react-query';
 import { Fetcher } from '../../utils/fetcher';
 import BN from 'bignumber.js';
@@ -17,10 +12,15 @@ function setCurrentW3Provider(provider: 'chainstack' | 'alchemy') {
 }
 
 const useLoadBalanceData = () => {
+  const config = useInitialize();
+
   return useQuery({
     queryKey: ['debug', 'balance'],
+    enabled: !!config?.web3Provider,
     queryFn: async () => {
-      const balance = (await web3Provider.balance()).dividedBy(1e18).toFixed(6);
+      const balance = (await config!.web3Provider.balance())
+        .dividedBy(1e18)
+        .toFixed(6);
 
       const tokens = await getBalances();
 
@@ -28,7 +28,7 @@ const useLoadBalanceData = () => {
       for (const erc20 of Object.values(tokens)) {
         erc20s.push({
           ...erc20,
-          isApproved: permit2Provider.isApproved(erc20.address),
+          isApproved: config!.permit2Provider.isApproved(erc20.address),
         });
       }
 
@@ -63,12 +63,13 @@ const useLoadFaucetData = () => {
 
 export const Debug = () => {
   const { data } = useLoadBalanceData();
+  const config = useInitialize();
   const { data: faucetStatus, isLoading: loadingFaucet } = useLoadFaucetData();
   return (
     <Container size="sm" height="100vh">
       <BackButton />
       <Text>
-        <b>Address</b> {web3Provider.account.address}
+        <b>Address</b> {config?.account.address}
       </Text>
       <Text>
         <b>MATIC balance</b> {data?.balance}
@@ -109,7 +110,7 @@ export const Debug = () => {
         onClick={async () => {
           const newPrivateKey = prompt(
             'Private key',
-            accountProvider.account!.privateKey
+            config?.account?.privateKey
           );
           if (newPrivateKey) {
             const account = new Web3().eth.accounts.privateKeyToAccount(
@@ -120,7 +121,7 @@ export const Debug = () => {
                 'New address is: ' + account.address + '. Are you sure?'
               )
             ) {
-              await accountProvider.setAccount(newPrivateKey, true);
+              await config?.accountProvider.setAccount(newPrivateKey, true);
               window.location.reload();
             }
           }
