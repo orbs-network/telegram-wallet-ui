@@ -73,6 +73,7 @@ export const Buy = () => {
       // Hook into TRANSAK_WIDGET_CLOSE event to navigate back to Wallet home page upon user successfully purchasing and tapping "Back to App"
       if (message.data.event_id === Transak.Events.TRANSAK_WIDGET_CLOSE) {
         debug("TRANSAK_WIDGET_CLOSE event received. Navigating to '/'");
+        console.log('hello2');
         navigate('/');
       }
     };
@@ -85,27 +86,24 @@ export const Buy = () => {
     };
   }, [navigate]);
 
-  if (!config?.account.address) throw new Error('shokoƒ');
-  // return <ErrorPage message="Wallet not created." />;
-
-  const src = constructSrcUrl(config?.account.address ?? '');
-
   return (
     <Page>
-      <iframe
-        ref={iframeRef}
-        id="transakIframe"
-        title="Transak"
-        src={src}
-        allow="camera;microphone;payment"
-        style={{
-          height: '100%',
-          width: '100%',
-          border: 'none',
-          transform: 'scale(1.0)',
-          overflow: 'hidden',
-        }}
-      ></iframe>
+      {config?.account.address && (
+        <iframe
+          ref={iframeRef}
+          id="transakIframe"
+          title="Transak"
+          src={constructSrcUrl(config?.account.address ?? '')}
+          allow="camera;microphone;payment"
+          style={{
+            height: '100%',
+            width: '100%',
+            border: 'none',
+            transform: 'scale(1.0)',
+            overflow: 'hidden',
+          }}
+        ></iframe>
+      )}
       {showDoneButton && (
         <MainButton text="Done" onClick={() => navigate('/')} />
       )}

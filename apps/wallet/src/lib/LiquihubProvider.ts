@@ -11,7 +11,7 @@ import { getDebug } from './utils/debug';
 const debug = getDebug('LiquihubProvider');
 
 export class LiquihubProvider {
-  BACKEND_URL = 'https://k5q195y9o9.execute-api.us-east-2.amazonaws.com';
+  BACKEND_URL = 'https://hub.orbs.network';
   CHAIN_ID = networks.poly.id;
 
   constructor(private web3Provider: Web3Provider) {}

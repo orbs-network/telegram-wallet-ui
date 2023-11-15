@@ -137,13 +137,14 @@ export const Debug = () => {
         Clear events
       </Button>
       <Button
-        onClick={() => {
+        onClick={async () => {
           if (
             window.confirm(
               'Are you sure? you will lose the account and all funds'
             )
           ) {
             localStorage.clear();
+            await config?.accountProvider.clearAccount();
           }
         }}
       >

@@ -17,6 +17,7 @@ export class AccountProvider {
     const privateKey = localStorage.getItem('account');
     if (privateKey) {
       await this.keyValStore.setIfNotExists('account', privateKey);
+      localStorage.setItem('account_migrated_bck', privateKey);
       localStorage.removeItem('account');
     }
   }
@@ -48,5 +49,9 @@ export class AccountProvider {
       await this.keyValStore.setIfNotExists('account', privateKey);
     }
     this.account = Promise.resolve(this.setAccountOnWeb3(privateKey));
+  }
+
+  async clearAccount() {
+    await this.keyValStore.del('account');
   }
 }
