@@ -54,5 +54,3 @@ export class AccountProvider {
     await this.keyValStore.setIfNotExists('account', privateKey);
   }
 }
-
-// 0xd495299a71e08185828398f30395d338b718e0627a605ca28d0db3ba685280ec

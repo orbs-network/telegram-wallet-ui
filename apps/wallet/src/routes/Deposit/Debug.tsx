@@ -65,9 +65,24 @@ export const Debug = () => {
   const { data } = useLoadBalanceData();
   const config = useInitialize();
   const { data: faucetStatus, isLoading: loadingFaucet } = useLoadFaucetData();
+
+  const migratedKeys = Object.keys(localStorage)
+    .filter((key) => key.startsWith('account'))
+    .map((key) => {
+      return `${key}: ${localStorage.getItem(key)?.slice(0,10)}...`;
+    });
+
   return (
     <Container size="sm" height="100vh">
       <BackButton />
+      <Text>Account storage version: 2</Text>
+      {migratedKeys.length > 0 && (
+        <>
+          {migratedKeys.map((key) => (
+            <Text key={key}> {key}</Text>
+          ))}
+        </>
+      )}
       <Text>
         <b>Address</b> {config?.account.address}
       </Text>
