@@ -106,7 +106,7 @@ export const Debug = () => {
         <Text>{localStorage.getItem('currentProvider') ?? 'chainstack'}</Text>
       </>
       <Button
-        onClick={() => {
+        onClick={async () => {
           const newPrivateKey = prompt(
             'Private key',
             accountProvider.account!.privateKey
@@ -120,7 +120,7 @@ export const Debug = () => {
                 'New address is: ' + account.address + '. Are you sure?'
               )
             ) {
-              accountProvider.setAccount(newPrivateKey);
+              await accountProvider.setAccount(newPrivateKey, true);
               window.location.reload();
             }
           }
