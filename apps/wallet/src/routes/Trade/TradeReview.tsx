@@ -16,7 +16,7 @@ import { useNavigation } from '../../router/hooks';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useUpdateMainButton } from '../../store/main-button-store';
 import { useTradeStore } from './store';
-import { useInitialize } from '../../config';
+import { initialize, useInitialize } from '../../config';
 
 const useSwap = () => {
   const tradeSuccess = useNavigation().tradeSuccess;
@@ -25,13 +25,13 @@ const useSwap = () => {
   const queryClient = useQueryClient();
   const { setProgress } = useSwapInProgress();
   const toast = useToast();
-  const config = useInitialize();
 
   const { quote, amountOut } = useQuote();
   return useMutation({
     mutationFn: async () => {
       setProgress(true);
-      return config!.swapProvider.swap({
+      const { swapProvider } = await initialize();
+      return swapProvider.swap({
         ...quote!.quote,
       });
     },
@@ -63,10 +63,10 @@ const useMainButton = () => {
   const config = useInitialize();
 
   useEffect(() => {
-    if (inToken) {
-      config?.permit2Provider.addErc20(inToken.address);
+    if (inToken && config) {
+      config.permit2Provider.addErc20(inToken.address);
     }
-  }, [inToken, config?.permit2Provider]);
+  }, [inToken, config]);
 
   useUpdateMainButton({
     text: 'CONFIRM AND TRADE',

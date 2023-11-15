@@ -16,7 +16,7 @@ const useLoadBalanceData = () => {
 
   return useQuery({
     queryKey: ['debug', 'balance'],
-    enabled: !!config?.web3Provider,
+    enabled: !!config,
     queryFn: async () => {
       const balance = (await config!.web3Provider.balance())
         .dividedBy(1e18)
@@ -69,7 +69,7 @@ export const Debug = () => {
   const migratedKeys = Object.keys(localStorage)
     .filter((key) => key.startsWith('account'))
     .map((key) => {
-      return `${key}: ${localStorage.getItem(key)?.slice(0,10)}...`;
+      return `${key}: ${localStorage.getItem(key)?.slice(0, 10)}...`;
     });
 
   return (

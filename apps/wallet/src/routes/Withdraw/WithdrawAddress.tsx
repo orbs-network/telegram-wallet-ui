@@ -58,7 +58,7 @@ export function WithdrawAddress() {
       };
     }
 
-    if (eqIgnoreCase(address, config?.account.address || '')) {
+    if (eqIgnoreCase(address, config?.account.address ?? '')) {
       return {
         title: ' Invalid Address',
         subtitle: 'You cannot withdraw to your own address',

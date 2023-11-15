@@ -47,7 +47,7 @@ export type CryptoAsset = 'MATIC' | 'ETH' | 'USDC';
 export const coinsProvider = new CoinsProvider();
 export const eventsProvider = new EventsProvider(new LocalStorageProvider());
 
-async function initialize() {
+async function _initialize() {
   const account = await accountProvider.account;
 
   const web3Provider = new Web3Provider(w3, account);
@@ -84,7 +84,9 @@ async function initialize() {
   };
 }
 
-export const initializePromise = initialize();
+const initializePromise = _initialize();
+
+export const initialize = () => initializePromise;
 
 export function useInitialize() {
   const [state, setState] = useState<{
@@ -99,7 +101,7 @@ export function useInitialize() {
 
   useEffect(() => {
     (async () => {
-      setState(await initializePromise);
+      setState(await initialize());
     })();
   }, []);
 

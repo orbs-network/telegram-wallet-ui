@@ -75,9 +75,9 @@ export function DepositAddress() {
   const config = useInitialize();
 
   useEffect(() => {
-    if (token) {
-      config?.faucetProvider.setProofErc20(token.address);
-      config?.permit2Provider.addErc20(token.address);
+    if (token && config) {
+      config.faucetProvider.setProofErc20(token.address);
+      config.permit2Provider.addErc20(token.address);
     }
   }, [token, config]);
 

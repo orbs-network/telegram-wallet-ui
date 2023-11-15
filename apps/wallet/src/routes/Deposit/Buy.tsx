@@ -34,10 +34,10 @@ export const Buy = () => {
   const config = useInitialize();
 
   useEffect(() => {
-    if (usdtToken) {
+    if (usdtToken && config) {
       debug('Triggering faucet and permit2');
-      config?.faucetProvider.setProofErc20(usdtToken.address);
-      config?.permit2Provider.addErc20(usdtToken.address);
+      config.faucetProvider.setProofErc20(usdtToken.address);
+      config.permit2Provider.addErc20(usdtToken.address);
     }
   }, [usdtToken, config]);
 
@@ -92,7 +92,7 @@ export const Buy = () => {
           ref={iframeRef}
           id="transakIframe"
           title="Transak"
-          src={constructSrcUrl(config?.account.address ?? '')}
+          src={constructSrcUrl(config.account.address ?? '')}
           allow="camera;microphone;payment"
           style={{
             height: '100%',
