@@ -76,11 +76,16 @@ export class Web3Provider {
     });
 
     debug(`Sending signed tx`);
-    const { transactionHash } = await this.web3.eth.sendSignedTransaction(
-      signed.rawTransaction!
-    );
+    try {
+      const { transactionHash } = await this.web3.eth.sendSignedTransaction(
+        signed.rawTransaction!
+      );
 
-    return String(transactionHash);
+      return String(transactionHash);
+    } catch (e) {
+      debug(`Error sending signed tx: ${JSON.stringify(e)}`);
+      throw e;
+    }
   }
 
   async transfer(token: string, to: string, amount: BNComparable) {
