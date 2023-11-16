@@ -92,7 +92,7 @@ export const Buy = () => {
           ref={iframeRef}
           id="transakIframe"
           title="Transak"
-          src={constructSrcUrl(config.account.address ?? '')}
+          src={constructSrcUrl(config.account.address)}
           allow="camera;microphone;payment"
           style={{
             height: '100%',
