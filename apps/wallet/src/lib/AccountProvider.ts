@@ -36,7 +36,7 @@ export class AccountProvider {
 
     if (!privateKey) {
       privateKey = this.web3.eth.accounts.create().privateKey;
-      await this.setAccount(privateKey);
+      await this.persistAccount(privateKey);
     }
     const account = this.web3.eth.accounts.privateKeyToAccount(privateKey);
     this.web3.eth.accounts.wallet.clear();
@@ -50,7 +50,7 @@ export class AccountProvider {
     await this.keyValStore.del('account');
   }
 
-  async setAccount(privateKey: string) {
+  async persistAccount(privateKey: string) {
     await this.keyValStore.setIfNotExists('account', privateKey);
   }
 }

@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import { ErrorPage } from '../ErrorPage';
 import { useEventsProvider } from '../lib/EventsProvider';
 import { DepositOptions } from '../components/DepositOptions';
+import { useInitialize } from '../config';
 
 export function Home() {
   const { resetButton } = useMainButtonStore();
@@ -21,7 +22,7 @@ export function Home() {
   useEffect(() => {
     setTwaBg(false);
   }, []);
-
+  
   const { data: usdValue, error } = usePortfolioUsdValue();
 
   const primaryAmount = useFormatNumber({
