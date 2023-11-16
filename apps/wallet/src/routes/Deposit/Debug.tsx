@@ -137,7 +137,7 @@ export const Debug = () => {
               )
             ) {
               await config?.accountProvider.clearAccount();
-              await config?.accountProvider.setAccount(newPrivateKey);
+              await config?.accountProvider.persistAccount(newPrivateKey);
               window.location.reload();
             }
           }
