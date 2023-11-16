@@ -4,7 +4,6 @@ import {
   Buy,
   SelectMethod,
   DepositAddress,
-  TempUtils,
   Debug,
   Home,
   Withdraw,
@@ -47,10 +46,6 @@ const routes: RouteObject[] = [
   {
     path: ROUTES.networkSelect,
     element: <Network />,
-  },
-  {
-    path: ROUTES.tempUtils,
-    element: <TempUtils />,
   },
   {
     path: ROUTES.asset,

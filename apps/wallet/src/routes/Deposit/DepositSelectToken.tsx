@@ -5,7 +5,7 @@ import { useBalances } from '../../hooks';
 import { useNavigation } from '../../router/hooks';
 import { useMainButtonStore } from '../../store/main-button-store';
 import { TokenData } from '../../types';
-import { disabledTokens, faucetProvider, permit2Provider } from '../../config';
+import { disabledTokens, useInitialize } from '../../config';
 import { useParams } from 'react-router-dom';
 import { balancesAsList } from '../../utils/utils';
 
@@ -13,10 +13,11 @@ export function DepositSelectToken() {
   const { data } = useBalances();
   const { method } = useParams<{ method: string }>();
   const { depositBuy, depositCrypto } = useNavigation();
+  const config = useInitialize();
 
   const onSelect = (token: TokenData) => {
-    faucetProvider.setProofErc20(token.address);
-    permit2Provider.addErc20(token.address);
+    config!.faucetProvider.setProofErc20(token.address);
+    config!.permit2Provider.addErc20(token.address);
 
     if (method === 'buy') {
       depositBuy(token.symbol);

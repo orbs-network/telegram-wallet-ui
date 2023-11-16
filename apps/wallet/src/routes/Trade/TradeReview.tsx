@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 import { Page, ReviewTx } from '../../components';
 import {
   QueryKeys,
-  useExchangeRate,
   useFormatNumber,
   useGetTokenFromList,
   useQuoteQuery,
@@ -15,9 +14,9 @@ import { amountUi } from '../../utils/conversion';
 import BN from 'bignumber.js';
 import { useNavigation } from '../../router/hooks';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { permit2Provider, swapProvider } from '../../config';
 import { useUpdateMainButton } from '../../store/main-button-store';
 import { useTradeStore } from './store';
+import { initialize, useInitialize } from '../../config';
 
 const useSwap = () => {
   const tradeSuccess = useNavigation().tradeSuccess;
@@ -31,6 +30,7 @@ const useSwap = () => {
   return useMutation({
     mutationFn: async () => {
       setProgress(true);
+      const { swapProvider } = await initialize();
       return swapProvider.swap({
         ...quote!.quote,
       });
@@ -60,12 +60,13 @@ const useMainButton = () => {
   const inToken = useGetTokenFromList(params.inToken);
   const { mutateAsync, isPending } = useSwap();
   const { amountOut, isFetching } = useQuote();
+  const config = useInitialize();
 
   useEffect(() => {
-    if (inToken) {
-      permit2Provider.addErc20(inToken.address);
+    if (inToken && config) {
+      config.permit2Provider.addErc20(inToken.address);
     }
-  }, [inToken]);
+  }, [inToken, config]);
 
   useUpdateMainButton({
     text: 'CONFIRM AND TRADE',

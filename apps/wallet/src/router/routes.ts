@@ -4,7 +4,6 @@ export const ROUTES = {
   depositSelectCoin: '/deposit/:method/coin',
   depositBuy: '/deposit/buy',
   depositCrypto: '/deposit/:assetId/crypto',
-  tempUtils: '/tempUtils',
   asset: '/asset/:assetId',
   withdraw: '/withdraw',
   withdrawAddress: '/withdraw/:assetId/address',

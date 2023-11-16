@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { TokenData, UserData } from './types';
 import { fetchLatestPrices, getInitialPrices } from './utils/fetchLatestPrice';
 import BN from 'bignumber.js';
-import { coinsProvider, swapProvider, web3Provider } from './config';
+import { coinsProvider, initialize } from './config';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getDebug } from './lib/utils/debug';
 import { amountUi } from './utils/conversion';
@@ -56,7 +56,7 @@ export const useMultiplyPriceByAmount = (
   coin?: string,
   _amount?: number | string
 ) => {
-  const price = useFetchLatestPrice(coin);  
+  const price = useFetchLatestPrice(coin);
 
   return useMemo(() => {
     if (_amount === undefined || price === undefined) return '-';
@@ -200,6 +200,7 @@ const updateCoinBalances = async (coins: Coin[]) => {
     const _userData: UserData = {};
 
     if (coins.length === 0) return _userData;
+    const { web3Provider } = await initialize();
 
     const balances = await web3Provider.balancesOf(
       coins.filter((c) => c.address !== '').map((c) => c.address)
@@ -385,6 +386,7 @@ export const useQuoteQuery = (
   return useQuery({
     queryKey: queryKey,
     queryFn: async ({ signal }) => {
+      const { swapProvider } = await initialize();
       return swapProvider.optimizedQuote(
         {
           inAmount: coinsProvider.toRawAmount(inToken!, inAmount!),

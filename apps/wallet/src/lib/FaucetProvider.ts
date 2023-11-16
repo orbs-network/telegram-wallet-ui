@@ -17,7 +17,10 @@ export class FaucetProvider {
     private faucetUrl: string,
     private web3Provider: Web3Provider,
     private eventsProvider: EventsProvider
-  ) {}
+  ) {
+    // Polls until the current selected erc20 was transferred to this account
+    this.requestIfNeeded();
+  }
 
   private async requestFromFaucet(erc20Token: string) {
     debug('Requesting from faucet');

@@ -18,7 +18,7 @@ import { useParams } from 'react-router-dom';
 import { URLParams } from '../../types';
 import { BiSolidCopy } from 'react-icons/bi';
 import { useEffect } from 'react';
-import { account, faucetProvider, permit2Provider } from '../../config';
+import { useInitialize } from '../../config';
 
 const QR_SIZE = 190;
 const isShareSupported = navigator.share !== undefined;
@@ -72,15 +72,16 @@ export function DepositAddress() {
   const { assetId } = useParams<URLParams>();
   const token = useGetTokenFromList(assetId);
   const mode = useColorMode().colorMode;
+  const config = useInitialize();
 
   useEffect(() => {
-    if (token) {
-      faucetProvider.setProofErc20(token.address);
-      permit2Provider.addErc20(token.address);
+    if (token && config) {
+      config.faucetProvider.setProofErc20(token.address);
+      config.permit2Provider.addErc20(token.address);
     }
-  }, [token]);
+  }, [token, config]);
 
-  if (!account.address) {
+  if (!config?.account.address) {
     return (
       <Page>
         <Container size="sm" pt={4}>
@@ -90,53 +91,47 @@ export function DepositAddress() {
     );
   }
 
-  const address = account.address;
+  const address = config?.account.address;
 
   return (
     <Page>
       <Container size="sm" pt={6} css={styles.container}>
-        <VStack gap='20px' css={{marginBottom:'26px'}}>
+        <VStack gap="20px" css={{ marginBottom: '26px' }}>
           <NetworkSelector assetId={assetId || ''} />
           <Heading as="h1" size="md" textAlign="center">
             Deposit {token?.symbolDisplay}
           </Heading>
         </VStack>
-          <VStack
-            justifyContent="center"
-            alignItems="center"
-            gap="24px"
-            flex="1"
-          >
-            <Card css={styles.qr}>
-              <QRCodeSVG
-                bgColor="transparent"
-                fgColor={mode === 'light' ? '#000' : '#fff'}
-                size={QR_SIZE}
-                includeMargin={false}
-                value={address}
-                level="L"
-                imageSettings={{
-                  src: token?.logoURI || '',
-                  height: 47,
-                  width: 47,
-                  excavate: true,
-                }}
-              />
-              <VStack gap="4px">
-                <Text style={{ maxWidth: QR_SIZE - 10 }} css={styles.address}>
-                  {address}
-                </Text>
-                <Text css={styles.network}>Your Polygon address</Text>
-              </VStack>
-            </Card>
-            <Warning />
+        <VStack justifyContent="center" alignItems="center" gap="24px" flex="1">
+          <Card css={styles.qr}>
+            <QRCodeSVG
+              bgColor="transparent"
+              fgColor={mode === 'light' ? '#000' : '#fff'}
+              size={QR_SIZE}
+              includeMargin={false}
+              value={address}
+              level="L"
+              imageSettings={{
+                src: token?.logoURI || '',
+                height: 47,
+                width: 47,
+                excavate: true,
+              }}
+            />
+            <VStack gap="4px">
+              <Text style={{ maxWidth: QR_SIZE - 10 }} css={styles.address}>
+                {address}
+              </Text>
+              <Text css={styles.network}>Your Polygon address</Text>
+            </VStack>
+          </Card>
+          <Warning />
 
-            <HStack width="100%" css={styles.buttons}>
-              <CopyButton address={address} />
-              <ShareButton address={address} />
-            </HStack>
-          </VStack>
-
+          <HStack width="100%" css={styles.buttons}>
+            <CopyButton address={address} />
+            <ShareButton address={address} />
+          </HStack>
+        </VStack>
       </Container>
     </Page>
   );

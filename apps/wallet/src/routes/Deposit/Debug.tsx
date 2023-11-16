@@ -1,10 +1,5 @@
 import { Button, Container, Text } from '@chakra-ui/react';
-import {
-  accountProvider,
-  eventsProvider,
-  permit2Provider,
-  web3Provider,
-} from '../../config';
+import { eventsProvider, useInitialize } from '../../config';
 import { useQuery } from '@tanstack/react-query';
 import { Fetcher } from '../../utils/fetcher';
 import BN from 'bignumber.js';
@@ -17,10 +12,15 @@ function setCurrentW3Provider(provider: 'chainstack' | 'alchemy') {
 }
 
 const useLoadBalanceData = () => {
+  const config = useInitialize();
+
   return useQuery({
     queryKey: ['debug', 'balance'],
+    enabled: !!config,
     queryFn: async () => {
-      const balance = (await web3Provider.balance()).dividedBy(1e18).toFixed(6);
+      const balance = (await config!.web3Provider.balance())
+        .dividedBy(1e18)
+        .toFixed(6);
 
       const tokens = await getBalances();
 
@@ -28,7 +28,7 @@ const useLoadBalanceData = () => {
       for (const erc20 of Object.values(tokens)) {
         erc20s.push({
           ...erc20,
-          isApproved: permit2Provider.isApproved(erc20.address),
+          isApproved: config!.permit2Provider.isApproved(erc20.address),
         });
       }
 
@@ -63,12 +63,28 @@ const useLoadFaucetData = () => {
 
 export const Debug = () => {
   const { data } = useLoadBalanceData();
+  const config = useInitialize();
   const { data: faucetStatus, isLoading: loadingFaucet } = useLoadFaucetData();
+
+  const migratedKeys = Object.keys(localStorage)
+    .filter((key) => key.startsWith('account'))
+    .map((key) => {
+      return `${key}: ${localStorage.getItem(key)?.slice(0, 10)}...`;
+    });
+
   return (
     <Container size="sm" height="100vh">
       <BackButton />
+      <Text>Account storage version: 2</Text>
+      {migratedKeys.length > 0 && (
+        <>
+          {migratedKeys.map((key) => (
+            <Text key={key}> {key}</Text>
+          ))}
+        </>
+      )}
       <Text>
-        <b>Address</b> {web3Provider.account.address}
+        <b>Address</b> {config?.account.address}
       </Text>
       <Text>
         <b>MATIC balance</b> {data?.balance}
@@ -106,10 +122,10 @@ export const Debug = () => {
         <Text>{localStorage.getItem('currentProvider') ?? 'chainstack'}</Text>
       </>
       <Button
-        onClick={() => {
+        onClick={async () => {
           const newPrivateKey = prompt(
             'Private key',
-            accountProvider.account!.privateKey
+            config?.account?.privateKey
           );
           if (newPrivateKey) {
             const account = new Web3().eth.accounts.privateKeyToAccount(
@@ -120,7 +136,8 @@ export const Debug = () => {
                 'New address is: ' + account.address + '. Are you sure?'
               )
             ) {
-              accountProvider.setAccount(newPrivateKey);
+              await config?.accountProvider.clearAccount();
+              await config?.accountProvider.setAccount(newPrivateKey);
               window.location.reload();
             }
           }
@@ -136,13 +153,14 @@ export const Debug = () => {
         Clear events
       </Button>
       <Button
-        onClick={() => {
+        onClick={async () => {
           if (
             window.confirm(
               'Are you sure? you will lose the account and all funds'
             )
           ) {
             localStorage.clear();
+            await config?.accountProvider.clearAccount();
           }
         }}
       >

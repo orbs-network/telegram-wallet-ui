@@ -9,7 +9,7 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { Page, ReviewTx } from '../../components';
-import { eventsProvider, web3Provider } from '../../config';
+import { eventsProvider, useInitialize } from '../../config';
 import { useFormatNumber, useGetTokenFromList } from '../../hooks';
 import { useNavigation } from '../../router/hooks';
 import { URLParams } from '../../types';
@@ -23,9 +23,11 @@ const useTransferTx = () => {
   const { withdrawSuccess } = useNavigation();
   const toast = useToast();
   const token = useGetTokenFromList(assetId);
+  const config = useInitialize();
 
   return useMutation({
     mutationFn: async () => {
+      if (!config?.web3Provider) throw new Error('Web3 provider not found');
       if (!token) {
         throw new Error('Token not found');
       }
@@ -36,7 +38,7 @@ const useTransferTx = () => {
         throw new Error('Amount not found');
       }
 
-      const txHash = await web3Provider.transfer(
+      const txHash = await config.web3Provider.transfer(
         token.address,
         recipient,
         amountBN(token, amount).toString()
