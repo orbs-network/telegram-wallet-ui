@@ -1,7 +1,6 @@
 import { MainButton, colors } from '@telegram-wallet-ui/twa-ui-kit';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ErrorPage } from '../../ErrorPage';
 import { Page } from '../../components';
 import { TRANSAK_API_KEY, TRANSAK_URL, useInitialize } from '../../config';
 import { useGetTokenFromList } from '../../hooks';
